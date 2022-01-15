@@ -1,8 +1,9 @@
 package com.ojicoin
 
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import com.ojicoin.plugins.*
+import com.ojicoin.plugins.configureRouting
+import com.ojicoin.plugins.configureSerialization
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
