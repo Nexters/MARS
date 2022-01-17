@@ -1,6 +1,7 @@
 package com.ojicoin.domain
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 object Tags : Table() {
@@ -11,6 +12,13 @@ object Tags : Table() {
 
 @Serializable
 data class Tag(
+    val id: Long,
     val name: String,
     val cookieTagId: Long,
+)
+
+fun ResultRow.toTag() = Tag(
+    id = this[Tags.id],
+    name = this[Tags.name],
+    cookieTagId = this[Tags.cookieTagId]
 )

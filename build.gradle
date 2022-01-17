@@ -14,8 +14,12 @@ repositories {
     maven { url "https://maven.pkg.jetbrains.space/public/p/ktor/eap" }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation("com.h2database:h2:2.0.206")
+    implementation("com.h2database:h2:1.4.199") // Exposed에 H2 version 이슈가 있어 1.4.199를 사용 https://github.com/JetBrains/Exposed/issues/1395
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version")
@@ -27,9 +31,12 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+    implementation("javax.validation:validation-api:2.0.1.Final")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:$fixture_monkey_version")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-kotlin:$fixture_monkey_version")
 }
