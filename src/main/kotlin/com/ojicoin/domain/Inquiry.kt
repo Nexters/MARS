@@ -1,6 +1,7 @@
 package com.ojicoin.domain
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
 object Inquiries : Table() {
@@ -11,6 +12,13 @@ object Inquiries : Table() {
 
 @Serializable
 data class Inquiry(
+    val id: Long,
     val title: String,
     val userId: Long,
+)
+
+fun ResultRow.toInquiry() = Inquiry(
+    id = this[Inquiries.id],
+    title = this[Inquiries.title],
+    userId = this[Inquiries.userId]
 )

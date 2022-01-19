@@ -1,6 +1,7 @@
 package com.ojicoin.domain
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
@@ -17,16 +18,23 @@ object Cookies : Table() {
 
 @Serializable
 data class Cookie(
+    val id: Long,
     val title: String,
     val price: Long,
     val content: String,
     val imageUrl: String?,
-    val createdAt: kotlinx.datetime.Instant
+    val authUserId: Long,
+    val createdAt: kotlinx.datetime.Instant,
+    val cookieTagId: Long,
 )
 
-data class NewCookie(
-    val title: String,
-    val price: Long,
-    val content: String,
-    val imageUrl: String? = null,
+fun ResultRow.toCookie() = Cookie(
+    id = this[Cookies.id],
+    title = this[Cookies.title],
+    price = this[Cookies.price],
+    content = this[Cookies.content],
+    imageUrl = this[Cookies.imageUrl],
+    authUserId = this[Cookies.authorUserId],
+    createdAt = this[Cookies.createdAt],
+    cookieTagId = this[Cookies.cookieTagId]
 )
