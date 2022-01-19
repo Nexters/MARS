@@ -19,7 +19,9 @@ test {
 }
 
 dependencies {
-    implementation("com.h2database:h2:1.4.199") // Exposed에 H2 version 이슈가 있어 1.4.199를 사용 https://github.com/JetBrains/Exposed/issues/1395
+    // Exposed에 H2 version 이슈가 있어 1.4.199를 사용
+    // https://github.com/JetBrains/Exposed/issues/1395
+    implementation("com.h2database:h2:1.4.199")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version")
