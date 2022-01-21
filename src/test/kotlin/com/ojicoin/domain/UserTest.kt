@@ -1,8 +1,7 @@
 package com.ojicoin.domain
 
-import com.navercorp.fixturemonkey.FixtureMonkey
-import com.navercorp.fixturemonkey.kotlin.KFixtureMonkeyBuilder
-import com.navercorp.fixturemonkey.kotlin.generator.PrimaryConstructorArbitraryGenerator
+import com.ojicoin.REPEATED_COUNT
+import com.ojicoin.fixture
 import com.ojicoin.service.DatabaseFactory
 import com.ojicoin.service.DatabaseFactory.dbQuery
 import kotlinx.coroutines.runBlocking
@@ -17,13 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.RepeatedTest
 import kotlin.properties.Delegates
 
-private const val REPEATED_COUNT = 3
-
 class UserTest {
-    private val fixture: FixtureMonkey = KFixtureMonkeyBuilder()
-        .defaultGenerator(PrimaryConstructorArbitraryGenerator.INSTANCE)
-        .build()
-
     @BeforeEach
     internal fun setUp() {
         DatabaseFactory.connectAndMigrate()
