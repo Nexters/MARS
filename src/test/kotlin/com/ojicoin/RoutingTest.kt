@@ -6,7 +6,7 @@ import com.ojicoin.plugins.configureRouting
 import com.ojicoin.plugins.configureSerialization
 import com.ojicoin.service.DatabaseFactory
 import com.ojicoin.service.DatabaseFactory.dbQuery
-import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.TestApplication
 import kotlinx.coroutines.runBlocking
@@ -25,7 +25,8 @@ class RoutingTest {
         val createViewCount = fixture.giveMeOne(CreateViewCount::class.java)
 
         // when
-        val response = context.client.get("/users/${createViewCount.userId}/cookies/${createViewCount.cookieId}")
+        val response =
+            context.client.post("/users/${createViewCount.userId}/cookies/${createViewCount.cookieId}/viewCounts")
 
         // then
         assertEquals(HttpStatusCode.Created, response.status)
