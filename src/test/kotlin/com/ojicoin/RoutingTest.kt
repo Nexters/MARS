@@ -12,7 +12,6 @@ import io.ktor.server.testing.TestApplication
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
@@ -29,8 +28,6 @@ class RoutingTest {
         val response = context.client.get("/users/${createViewCount.userId}/cookies/${createViewCount.cookieId}")
 
         // then
-        val count = dbQuery { ViewCounts.select { ViewCounts.userId eq createViewCount.userId }.count() }
-        assertEquals(1, count)
         assertEquals(HttpStatusCode.Created, response.status)
     }
 
