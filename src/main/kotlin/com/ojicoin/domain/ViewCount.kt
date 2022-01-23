@@ -1,7 +1,6 @@
 package com.ojicoin.domain
 
 import kotlinx.datetime.Clock.System
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
@@ -21,7 +20,6 @@ data class ViewCount(
     val userId: Long,
     val cookieId: Long,
     val count: Long,
-    val createdAt: Instant
 )
 
 fun ResultRow.toViewCount() = ViewCount(
@@ -29,7 +27,6 @@ fun ResultRow.toViewCount() = ViewCount(
     userId = this[ViewCounts.userId],
     cookieId = this[ViewCounts.cookieId],
     count = this[ViewCounts.count],
-    createdAt = this[ViewCounts.createdAt],
 )
 
 @Serializable

@@ -48,8 +48,6 @@ class DomainTest {
             assertEquals(createViewCount.userId, viewCount.userId)
             assertEquals(createViewCount.cookieId, viewCount.cookieId)
             assertEquals(createViewCount.count, viewCount.count)
-            assertNotNull(viewCount.createdAt)
-
         }
     }
 
