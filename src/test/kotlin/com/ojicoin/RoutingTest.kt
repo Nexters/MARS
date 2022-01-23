@@ -45,7 +45,6 @@ class RoutingTest {
                 DatabaseFactory.connectAndMigrate()
                 transaction { SchemaUtils.create(ViewCounts) }
             }
-
         }
 
         @AfterAll
