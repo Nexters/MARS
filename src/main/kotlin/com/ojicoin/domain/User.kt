@@ -51,3 +51,21 @@ data class CreateUser(
         insertStatement[Users.status] = UserStatus.ACTIVE
     }
 }
+
+@Serializable
+data class CreateUserByMap(
+    val map: Map<String, String>
+) {
+    private val nickname by map
+    private val introduction by map
+    private val profileUrl by map
+    private val walletAddress by map
+
+    fun apply(insertStatement: InsertStatement<Number>) {
+        insertStatement[Users.nickname] = nickname
+        insertStatement[Users.introduction] = introduction
+        insertStatement[Users.profileUrl] = profileUrl
+        insertStatement[Users.walletAddress] = walletAddress
+        insertStatement[Users.status] = UserStatus.ACTIVE
+    }
+}
