@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
-object Cookies : Table() {
+object Cookies : Table() { // TOOD: tokenId가 필요한지 확인
     val id = long("cookie_id").autoIncrement()
     val title = varchar("title", 255)
     val price = long("price")
