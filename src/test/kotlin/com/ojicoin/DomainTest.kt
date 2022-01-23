@@ -1,7 +1,10 @@
 package com.ojicoin
 
+import com.ojicoin.domain.CreateUser
 import com.ojicoin.domain.CreateViewCount
+import com.ojicoin.domain.Users
 import com.ojicoin.domain.ViewCounts
+import com.ojicoin.domain.toUser
 import com.ojicoin.domain.toViewCount
 import com.ojicoin.service.DatabaseFactory
 import com.ojicoin.service.DatabaseFactory.dbQuery
@@ -71,7 +74,6 @@ class DomainTest {
         }
     }
 }
-
 
 class UsersTest {
 
