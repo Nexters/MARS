@@ -71,3 +71,59 @@ class DomainTest {
         }
     }
 }
+
+
+class UsersTest {
+
+    @RepeatedTest(REPEATED_COUNT)
+    fun insertUser() {
+        runBlocking {
+            // given
+            var id by Delegates.notNull<Long>()
+            val createUser = fixture.giveMeOne(CreateUser::class.java)
+
+            // when
+            dbQuery { id = Users.insert { createUser.apply(it) } get Users.id }
+
+            assertNotNull(id)
+        }
+    }
+
+    @RepeatedTest(REPEATED_COUNT)
+    fun selectUser() {
+        runBlocking {
+            // given
+            val createUser = fixture.giveMeOne(CreateUser::class.java)
+            dbQuery { Users.insert { createUser.apply(it) } }
+
+            // when
+            val user = dbQuery { Users.selectAll().first().toUser() }
+
+            // then
+            assertNotNull(createUser)
+            assertEquals(createUser.nickname, user.nickname)
+            assertEquals(createUser.introduction, user.introduction)
+            assertEquals(createUser.profileUrl, user.profileUrl)
+        }
+    }
+
+    @AfterEach
+    private fun tearDown() {
+        transaction { Users.deleteAll() }
+    }
+
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        internal fun setUpAll() {
+            DatabaseFactory.connectAndMigrate()
+            transaction { SchemaUtils.create(Users) }
+        }
+
+        @AfterAll
+        @JvmStatic
+        internal fun tearDownAll() {
+            transaction { SchemaUtils.drop(Users) }
+        }
+    }
+}
