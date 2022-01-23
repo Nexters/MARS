@@ -1,9 +1,12 @@
 package com.ojicoin.service
 
+import com.ojicoin.domain.Users
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
     fun connectAndMigrate() {
@@ -18,6 +21,9 @@ object DatabaseFactory {
             }
         )
         Database.connect(hikariPool)
+        transaction {
+            SchemaUtils.create(Users)
+        }
     }
 
     suspend fun <T> dbQuery(block: suspend () -> T): T =
