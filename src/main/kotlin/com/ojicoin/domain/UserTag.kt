@@ -7,9 +7,10 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 
 object UserTags : Table() {
     val userId = long("user_id")
-    val tagId = long("cookie_id")
+    val tagId = long("tag_id")
 }
 
+@Serializable
 data class UserTag(
     val userId: Long,
     val tagId: Long,
