@@ -33,3 +33,9 @@ create table inqueries
     title   varchar(255),
     user_id bigint
 );
+
+create table user_tags
+(
+    user_id bigint
+    tag_id bigint
+);
