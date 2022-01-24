@@ -5,10 +5,13 @@ import com.ojicoin.domain.CreateViewCount
 import com.ojicoin.domain.UserTags
 import com.ojicoin.domain.ViewCounts
 import com.ojicoin.service.DatabaseFactory.dbQuery
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.insert
 
 fun Application.configureRouting() {
