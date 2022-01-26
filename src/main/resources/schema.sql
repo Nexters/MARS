@@ -55,3 +55,11 @@ CREATE TABLE IF NOT EXISTS "view_counts"
     "created_at"    timestamp,
     PRIMARY KEY ("view_count_id")
 );
+
+CREATE TABLE IF NOT EXISTS "user_tags"
+(
+    "user_tag_id"   bigint,
+    "user_id"       bigint,
+    "tag_id"        bigint,
+    PRIMARY KEY ("user_tag_id")
+);

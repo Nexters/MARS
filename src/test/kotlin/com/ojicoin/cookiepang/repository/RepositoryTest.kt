@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class RepositoryTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val cookieTagRepository: CookieTagRepository,
-    @Autowired val inqueryRepository: InqueryRepository,
+    @Autowired val inquiryRepository: InquiryRepository,
     @Autowired val tagRepository: TagRepository,
     @Autowired val userRepository: UserRepository,
     @Autowired val viewCountRepository: ViewCountRepository,
@@ -51,7 +51,7 @@ class RepositoryTest(
         thenNoException().isThrownBy {
             cookieRepository.save(cookie)
             cookieTagRepository.save(cookieTag)
-            inqueryRepository.save(inquery)
+            inquiryRepository.save(inquery)
             tagRepository.save(tag)
             userRepository.save(user)
             viewCountRepository.save(viewCount)
