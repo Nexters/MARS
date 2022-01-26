@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class CookiepangApplication
 
 fun main(args: Array<String>) {
-	runApplication<CookiepangApplication>(*args)
+    runApplication<CookiepangApplication>(*args)
 }
