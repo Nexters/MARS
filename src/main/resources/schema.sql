@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS "cookies"
     "price"          bigint,
     "content"        text,
     "image_url"      varchar(255),
+    "owned_user_id" bigint,
     "author_user_id" bigint,
     "created_at"     timestamp,
     "cookie_tag_id"  bigint,

@@ -7,9 +7,9 @@ import java.time.Instant
 
 @Table("view_counts")
 class ViewCount(
-    @Id @Column("view_count_id") var id: Long?,
+    @Id @Column("view_count_id") var id: Long? = null,
     @Column("user_id") val userId: Long,
     @Column("cookie_id") val cookieId: Long,
     @Column("count") val count: Long,
-    @Column("created_at") val createdAt: Instant,
+    @Column("created_at") val createdAt: Instant = Instant.now(),
 )
