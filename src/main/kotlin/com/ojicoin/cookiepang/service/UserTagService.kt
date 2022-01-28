@@ -15,7 +15,7 @@ class UserTagService(
             userTagRepository.deleteAllByUserId(userId)
         }
 
-        val newUserTagList = tagIdList.map { tagId -> UserTag(null, userId, tagId) }
+        val newUserTagList = tagIdList.map { tagId -> UserTag(userId = userId, tagId = tagId) }
         userTagRepository.saveAll(newUserTagList)
     }
 

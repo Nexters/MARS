@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS "view_counts"
 
 CREATE TABLE IF NOT EXISTS "user_tags"
 (
-    "user_tag_id"   bigint,
+    "user_tag_id"   bigserial,
     "user_id"       bigint,
     "tag_id"        bigint,
     PRIMARY KEY ("user_tag_id")

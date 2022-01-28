@@ -11,7 +11,7 @@ import org.springframework.data.repository.CrudRepository
 
 interface CookieRepository : CrudRepository<Cookie, Long>
 interface CookieTagRepository : CrudRepository<CookieTag, Long>
-interface InquiryRepository : CrudRepository<Inquery, Long>
+interface InqueryRepository : CrudRepository<Inquery, Long>
 interface TagRepository : CrudRepository<Tag, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long>
