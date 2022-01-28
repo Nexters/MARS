@@ -18,5 +18,4 @@ class UserTagService(
         val newUserTagList = tagIdList.map { tagId -> UserTag(userId = userId, tagId = tagId) }
         userTagRepository.saveAll(newUserTagList)
     }
-
 }
