@@ -19,9 +19,9 @@ class CookieServiceTest(
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
             .sample()
-        val expected = cookieRepository.save(cookie)
+        val actual = cookieRepository.save(cookie)
 
-        val actual = sut.view(userId = cookie.ownedUserId, cookieId = expected.id!!)
+        val expected = sut.view(userId = cookie.ownedUserId, cookieId = actual.id!!)
 
         then(actual).isEqualTo(expected)
     }
