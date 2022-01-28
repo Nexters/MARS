@@ -17,6 +17,5 @@ interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long>
 
 interface UserTagRepository : CrudRepository<UserTag, Long> {
-    fun deleteAllByUserId(userId: Long)
     fun findAllByUserId(userId: Long): List<UserTag>
 }

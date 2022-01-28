@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service
 class UserTagService(
     private val userTagRepository: UserTagRepository
 ) {
-
     fun create(userId: Long, tagIdList: List<Long>) {
         val userTagList = userTagRepository.findAllByUserId(userId)
         if (userTagList.isNotEmpty()) {
-            userTagRepository.deleteAllByUserId(userId)
+            userTagRepository.deleteAllById(userTagList.map { userTag -> userTag.id })
         }
 
         val newUserTagList = tagIdList.map { tagId -> UserTag(userId = userId, tagId = tagId) }
