@@ -1,11 +1,12 @@
 package com.ojicoin.cookiepang.service
 
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
+import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.repository.InquiryRepository
 import org.assertj.core.api.BDDAssertions.then
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class InquiryServiceTest(
@@ -13,7 +14,7 @@ internal class InquiryServiceTest(
     @Autowired val sut: InquiryService,
 ) : SpringContextFixture() {
 
-    @Test
+    @RepeatedTest(REPEAT_COUNT)
     fun create() {
         // given
         val inquiry = fixture.giveMeBuilder<Inquiry>()

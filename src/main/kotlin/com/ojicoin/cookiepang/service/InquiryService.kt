@@ -16,5 +16,4 @@ class InquiryService(
         // TODO make notification
         return savedInquiry
     }
-
 }
