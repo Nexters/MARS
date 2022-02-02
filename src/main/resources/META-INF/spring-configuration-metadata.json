@@ -4,6 +4,11 @@
       "name": "contract.address",
       "type": "java.lang.String",
       "description": "Specifying Cookie Contract Address."
+    },
+    {
+      "name": "storage.domain",
+      "type": "java.lang.String",
+      "description": "Storage domain address"
     }
   ]
 }

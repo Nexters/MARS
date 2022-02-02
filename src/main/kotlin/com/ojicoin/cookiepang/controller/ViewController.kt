@@ -9,7 +9,7 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 import java.time.Instant
 
 @Controller
-class ViewController(val viewAssembler: ViewAssembler) {
+class ViewController(private val viewAssembler: ViewAssembler) {
     @Bean
     fun cookieDetailView() = route(GET("/users/{userId}/cookies/{cookieId}/detail")) {
         val userId = it.pathVariable("userId").toLong()
