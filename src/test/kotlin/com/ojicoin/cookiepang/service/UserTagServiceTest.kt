@@ -37,8 +37,7 @@ internal class UserTagServiceTest(
             .sample()
 
         // other tag id
-        val newTagId = fixture.giveMeBuilder<Long>()
-            .sample()
+        val newTagId = fixture.giveMeOne(Long::class.java)
 
         userTagRepository.save(userTag)
 
