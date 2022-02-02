@@ -14,6 +14,6 @@ class ApiController(private val cookieService: CookieService) {
         val userId = it.pathVariable("userId").toLong()
         val cookieId = it.pathVariable("cookieId").toLong()
         val cookie = cookieService.view(userId = userId, cookieId = cookieId)
-        ok().body(cookie) // TODO: cookieView 추가, controller 테스트
+        ok().body(cookie) // TODO: cookieView 추가
     }
 }

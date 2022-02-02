@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 val fixtureMonkeyVersion: String by project
+val restAssuredVersion: String by project
 
 plugins {
     id("org.springframework.boot") version "2.6.3"
@@ -39,6 +40,10 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
+    testImplementation("io.rest-assured:json-path:$restAssuredVersion")
+    testImplementation("io.rest-assured:xml-path:$restAssuredVersion")
+    testImplementation("io.rest-assured:kotlin-extensions:$restAssuredVersion")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:$fixtureMonkeyVersion")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-kotlin:$fixtureMonkeyVersion")
 }
