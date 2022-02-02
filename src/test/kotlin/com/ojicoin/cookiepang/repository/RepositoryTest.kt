@@ -5,7 +5,7 @@ import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieTag
-import com.ojicoin.cookiepang.domain.Inquery
+import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.domain.Tag
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.ViewCount
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class RepositoryTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val cookieTagRepository: CookieTagRepository,
-    @Autowired val inqueryRepository: InqueryRepository,
+    @Autowired val inquiryRepository: InquiryRepository,
     @Autowired val tagRepository: TagRepository,
     @Autowired val userRepository: UserRepository,
     @Autowired val viewCountRepository: ViewCountRepository,
@@ -32,7 +32,7 @@ class RepositoryTest(
             .setNull("id")
             .sample()
 
-        val inquery = fixture.giveMeBuilder<Inquery>()
+        val inquiry = fixture.giveMeBuilder<Inquiry>()
             .setNull("id")
             .sample()
 
@@ -51,7 +51,7 @@ class RepositoryTest(
         thenNoException().isThrownBy {
             cookieRepository.save(cookie)
             cookieTagRepository.save(cookieTag)
-            inqueryRepository.save(inquery)
+            inquiryRepository.save(inquiry)
             tagRepository.save(tag)
             userRepository.save(user)
             viewCountRepository.save(viewCount)

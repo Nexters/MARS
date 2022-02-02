@@ -5,9 +5,10 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import javax.validation.constraints.Size
 
-@Table("inqueries")
-class Inquery(
-    @Id @Column("inquiry_id") var id: Long?,
+@Table("inquiries")
+class Inquiry(
+    @Id @Column("inquiry_id") var id: Long? = null,
     @Column("title") @field:Size(max = 255) val title: String,
-    @Column("user_id") val userId: Long,
+    @Column("sender_user_id") val senderUserId: Long,
+    @Column("receiver_user_id") val receiverUserId: Long,
 )

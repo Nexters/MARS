@@ -39,11 +39,12 @@ CREATE TABLE IF NOT EXISTS "users"
     PRIMARY KEY ("user_id")
 );
 
-CREATE TABLE IF NOT EXISTS "inqueries"
+CREATE TABLE IF NOT EXISTS "inquiries"
 (
     "inquiry_id" bigserial,
     "title"      varchar(255),
-    "user_id"    bigint,
+    "sender_user_id"    bigint,
+    "receiver_user_id"    bigint,
     PRIMARY KEY ("inquiry_id")
 );
 
