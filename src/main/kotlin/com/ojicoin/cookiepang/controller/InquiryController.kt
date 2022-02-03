@@ -11,11 +11,11 @@ import java.net.URI
 
 @Controller
 class InquiryController(
-    private val inquiryService: InquiryService
+    private val inquiryService: InquiryService,
 ) {
 
     @Bean
-    fun createUserTags() = route(POST("/inquiries")) {
+    fun inquries() = route(POST("/inquiries")) {
         val inquiryRequestDto = it.body<InquiryRequestDto>()
 
         inquiryService.create(inquiryRequestDto.title, inquiryRequestDto.senderUserId, inquiryRequestDto.receiverUserId)
@@ -28,5 +28,5 @@ class InquiryController(
 data class InquiryRequestDto(
     val title: String,
     val senderUserId: Long,
-    val receiverUserId: Long
+    val receiverUserId: Long,
 )
