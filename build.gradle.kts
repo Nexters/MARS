@@ -3,6 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 val fixtureMonkeyVersion: String by project
 val restAssuredVersion: String by project
+val springDocVersion: String by project
 
 plugins {
     id("org.springframework.boot") version "2.6.3"
@@ -34,6 +35,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("javax.validation:validation-api:2.0.1.Final")
+    implementation("org.springdoc:springdoc-openapi-ui:$springDocVersion")
+    implementation("org.springdoc:springdoc-openapi-kotlin:$springDocVersion")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")

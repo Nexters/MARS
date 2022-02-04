@@ -3,6 +3,12 @@ package com.ojicoin.cookiepang.controller
 import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
 import com.ojicoin.cookiepang.service.UserTagService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import java.net.URI
+import org.springdoc.core.annotations.RouterOperation
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.GET
@@ -11,7 +17,6 @@ import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
-import java.net.URI
 
 @Controller
 class ApiController(
@@ -20,6 +25,16 @@ class ApiController(
     private val userTagService: UserTagService,
 ) {
     @Bean
+    @RouterOperation(
+        path = "/users/{userId}/cookies/{cookieId}",
+        operation = Operation(operationId = "viewCookie",
+            parameters = [
+                Parameter(name = "userId", `in` = ParameterIn.PATH),
+                Parameter(name = "cookieId", `in` = ParameterIn.PATH),
+            ],
+            responses = [ApiResponse(responseCode = "200")]
+        ),
+    )
     fun view() = route(GET("/users/{userId}/cookies/{cookieId}")) {
         val userId = it.pathVariable("userId").toLong()
         val cookieId = it.pathVariable("cookieId").toLong()
@@ -51,9 +66,9 @@ class ApiController(
 data class InquiryRequestDto(
     val title: String,
     val senderUserId: Long,
-    val receiverUserId: Long
+    val receiverUserId: Long,
 )
 
 data class UserTagCreateDto(
-    val tagList: List<Long>
+    val tagList: List<Long>,
 )
