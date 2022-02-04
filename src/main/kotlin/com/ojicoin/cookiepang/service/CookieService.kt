@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service
 class CookieService(
     private val cookieRepository: CookieRepository,
 ) {
+    fun get(cookieId: Long): Cookie = cookieRepository.findById(cookieId).orElseThrow()
+
     fun view(userId: Long, cookieId: Long): Cookie {
         val cookie: Cookie = cookieRepository.findById(cookieId).orElseThrow()
         if (cookie.ownedUserId != userId) {

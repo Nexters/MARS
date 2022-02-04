@@ -12,8 +12,9 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 class ViewController(val viewAssembler: ViewAssembler) {
     @Bean
     fun cookieDetailView() = route(GET("/users/{userId}/cookies/{cookieId}/detail")) {
+        val cookieId = it.pathVariable("cookieId").toLong()
         // TODO: rendering
-        ok().body(viewAssembler.cookieView())
+        ok().body(viewAssembler.cookieView(cookieId = cookieId))
     }
 }
 
