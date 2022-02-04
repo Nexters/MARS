@@ -4,16 +4,16 @@ import com.ojicoin.cookiepang.service.ViewAssembler
 import java.time.Instant
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
-import org.springframework.web.servlet.function.RequestPredicates
+import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RouterFunctions.route
-import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.ServerResponse.ok
 
 @Controller
 class ViewController(val viewAssembler: ViewAssembler) {
     @Bean
-    fun cookieDetailView() = route(RequestPredicates.GET("/users/{userId}/cookies/{cookieId}/detail")) {
+    fun cookieDetailView() = route(GET("/users/{userId}/cookies/{cookieId}/detail")) {
         // TODO: rendering
-        ServerResponse.ok().body(viewAssembler.cookieView())
+        ok().body(viewAssembler.cookieView())
     }
 }
 
