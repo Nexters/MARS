@@ -7,9 +7,13 @@ import com.ojicoin.cookiepang.domain.Tag
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserTag
 import com.ojicoin.cookiepang.domain.ViewCount
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository
 
-interface CookieRepository : CrudRepository<Cookie, Long>
+interface CookieRepository : CrudRepository<Cookie, Long> {
+    fun findAll(pageable: Pageable): List<Cookie>
+}
+
 interface CookieTagRepository : CrudRepository<CookieTag, Long>
 interface InquiryRepository : CrudRepository<Inquiry, Long>
 interface TagRepository : CrudRepository<Tag, Long>

@@ -44,4 +44,17 @@ class ViewControllerTest(
             statusCode(200)
         }
     }
+
+    @Test
+    fun timelineView() {
+        val userId = 1L
+
+        Given {
+            this
+        } When {
+            get("/users/$userId")
+        } Then {
+            statusCode(200)
+        }
+    }
 }
