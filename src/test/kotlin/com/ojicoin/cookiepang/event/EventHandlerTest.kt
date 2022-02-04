@@ -25,10 +25,6 @@ class EventHandlerTest(
 
         // then
         then(viewCountRepository.findAll()).hasSize(1)
-    }
-
-    @AfterEach
-    internal fun tearDown() {
         viewCountRepository.deleteAll()
     }
 }
