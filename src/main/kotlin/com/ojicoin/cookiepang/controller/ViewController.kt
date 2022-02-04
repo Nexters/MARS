@@ -26,6 +26,7 @@ data class CookieView(
     val contractAddress: String,
     val tokenAddress: String,
     val viewCount: Long,
+    val price: Long,
     val histories: List<CookieHistory>,
 )
 

@@ -34,6 +34,7 @@ class ViewAssembler(
             contractAddress = cookie.contractAddress,
             tokenAddress = cookie.tokenAddress,
             viewCount = viewCount,
+            price = cookie.price,
             histories = listOf(
                 CookieHistory(
                     action = Action.CREATE,

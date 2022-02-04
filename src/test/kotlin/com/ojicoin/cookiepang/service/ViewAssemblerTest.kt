@@ -43,6 +43,7 @@ class ViewAssemblerTest(
         then(actual.answer).isEqualTo(cookie.content)
         then(actual.collectorName).isEqualTo(collector.nickname)
         then(actual.creatorName).isEqualTo(creator.nickname)
+        then(actual.price).isEqualTo(cookie.price)
         then(actual.contractAddress).isEqualTo(cookie.contractAddress)
         then(actual.tokenAddress).isEqualTo(cookie.tokenAddress)
         then(actual.viewCount).isEqualTo(0L)
