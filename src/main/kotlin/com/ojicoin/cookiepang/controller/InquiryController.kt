@@ -15,7 +15,7 @@ class InquiryController(
 ) {
 
     @Bean
-    fun createUserTags() = route(POST("/inquiries")) {
+    fun createInquiry() = route(POST("/inquiries")) {
         val inquiryRequestDto = it.body<InquiryRequestDto>()
 
         inquiryService.create(inquiryRequestDto.title, inquiryRequestDto.senderUserId, inquiryRequestDto.receiverUserId)
