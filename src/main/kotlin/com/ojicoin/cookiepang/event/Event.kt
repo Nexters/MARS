@@ -1,3 +1,7 @@
 package com.ojicoin.cookiepang.event
 
-data class ViewCookieEvent(val userId:Long, val cookieId: Long)
+class Event {
+    // ktlint 에러 해결용
+}
+
+data class ViewCookieEvent(val userId: Long, val cookieId: Long)
