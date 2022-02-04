@@ -9,7 +9,6 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
-    id("org.springframework.experimental.aot") version "0.11.2"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
 }
 
