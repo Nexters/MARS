@@ -3,7 +3,6 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.controller.Action
 import com.ojicoin.cookiepang.controller.CookieHistory
 import com.ojicoin.cookiepang.controller.CookieView
-import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -17,12 +16,12 @@ class ViewAssembler(
     @Value("\${contract.address}") val contractAddress: String,
 ) {
 
-    fun cookieView(cookieId: Long): CookieView {
+    fun cookieView(viewUserId: Long, cookieId: Long): CookieView {
         val cookie = cookieService.get(cookieId)
         val creator = userService.getById(cookie.authorUserId)
         val owner = userService.getById(cookie.ownedUserId)
         val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
-        val answer: String? = if (cookie.status == HIDDEN) {
+        val answer: String? = if (viewUserId != owner.id) {
             null
         } else {
             cookie.content

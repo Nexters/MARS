@@ -4,7 +4,6 @@ import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Cookie
-import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
@@ -34,12 +33,11 @@ class ViewAssemblerTest(
             .setNull("id")
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
-            .set("status", CookieStatus.ACTIVE)
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
         // when
-        val actual = sut.cookieView(cookieId)
+        val actual = sut.cookieView(viewUserId = ownedUserId, cookieId = cookieId)
 
         then(actual.question).isEqualTo(cookie.title)
         then(actual.answer).isEqualTo(cookie.content)
@@ -53,6 +51,7 @@ class ViewAssemblerTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun cookieViewHidden() {
+        val viewUserId = -1L
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
@@ -65,12 +64,11 @@ class ViewAssemblerTest(
             .setNull("id")
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
-            .set("status", CookieStatus.HIDDEN)
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
         // when
-        val actual = sut.cookieView(cookieId)
+        val actual = sut.cookieView(viewUserId = viewUserId, cookieId = cookieId)
 
         then(actual.answer).isNull()
     }

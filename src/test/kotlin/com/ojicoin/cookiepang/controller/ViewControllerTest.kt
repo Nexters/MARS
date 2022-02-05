@@ -34,7 +34,7 @@ class ViewControllerTest(
             .set("status", CookieStatus.ACTIVE)
             .sample()
         val cookieId = cookieRepository.save(cookie).id
-        val userId = 1L
+        val userId = -1
 
         Given {
             this
