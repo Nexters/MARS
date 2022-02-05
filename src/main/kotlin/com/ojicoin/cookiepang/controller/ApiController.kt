@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import java.net.URI
 import org.springdoc.core.annotations.RouterOperation
+import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.GET
@@ -28,7 +29,7 @@ class ApiController(
     @RouterOperation(
         path = "/users/{userId}/cookies/{cookieId}",
         operation = Operation(
-            operationId = "viewCookie",
+            operationId = "view",
             parameters = [
                 Parameter(name = "userId", `in` = ParameterIn.PATH),
                 Parameter(name = "cookieId", `in` = ParameterIn.PATH),
@@ -44,6 +45,25 @@ class ApiController(
     }
 
     @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/inquiries",
+            operation = Operation(
+                operationId = "inquiries",
+                responses = [ApiResponse(responseCode = "200")]
+            ),
+        ),
+        RouterOperation(
+            path = "/users/{userId}/tags",
+            operation = Operation(
+                operationId = "createTags",
+                parameters = [
+                    Parameter(name = "userId", `in` = ParameterIn.PATH),
+                ],
+                responses = [ApiResponse(responseCode = "200")]
+            ),
+        )
+    )
     fun create() = route(POST("/inquiries")) {
         // create inquiries
         val inquiryRequestDto = it.body<InquiryRequestDto>()
