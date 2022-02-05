@@ -1,11 +1,11 @@
 package com.ojicoin.cookiepang.domain
 
-import java.time.Instant
 import org.springframework.context.ApplicationEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.AbstractAggregateRoot
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.time.Instant
 import javax.validation.constraints.Size
 
 @Table("cookies")
