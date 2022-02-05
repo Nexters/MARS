@@ -1,12 +1,12 @@
 package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.service.ViewAssembler
-import java.time.Instant
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.ok
+import java.time.Instant
 
 @Controller
 class ViewController(val viewAssembler: ViewAssembler) {

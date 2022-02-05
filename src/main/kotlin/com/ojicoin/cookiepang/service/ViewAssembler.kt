@@ -3,10 +3,10 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.controller.Action
 import com.ojicoin.cookiepang.controller.CookieHistory
 import com.ojicoin.cookiepang.controller.CookieView
-import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.time.Instant
 
 @Component
 class ViewAssembler(
@@ -41,21 +41,21 @@ class ViewAssembler(
                     action = Action.CREATE,
                     content = """
                             '상일동 치타'님이 'Q.내가 여자친구가 있을까'를 망치 34개로 만들었습니다.
-                          """.trimIndent(),
+                    """.trimIndent(),
                     createdAt = Instant.now(),
                 ),
                 CookieHistory(
                     action = Action.BUY,
                     content = """
                             '강동구 호랑이'님이 'Q.내가 여자친구가 있을까'를 망치 34개로 깠습니다.
-                          """.trimIndent(),
+                    """.trimIndent(),
                     createdAt = Instant.now(),
                 ),
                 CookieHistory(
                     action = Action.MODIFY,
                     content = """
                             '강동구 호랑이'님이 'Q.내가 여자친구가 있을까'를 망치 32개로 수정했습니다.
-                          """.trimIndent(),
+                    """.trimIndent(),
                     createdAt = Instant.now()
                 )
             )
