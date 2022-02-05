@@ -27,7 +27,8 @@ class ApiController(
     @Bean
     @RouterOperation(
         path = "/users/{userId}/cookies/{cookieId}",
-        operation = Operation(operationId = "viewCookie",
+        operation = Operation(
+            operationId = "viewCookie",
             parameters = [
                 Parameter(name = "userId", `in` = ParameterIn.PATH),
                 Parameter(name = "cookieId", `in` = ParameterIn.PATH),
