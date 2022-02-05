@@ -6,6 +6,9 @@ import com.ojicoin.cookiepang.service.UserTagService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import java.net.URI
 import org.springdoc.core.annotations.RouterOperation
@@ -50,16 +53,24 @@ class ApiController(
             path = "/inquiries",
             operation = Operation(
                 operationId = "inquiries",
+                requestBody = RequestBody(
+                    required = true,
+                    content = [Content(schema = Schema(implementation = InquiryRequestDto::class))]
+                ),
                 responses = [ApiResponse(responseCode = "200")]
             ),
         ),
         RouterOperation(
             path = "/users/{userId}/tags",
             operation = Operation(
-                operationId = "createTags",
+                operationId = "createUserTags",
                 parameters = [
                     Parameter(name = "userId", `in` = ParameterIn.PATH),
                 ],
+                requestBody = RequestBody(
+                    required = true,
+                    content = [Content(schema = Schema(implementation = UserTagCreateDto::class))]
+                ),
                 responses = [ApiResponse(responseCode = "200")]
             ),
         )
@@ -77,7 +88,7 @@ class ApiController(
         val userId = it.pathVariable("userId").toLong()
         val userTagCreateDto = it.body<UserTagCreateDto>()
 
-        userTagService.create(userId, userTagCreateDto.tagList)
+        userTagService.create(userId, userTagCreateDto.tagIdList)
 
         // TODO create certain uri path about created resource
         created(URI.create("")).build()
@@ -91,5 +102,5 @@ data class InquiryRequestDto(
 )
 
 data class UserTagCreateDto(
-    val tagList: List<Long>,
+    val tagIdList: List<Long>,
 )
