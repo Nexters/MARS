@@ -15,7 +15,6 @@ interface InquiryRepository : CrudRepository<Inquiry, Long>
 interface TagRepository : CrudRepository<Tag, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {
-    fun findByCookieId(cookieId: Long): ViewCount
     fun findAllByCookieId(cookieId: Long): List<ViewCount>
 }
 
