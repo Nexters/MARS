@@ -11,11 +11,13 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 
 class ViewAssemblerTest(
     @Autowired val sut: ViewAssembler,
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val userRepository: UserRepository,
+    @Value("\${contract.address}") val contractAddress: String,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -43,8 +45,8 @@ class ViewAssemblerTest(
         then(actual.answer).isEqualTo(cookie.content)
         then(actual.collectorName).isEqualTo(collector.nickname)
         then(actual.creatorName).isEqualTo(creator.nickname)
+        then(actual.contractAddress).isEqualTo(contractAddress)
         then(actual.price).isEqualTo(cookie.price)
-        then(actual.contractAddress).isEqualTo(cookie.contractAddress)
         then(actual.tokenAddress).isEqualTo(cookie.tokenAddress)
         then(actual.viewCount).isEqualTo(0L)
     }

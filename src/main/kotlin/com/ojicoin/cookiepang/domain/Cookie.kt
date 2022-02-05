@@ -19,7 +19,6 @@ data class Cookie(
     @Column("owned_user_id") val ownedUserId: Long,
     @Column("created_at") val createdAt: Instant,
     @Column("status") val status: CookieStatus,
-    @Column("contractAddress") val contractAddress: String,
     @Column("tokenAddress") val tokenAddress: String,
     @Column("cookie_tag_id") val cookieTagId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
