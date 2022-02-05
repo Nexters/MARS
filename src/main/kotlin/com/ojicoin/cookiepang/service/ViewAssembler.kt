@@ -27,6 +27,7 @@ class ViewAssembler(
             cookie.content
         }
 
+        // TODO: 블록체인 네트워크에서 히스토리 조회후 변환 로직 추가
         return CookieView(
             question = cookie.title,
             answer = answer,
