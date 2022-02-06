@@ -1,6 +1,5 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
 import com.ojicoin.cookiepang.service.UserTagService
 import io.swagger.v3.oas.annotations.Operation
@@ -14,39 +13,17 @@ import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
-import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
-import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
 
 @Controller
 class ApiController(
-    private val cookieService: CookieService,
     private val inquiryService: InquiryService,
     private val userTagService: UserTagService,
 ) {
-    @Bean
-    @RouterOperation(
-        path = "/users/{userId}/cookies/{cookieId}",
-        operation = Operation(
-            operationId = "view",
-            parameters = [
-                Parameter(name = "userId", `in` = ParameterIn.PATH),
-                Parameter(name = "cookieId", `in` = ParameterIn.PATH),
-            ],
-            responses = [ApiResponse(responseCode = "200")]
-        ),
-    )
-    fun view() = route(GET("/users/{userId}/cookies/{cookieId}")) {
-        val userId = it.pathVariable("userId").toLong()
-        val cookieId = it.pathVariable("cookieId").toLong()
-        val cookie = cookieService.view(userId = userId, cookieId = cookieId)
-        ok().body(cookie) // TODO: cookieView 추가
-    }
-
     @Bean
     @RouterOperations(
         RouterOperation(
