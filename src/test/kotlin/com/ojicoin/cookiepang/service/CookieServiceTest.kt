@@ -3,13 +3,16 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.repository.CookieRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
 class CookieServiceTest(
     @Autowired val sut: CookieService,
+    @Autowired val cookieRepository: CookieRepository,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -38,5 +41,10 @@ class CookieServiceTest(
         thenThrownBy { sut.create(createCookieWithSameTokenAddress) }
             .isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("Attempting duplicate token creation")
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        cookieRepository.deleteAll()
     }
 }
