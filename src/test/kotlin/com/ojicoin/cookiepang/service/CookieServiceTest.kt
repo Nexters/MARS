@@ -24,7 +24,7 @@ class CookieServiceTest(
         then(created.ownedUserId).isEqualTo(createCookie.ownedUserId)
         then(created.authorUserId).isEqualTo(createCookie.authorUserId)
         then(created.tokenAddress).isEqualTo(createCookie.tokenAddress)
-        then(created.cookieTagId).isEqualTo(createCookie.categoryId)
+        then(created.cookieCategoryId).isEqualTo(createCookie.categoryId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
