@@ -8,10 +8,10 @@ import com.ojicoin.cookiepang.controller.CookieView
 import com.ojicoin.cookiepang.controller.Feed
 import com.ojicoin.cookiepang.controller.TimelineView
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
-import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.time.Instant
 
 @Component
 class ViewAssembler(
