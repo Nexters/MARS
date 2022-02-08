@@ -4,8 +4,8 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
-import org.springframework.stereotype.Service
 import java.time.Instant
+import org.springframework.stereotype.Service
 
 @Service
 class CookieService(
@@ -26,7 +26,7 @@ class CookieService(
                 authorUserId = dto.authorUserId,
                 ownedUserId = dto.ownedUserId,
                 tokenAddress = dto.tokenAddress,
-                cookieTagId = dto.categoryId,
+                cookieCategoryId = dto.categoryId,
                 imageUrl = null,
                 status = ACTIVE,
                 createdAt = Instant.now(),
