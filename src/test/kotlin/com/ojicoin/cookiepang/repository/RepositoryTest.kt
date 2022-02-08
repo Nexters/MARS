@@ -3,10 +3,10 @@ package com.ojicoin.cookiepang.repository
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
-import com.ojicoin.cookiepang.domain.CookieTag
+import com.ojicoin.cookiepang.domain.CookieCategory
 import com.ojicoin.cookiepang.domain.Inquiry
-import com.ojicoin.cookiepang.domain.Tag
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.assertj.core.api.BDDAssertions.thenNoException
@@ -28,7 +28,7 @@ class RepositoryTest(
             .setNull("id")
             .sample()
 
-        val cookieTag = fixture.giveMeBuilder<CookieTag>()
+        val cookieTag = fixture.giveMeBuilder<CookieCategory>()
             .setNull("id")
             .sample()
 
@@ -36,7 +36,7 @@ class RepositoryTest(
             .setNull("id")
             .sample()
 
-        val tag = fixture.giveMeBuilder<Tag>()
+        val tag = fixture.giveMeBuilder<Category>()
             .setNull("id")
             .sample()
 

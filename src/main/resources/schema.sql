@@ -8,27 +8,27 @@ CREATE TABLE IF NOT EXISTS "cookies"
     "owned_user_id"   bigint,
     "author_user_id"  bigint,
     "created_at"      timestamp,
-    "cookie_tag_id"   bigint,
+    "cookie_category_id"   bigint,
     "contractAddress" varchar(255),
     "tokenAddress"    varchar(255),
     "status"          varchar(10),
     PRIMARY KEY ("cookie_id")
 );
 
-CREATE TABLE IF NOT EXISTS "cookie_tags"
+CREATE TABLE IF NOT EXISTS "cookie_categories"
 (
-    "cookie_tag_id" bigserial,
+    "cookie_category_id" bigserial,
     "cookie_id"     bigint,
-    "tag_id"        bigint,
-    PRIMARY KEY ("cookie_tag_id")
+    "category_id"        bigint,
+    PRIMARY KEY ("cookie_category_id")
 );
 
-CREATE TABLE IF NOT EXISTS "tags"
+CREATE TABLE IF NOT EXISTS "categories"
 (
-    "tag_id"        bigserial,
+    "category_id"        bigserial,
     "name"          varchar(20),
-    "cookie_tag_id" bigint,
-    PRIMARY KEY ("tag_id")
+    "cookie_category_id" bigint,
+    PRIMARY KEY ("category_id")
 );
 
 CREATE TABLE IF NOT EXISTS "users"
@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS "view_counts"
     PRIMARY KEY ("view_count_id")
 );
 
-CREATE TABLE IF NOT EXISTS "user_tags"
+CREATE TABLE IF NOT EXISTS "user_categories"
 (
-    "user_tag_id" bigserial,
+    "user_category_id" bigserial,
     "user_id"     bigint,
-    "tag_id"      bigint,
-    PRIMARY KEY ("user_tag_id")
+    "category_id"      bigint,
+    PRIMARY KEY ("user_category_id")
 );
