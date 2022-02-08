@@ -20,7 +20,7 @@ data class Cookie(
     @Column("created_at") val createdAt: Instant,
     @Column("status") val status: CookieStatus,
     @Column("tokenAddress") val tokenAddress: String,
-    @Column("cookie_tag_id") val cookieTagId: Long,
+    @Column("cookie_category_id") val cookieCategoryId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
     fun addEvent(event: ApplicationEvent) {
         registerEvent(event)

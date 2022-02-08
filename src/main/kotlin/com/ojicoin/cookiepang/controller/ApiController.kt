@@ -1,7 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.service.InquiryService
-import com.ojicoin.cookiepang.service.UserTagService
+import com.ojicoin.cookiepang.service.UserCategoryService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -22,7 +22,7 @@ import java.net.URI
 @Controller
 class ApiController(
     private val inquiryService: InquiryService,
-    private val userTagService: UserTagService,
+    private val userCategoryService: UserCategoryService,
 ) {
     @Bean
     @RouterOperations(
@@ -38,7 +38,7 @@ class ApiController(
             ),
         ),
         RouterOperation(
-            path = "/users/{userId}/tags",
+            path = "/users/{userId}/categories",
             operation = Operation(
                 operationId = "createUserTags",
                 parameters = [
@@ -46,7 +46,7 @@ class ApiController(
                 ],
                 requestBody = RequestBody(
                     required = true,
-                    content = [Content(schema = Schema(implementation = UserTagCreateDto::class))]
+                    content = [Content(schema = Schema(implementation = UserCategoryCreateDto::class))]
                 ),
                 responses = [ApiResponse(responseCode = "200")]
             ),
@@ -63,9 +63,9 @@ class ApiController(
     }.andRoute(POST("/users/{userId}/tags")) {
         // create user interested tags
         val userId = it.pathVariable("userId").toLong()
-        val userTagCreateDto = it.body<UserTagCreateDto>()
+        val userCategoryCreateDto = it.body<UserCategoryCreateDto>()
 
-        userTagService.create(userId, userTagCreateDto.tagIdList)
+        userCategoryService.create(userId, userCategoryCreateDto.categoryIdList)
 
         // TODO create certain uri path about created resource
         created(URI.create("")).build()
@@ -78,6 +78,6 @@ data class InquiryRequestDto(
     val receiverUserId: Long,
 )
 
-data class UserTagCreateDto(
-    val tagIdList: List<Long>,
+data class UserCategoryCreateDto(
+    val categoryIdList: List<Long>,
 )

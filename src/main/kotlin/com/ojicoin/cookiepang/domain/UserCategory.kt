@@ -4,9 +4,9 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
-@Table("user_tags")
-class UserTag(
-    @Id @Column("user_tag_id") var id: Long? = null,
+@Table("user_categories")
+class UserCategory(
+    @Id @Column("user_category_id") var id: Long? = null,
     @Column("user_id") val userId: Long,
-    @Column("tag_id") val tagId: Long,
+    @Column("category_id") val categoryId: Long,
 )
