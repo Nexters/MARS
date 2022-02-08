@@ -8,6 +8,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -71,5 +72,10 @@ class ViewAssemblerTest(
         val actual = sut.cookieView(viewUserId = viewUserId, cookieId = cookieId)
 
         then(actual.answer).isNull()
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        cookieRepository.deleteAll()
     }
 }
