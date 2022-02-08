@@ -4,8 +4,8 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
-import java.time.Instant
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class CookieService(
