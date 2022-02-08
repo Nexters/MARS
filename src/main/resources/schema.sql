@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "cookies"
     "created_at"      timestamp,
     "cookie_category_id"   bigint,
     "contractAddress" varchar(255),
-    "tokenAddress"    varchar(255),
+    "tokenAddress"    varchar(255) unique,
     "status"          varchar(10),
     PRIMARY KEY ("cookie_id")
 );

@@ -10,7 +10,7 @@ import javax.validation.constraints.Size
 
 @Table("cookies")
 data class Cookie(
-    @Id @Column("cookie_id") var id: Long?,
+    @Id @Column("cookie_id") var id: Long? = null,
     @Column("title") @field:Size(max = 255) val title: String,
     @Column("price") val price: Long,
     @Column("content") val content: String,
