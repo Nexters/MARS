@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS "categories"
 (
     "category_id"        bigserial,
     "name"          varchar(20),
-    "cookie_category_id" bigint,
     PRIMARY KEY ("category_id")
 );
 
