@@ -2,9 +2,11 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
+import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 @Service
@@ -32,5 +34,17 @@ class CookieService(
                 createdAt = Instant.now(),
             )
         )
+    }
+
+    @Transactional
+    fun delete(cookieId: Long): Cookie {
+        val toDeleteCookie = cookieRepository.findById(cookieId).orElseThrow()
+        if (toDeleteCookie.status == DELETED) {
+            throw IllegalArgumentException("Cookie $cookieId is already deleted.")
+        }
+
+        toDeleteCookie.status = DELETED
+        cookieRepository.save(toDeleteCookie)
+        return toDeleteCookie
     }
 }

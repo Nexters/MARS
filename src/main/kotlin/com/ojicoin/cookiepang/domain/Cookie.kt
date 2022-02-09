@@ -18,7 +18,7 @@ data class Cookie(
     @Column("author_user_id") val authorUserId: Long,
     @Column("owned_user_id") val ownedUserId: Long,
     @Column("created_at") val createdAt: Instant,
-    @Column("status") val status: CookieStatus,
+    @Column("status") var status: CookieStatus,
     @Column("tokenAddress") val tokenAddress: String,
     @Column("cookie_category_id") val cookieCategoryId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
@@ -30,4 +30,5 @@ data class Cookie(
 enum class CookieStatus {
     HIDDEN,
     ACTIVE,
+    DELETED,
 }

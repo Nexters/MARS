@@ -19,10 +19,12 @@ import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
+import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
+import org.springframework.web.servlet.function.ServerResponse.noContent
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
@@ -124,6 +126,23 @@ class ApiController(
     )
     fun view() = route(GET("/categories")) {
         ok().body(categoryService.getAll())
+    }
+
+    @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/cookies/{cookieId}",
+            operation = Operation(
+                operationId = "deleteCookies",
+                parameters = [Parameter(name = "cookieId", `in` = ParameterIn.PATH)],
+                responses = [ApiResponse(responseCode = "204")]
+            ),
+        ),
+    )
+    fun delete() = route(DELETE("/cookies/{cookieId}")) {
+        val cookieId = it.pathVariable("cookieId").toLong()
+        cookieService.delete(cookieId = cookieId)
+        noContent().build()
     }
 }
 
