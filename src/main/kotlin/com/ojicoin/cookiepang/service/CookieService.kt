@@ -4,6 +4,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,6 +35,17 @@ class CookieService(
                 createdAt = Instant.now(),
             )
         )
+    }
+
+    @Transactional
+    fun modify(cookieId: Long, updateCookie: UpdateCookie): Cookie {
+        val cookie = cookieRepository.findById(cookieId).orElseThrow()
+        if (updateCookie.status == DELETED) {
+            throw IllegalArgumentException("cannot update cookie status to DELETED, use delete instead")
+        }
+
+        cookie.apply(updateCookie)
+        return cookieRepository.save(cookie)
     }
 
     @Transactional

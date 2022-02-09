@@ -3,9 +3,11 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
@@ -45,6 +47,43 @@ class CookieServiceTest(
         thenThrownBy { sut.create(createCookieWithSameTokenAddress) }
             .isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("Attempting duplicate token creation")
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun update() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .sample()
+        val saved = cookieRepository.save(cookie)
+        val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
+            .set(
+                "status",
+                Arbitraries.of(CookieStatus::class.java)
+                    .filter { it != CookieStatus.DELETED }.injectNull(0.1)
+            )
+            .sample()
+
+        val updated = sut.modify(cookieId = saved.id!!, updateCookie = updateCookie)
+
+        updateCookie.price?.also { then(updated.price).isEqualTo(it) }
+        updateCookie.status?.also { then(updated.status).isEqualTo(it) }
+        updateCookie.purchaserUserId?.also { then(updated.ownedUserId).isEqualTo(it) }
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun updateDeletedThrows() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .sample()
+        val saved = cookieRepository.save(cookie)
+        val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
+            .set("status", CookieStatus.DELETED)
+            .sample()
+
+        // when, then
+        thenThrownBy { sut.modify(cookieId = saved.id!!, updateCookie = updateCookie) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("cannot update cookie status to DELETED, use delete instead")
     }
 
     @RepeatedTest(REPEAT_COUNT)
