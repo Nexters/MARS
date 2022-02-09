@@ -4,6 +4,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,6 +35,16 @@ class CookieService(
                 createdAt = Instant.now(),
             )
         )
+    }
+
+    @Transactional
+    fun modify(cookieId: Long, dto: UpdateCookie): Cookie {
+        val cookie = cookieRepository.findById(cookieId).orElseThrow()
+        if (cookie.price == dto.price) {
+            return cookie
+        }
+        cookie.price = dto.price
+        return cookieRepository.save(cookie)
     }
 
     @Transactional

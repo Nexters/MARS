@@ -15,3 +15,7 @@ data class ViewCategory(
     val name: String,
     val color: String,
 )
+
+data class UpdateCookie(
+    val price: Long,
+)

@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import java.net.URI
 import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
@@ -22,12 +24,12 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
+import org.springframework.web.servlet.function.RequestPredicates.PUT
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
 import org.springframework.web.servlet.function.ServerResponse.noContent
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
-import java.net.URI
 
 @Controller
 class ApiController(
@@ -143,6 +145,34 @@ class ApiController(
         val cookieId = it.pathVariable("cookieId").toLong()
         cookieService.delete(cookieId = cookieId)
         noContent().build()
+    }
+
+    @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/cookies/{cookieId}",
+            consumes = ["application/json"],
+            operation = Operation(
+                operationId = "updateCookie",
+                parameters = [Parameter(name = "cookieId", `in` = ParameterIn.PATH)],
+                requestBody = RequestBody(
+                    required = true,
+                    content = [Content(schema = Schema(implementation = UpdateCookie::class))]
+                ),
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [Content(schema = Schema(implementation = Cookie::class))]
+                    )
+                ]
+            ),
+        ),
+    )
+    fun modify() = route(PUT("/cookies/{cookieId}")) {
+        val cookieId = it.pathVariable("cookieId").toLong()
+        val dto = it.body(UpdateCookie::class.java)
+        val updated = cookieService.modify(cookieId = cookieId, dto = dto)
+        ok().body(updated)
     }
 }
 
