@@ -23,3 +23,9 @@ data class UpdateCookie(
     val status: CookieStatus?,
     val purchaserUserId: Long?,
 )
+
+data class AskRequestDto(
+    val title: String,
+    val senderUserId: Long,
+    val receiverUserId: Long,
+)

@@ -42,13 +42,14 @@ CREATE TABLE IF NOT EXISTS "users"
     PRIMARY KEY ("user_id")
 );
 
-CREATE TABLE IF NOT EXISTS "inquiries"
+CREATE TABLE IF NOT EXISTS "asks"
 (
-    "inquiry_id"       bigserial,
+    "ask_id"           bigserial,
     "title"            varchar(255),
+    "status"           varchar(20),
     "sender_user_id"   bigint,
     "receiver_user_id" bigint,
-    PRIMARY KEY ("inquiry_id")
+    PRIMARY KEY ("ask_id")
 );
 
 CREATE TABLE IF NOT EXISTS "view_counts"

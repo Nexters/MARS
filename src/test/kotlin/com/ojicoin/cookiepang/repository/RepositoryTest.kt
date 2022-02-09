@@ -3,10 +3,10 @@ package com.ojicoin.cookiepang.repository
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.domain.Asks
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieCategory
-import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.assertj.core.api.BDDAssertions.thenNoException
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class RepositoryTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val cookieTagRepository: CookieTagRepository,
-    @Autowired val inquiryRepository: InquiryRepository,
+    @Autowired val askRepository: AskRepository,
     @Autowired val categoryRepository: CategoryRepository,
     @Autowired val userRepository: UserRepository,
     @Autowired val viewCountRepository: ViewCountRepository,
@@ -32,7 +32,7 @@ class RepositoryTest(
             .setNull("id")
             .sample()
 
-        val inquiry = fixture.giveMeBuilder<Inquiry>()
+        val asks = fixture.giveMeBuilder<Asks>()
             .setNull("id")
             .sample()
 
@@ -51,7 +51,7 @@ class RepositoryTest(
         thenNoException().isThrownBy {
             cookieRepository.save(cookie)
             cookieTagRepository.save(cookieTag)
-            inquiryRepository.save(inquiry)
+            askRepository.save(asks)
             categoryRepository.save(tag)
             userRepository.save(user)
             viewCountRepository.save(viewCount)
