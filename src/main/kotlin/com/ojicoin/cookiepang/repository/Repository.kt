@@ -9,7 +9,10 @@ import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.springframework.data.repository.CrudRepository
 
-interface CookieRepository : CrudRepository<Cookie, Long>
+interface CookieRepository : CrudRepository<Cookie, Long> {
+    fun findByTokenAddress(tokenAddress: String): Cookie?
+}
+
 interface CookieTagRepository : CrudRepository<CookieCategory, Long>
 interface InquiryRepository : CrudRepository<Inquiry, Long>
 interface TagRepository : CrudRepository<Category, Long>

@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import io.swagger.v3.oas.annotations.Operation
@@ -23,6 +25,7 @@ import java.net.URI
 class ApiController(
     private val inquiryService: InquiryService,
     private val userCategoryService: UserCategoryService,
+    private val cookieService: CookieService,
 ) {
     @Bean
     @RouterOperations(
@@ -69,6 +72,10 @@ class ApiController(
 
         // TODO create certain uri path about created resource
         created(URI.create("")).build()
+    }.andRoute(POST("/cookies")) {
+        val dto = it.body(CreateCookie::class.java)
+        val cookie = cookieService.create(dto)
+        created(URI.create("/users/${dto.ownedUserId}/cookies/${cookie.id}/detail")).build()
     }
 }
 
