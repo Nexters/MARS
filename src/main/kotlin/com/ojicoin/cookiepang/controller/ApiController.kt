@@ -26,6 +26,8 @@ import org.springframework.web.servlet.function.ServerResponse.created
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
+import org.springframework.web.servlet.function.RequestPredicates.DELETE
+import org.springframework.web.servlet.function.ServerResponse.noContent
 
 @Controller
 class ApiController(
@@ -124,6 +126,13 @@ class ApiController(
     )
     fun view() = route(GET("/categories")) {
         ok().body(categoryService.getAll())
+    }
+
+    @Bean
+    fun delete() = route(DELETE("/cookies/{cookiesId}")) {
+        val cookieId = it.pathVariable("cookieId").toLong()
+        cookieService.delete(cookieId = cookieId)
+        noContent().build()
     }
 }
 
