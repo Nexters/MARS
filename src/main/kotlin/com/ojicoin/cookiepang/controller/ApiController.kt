@@ -20,7 +20,6 @@ import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
@@ -135,15 +134,15 @@ class ApiController(
     @Bean
     @RouterOperations(
         RouterOperation(
-            path = "/cookies",
-            method = [RequestMethod.DELETE],
+            path = "/cookies/{cookieId}",
             operation = Operation(
                 operationId = "deleteCookies",
+                parameters = [Parameter(name = "cookieId", `in` = ParameterIn.PATH)],
                 responses = [ApiResponse(responseCode = "204")]
             ),
         ),
     )
-    fun delete() = route(DELETE("/cookies/{cookiesId}")) {
+    fun delete() = route(DELETE("/cookies/{cookieId}")) {
         val cookieId = it.pathVariable("cookieId").toLong()
         cookieService.delete(cookieId = cookieId)
         noContent().build()
