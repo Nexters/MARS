@@ -13,4 +13,5 @@ data class CreateCookie(
 data class ViewCategory(
     val categoryId: Long,
     val name: String,
+    val color: String,
 )

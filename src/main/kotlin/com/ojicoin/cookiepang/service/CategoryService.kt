@@ -8,5 +8,7 @@ import org.springframework.stereotype.Service
 class CategoryService(
     private val categoryRepository: CategoryRepository,
 ) {
-    fun getAll() = categoryRepository.findAll().map { ViewCategory(categoryId = it.id!!, name = it.name) }
+    fun getAll() = categoryRepository.findAll().map {
+        ViewCategory(categoryId = it.id!!, name = it.name, color = it.color.name)
+    }
 }
