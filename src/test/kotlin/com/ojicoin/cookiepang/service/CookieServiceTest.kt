@@ -56,7 +56,6 @@ class CookieServiceTest(
             .sample()
         val saved = cookieRepository.save(cookie)
         val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
-            .set("price", Arbitraries.longs().filter { it != cookie.price }.injectNull(0.1))
             .set(
                 "status",
                 Arbitraries.of(CookieStatus::class.java)
@@ -68,6 +67,7 @@ class CookieServiceTest(
 
         updateCookie.price?.also { then(updated.price).isEqualTo(it) }
         updateCookie.status?.also { then(updated.status).isEqualTo(it) }
+        updateCookie.purchaserUserId?.also { then(updated.ownedUserId).isEqualTo(it) }
     }
 
     @RepeatedTest(REPEAT_COUNT)

@@ -45,14 +45,15 @@ class CookieService(
         }
 
         if (dto.price != null) {
-            if (cookie.price == dto.price) {
-                return cookie
-            }
             cookie.price = dto.price
         }
 
         if (dto.status != null) {
             cookie.status = dto.status
+        }
+
+        if (dto.purchaserUserId != null) {
+            cookie.ownedUserId = dto.purchaserUserId
         }
 
         return cookieRepository.save(cookie)

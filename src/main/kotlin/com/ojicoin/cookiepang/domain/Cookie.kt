@@ -16,7 +16,7 @@ data class Cookie(
     @Column("content") val content: String,
     @Column("image_url") @field:Size(max = 255) val imageUrl: String?,
     @Column("author_user_id") val authorUserId: Long,
-    @Column("owned_user_id") val ownedUserId: Long,
+    @Column("owned_user_id") var ownedUserId: Long,
     @Column("created_at") val createdAt: Instant,
     @Column("status") var status: CookieStatus,
     @Column("tokenAddress") val tokenAddress: String,

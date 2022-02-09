@@ -21,4 +21,5 @@ data class ViewCategory(
 data class UpdateCookie(
     val price: Long?,
     val status: CookieStatus?,
+    val purchaserUserId: Long?,
 )
