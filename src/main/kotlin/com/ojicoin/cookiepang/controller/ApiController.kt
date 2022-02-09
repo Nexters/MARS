@@ -15,10 +15,13 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import java.net.URI
 import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
@@ -28,6 +31,7 @@ import org.springframework.web.servlet.function.body
 import java.net.URI
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.ServerResponse.noContent
+import org.springframework.web.servlet.function.body
 
 @Controller
 class ApiController(
@@ -129,6 +133,16 @@ class ApiController(
     }
 
     @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/cookies",
+            method = [RequestMethod.DELETE],
+            operation = Operation(
+                operationId = "deleteCookies",
+                responses = [ApiResponse(responseCode = "204")]
+            ),
+        ),
+    )
     fun delete() = route(DELETE("/cookies/{cookiesId}")) {
         val cookieId = it.pathVariable("cookieId").toLong()
         cookieService.delete(cookieId = cookieId)
