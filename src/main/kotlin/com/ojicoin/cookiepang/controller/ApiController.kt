@@ -60,7 +60,7 @@ class ApiController(
 
         // TODO create certain uri path about created resource
         created(URI.create("")).build()
-    }.andRoute(POST("/users/{userId}/tags")) {
+    }.andRoute(POST("/users/{userId}/categories")) {
         // create user interested tags
         val userId = it.pathVariable("userId").toLong()
         val userCategoryCreateDto = it.body<UserCategoryCreateDto>()
