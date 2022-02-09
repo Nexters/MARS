@@ -1,12 +1,13 @@
 package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.dto.AskRequestDto
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.ViewCategory
+import com.ojicoin.cookiepang.service.AskService
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
-import com.ojicoin.cookiepang.service.InquiryService
 import com.ojicoin.cookiepang.service.StorageService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import io.swagger.v3.oas.annotations.Operation
@@ -35,7 +36,7 @@ import java.net.URI
 
 @Controller
 class ApiController(
-    private val inquiryService: InquiryService,
+    private val askService: AskService,
     private val userCategoryService: UserCategoryService,
     private val cookieService: CookieService,
     private val categoryService: CategoryService,
@@ -68,14 +69,20 @@ class ApiController(
     @Bean
     @RouterOperations(
         RouterOperation(
-            path = "/inquiries",
+            path = "/asks",
+            consumes = ["application/json"],
             operation = Operation(
-                operationId = "inquiries",
+                operationId = "createAsks",
                 requestBody = RequestBody(
                     required = true,
-                    content = [Content(schema = Schema(implementation = InquiryRequestDto::class))]
+                    content = [Content(schema = Schema(implementation = AskRequestDto::class))],
                 ),
-                responses = [ApiResponse(responseCode = "200")]
+                responses = [
+                    ApiResponse(
+                        responseCode = "201",
+                        content = [Content(schema = Schema(implementation = AskRequestDto::class))],
+                    )
+                ]
             ),
         ),
         RouterOperation(
@@ -110,14 +117,12 @@ class ApiController(
             ),
         )
     )
-    fun create() = route(POST("/inquiries")) {
-        // create inquiries
-        val inquiryRequestDto = it.body<InquiryRequestDto>()
+    fun create() = route(POST("/asks")) {
+        val askRequestDto = it.body<AskRequestDto>()
 
-        inquiryService.create(inquiryRequestDto.title, inquiryRequestDto.senderUserId, inquiryRequestDto.receiverUserId)
+        val savedAsk = askService.create(askRequestDto.title, askRequestDto.senderUserId, askRequestDto.receiverUserId)
 
-        // TODO create certain uri path about created resource
-        created(URI.create("")).build()
+        created(URI.create("")).body(savedAsk)
     }.andRoute(POST("/users/{userId}/categories")) {
         // create user interested tags
         val userId = it.pathVariable("userId").toLong()
@@ -270,12 +275,6 @@ class ApiController(
         ok().body(updated)
     }
 }
-
-data class InquiryRequestDto(
-    val title: String,
-    val senderUserId: Long,
-    val receiverUserId: Long,
-)
 
 data class UserCategoryCreateDto(
     val categoryIdList: List<Long>,
