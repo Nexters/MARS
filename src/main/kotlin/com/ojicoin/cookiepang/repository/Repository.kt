@@ -2,17 +2,25 @@ package com.ojicoin.cookiepang.repository
 
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
 
-interface CookieRepository : CrudRepository<Cookie, Long> {
+interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByTokenAddress(tokenAddress: String): Cookie?
 
-    fun findByCategoryId(categoryId: Long, pageable: Pageable): List<Cookie>
+    fun findByStatusIsNotAndCategoryId(
+        status: CookieStatus = CookieStatus.DELETED,
+        categoryId: Long,
+        pageable: Pageable,
+    ): List<Cookie>
+
+    fun findByStatusIsNot(status: CookieStatus = CookieStatus.DELETED, pageable: Pageable): List<Cookie>
 }
 
 interface InquiryRepository : CrudRepository<Inquiry, Long>

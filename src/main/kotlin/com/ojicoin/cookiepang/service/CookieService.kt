@@ -16,8 +16,14 @@ class CookieService(
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findById(cookieId).orElseThrow()
 
+    fun getCookies(page: Int, size: Int): List<Cookie> =
+        cookieRepository.findByStatusIsNot(pageable = PageRequest.of(page, size))
+
     fun getCookiesByCategoryId(categoryId: Long, page: Int, size: Int): List<Cookie> =
-        cookieRepository.findByCategoryId(categoryId, PageRequest.of(page, size))
+        cookieRepository.findByStatusIsNotAndCategoryId(
+            categoryId = categoryId,
+            pageable = PageRequest.of(page, size)
+        )
 
     fun create(dto: CreateCookie): Cookie {
         if (cookieRepository.findByTokenAddress(dto.tokenAddress) != null) {
