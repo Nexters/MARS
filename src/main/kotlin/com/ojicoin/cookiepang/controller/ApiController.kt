@@ -2,12 +2,15 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.ViewCategory
+import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
@@ -16,9 +19,11 @@ import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Controller
+import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
+import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
 
@@ -27,6 +32,7 @@ class ApiController(
     private val inquiryService: InquiryService,
     private val userCategoryService: UserCategoryService,
     private val cookieService: CookieService,
+    private val categoryService: CategoryService,
 ) {
     @Bean
     @RouterOperations(
@@ -94,6 +100,30 @@ class ApiController(
         val dto = it.body(CreateCookie::class.java)
         val cookie = cookieService.create(dto)
         created(URI.create("/users/${dto.ownedUserId}/cookies/${cookie.id}/detail")).body(cookie)
+    }
+
+    @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/categories",
+            operation = Operation(
+                operationId = "getAllCategories",
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [
+                            Content(
+                                mediaType = "application/json",
+                                array = ArraySchema(schema = Schema(implementation = ViewCategory::class))
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
+    )
+    fun view() = route(GET("/categories")) {
+        ok().body(categoryService.getAll())
     }
 }
 

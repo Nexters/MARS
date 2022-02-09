@@ -17,7 +17,7 @@ class RepositoryTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val cookieTagRepository: CookieTagRepository,
     @Autowired val inquiryRepository: InquiryRepository,
-    @Autowired val tagRepository: TagRepository,
+    @Autowired val categoryRepository: CategoryRepository,
     @Autowired val userRepository: UserRepository,
     @Autowired val viewCountRepository: ViewCountRepository,
 ) : SpringContextFixture() {
@@ -52,7 +52,7 @@ class RepositoryTest(
             cookieRepository.save(cookie)
             cookieTagRepository.save(cookieTag)
             inquiryRepository.save(inquiry)
-            tagRepository.save(tag)
+            categoryRepository.save(tag)
             userRepository.save(user)
             viewCountRepository.save(viewCount)
         }

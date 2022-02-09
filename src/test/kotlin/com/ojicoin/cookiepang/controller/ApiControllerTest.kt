@@ -22,4 +22,15 @@ class ApiControllerTest : SpringContextFixture() {
             statusCode(201)
         }
     }
+
+    @Test
+    fun viewCategories() {
+        Given {
+            header("content-type", "application/json")
+        } When {
+            get("/categories")
+        } Then {
+            statusCode(200)
+        }
+    }
 }

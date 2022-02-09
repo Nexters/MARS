@@ -15,7 +15,7 @@ interface CookieRepository : CrudRepository<Cookie, Long> {
 
 interface CookieTagRepository : CrudRepository<CookieCategory, Long>
 interface InquiryRepository : CrudRepository<Inquiry, Long>
-interface TagRepository : CrudRepository<Category, Long>
+interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {
     fun findAllByCookieId(cookieId: Long): List<ViewCount>

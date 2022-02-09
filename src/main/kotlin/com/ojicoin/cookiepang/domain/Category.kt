@@ -9,5 +9,7 @@ import javax.validation.constraints.Size
 class Category(
     @Id @Column("category_id") var id: Long?,
     @Column("name") @field:Size(max = 20) val name: String,
-    @Column("cookie_category_id") val cookieCategoryId: Long
+    @Column("color") val color: CategoryColor,
 )
+
+enum class CategoryColor { RED, }

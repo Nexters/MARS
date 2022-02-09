@@ -1,7 +1,5 @@
 package com.ojicoin.cookiepang.dto
 
-class DomainDto
-
 data class CreateCookie(
     val question: String,
     val answer: String,
@@ -10,4 +8,10 @@ data class CreateCookie(
     val ownedUserId: Long,
     val tokenAddress: String,
     val categoryId: Long,
+)
+
+data class ViewCategory(
+    val categoryId: Long,
+    val name: String,
+    val color: String,
 )
