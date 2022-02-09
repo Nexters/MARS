@@ -6,12 +6,13 @@ import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.domain.ViewCount
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository
 
 interface CookieRepository : CrudRepository<Cookie, Long> {
     fun findByTokenAddress(tokenAddress: String): Cookie?
 
-    fun findByCategoryId(categoryId: Long): List<Cookie>
+    fun findByCategoryId(categoryId: Long, pageable: Pageable): List<Cookie>
 }
 
 interface InquiryRepository : CrudRepository<Inquiry, Long>

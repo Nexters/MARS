@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -15,7 +16,8 @@ class CookieService(
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findById(cookieId).orElseThrow()
 
-    fun getCookiesByCategoryId(categoryId: Long): List<Cookie> = cookieRepository.findByCategoryId(categoryId)
+    fun getCookiesByCategoryId(categoryId: Long, page: Int, size: Int): List<Cookie> =
+        cookieRepository.findByCategoryId(categoryId, PageRequest.of(page, size))
 
     fun create(dto: CreateCookie): Cookie {
         if (cookieRepository.findByTokenAddress(dto.tokenAddress) != null) {
