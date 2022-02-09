@@ -6,6 +6,7 @@ import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
+import com.ojicoin.cookiepang.service.StorageService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
@@ -35,7 +37,32 @@ class ApiController(
     private val userCategoryService: UserCategoryService,
     private val cookieService: CookieService,
     private val categoryService: CategoryService,
+    private val storageService: StorageService,
 ) {
+
+    @Bean
+    @RouterOperations(
+        RouterOperation(
+            path = "/users/{userId}/pictures/{pictureName}",
+            operation = Operation(
+                operationId = "getUserProfilePicture",
+                parameters = [
+                    Parameter(name = "userId", `in` = ParameterIn.PATH),
+                    Parameter(name = "pictureName", `in` = ParameterIn.PATH),
+                ],
+                responses = [ApiResponse(responseCode = "200")]
+            )
+        )
+    )
+    fun get() = route(GET("/users/{userId}/pictures/{pictureName}")) {
+        val userId = it.pathVariable("userId").toLong()
+        val pictureName = it.pathVariable("pictureName")
+
+        val pictureAsByteArray = storageService.getProfilePicture(userId = userId, pictureName = pictureName)
+        ok().header("Accept", MediaType.APPLICATION_OCTET_STREAM_VALUE)
+            .body(pictureAsByteArray)
+    }
+
     @Bean
     @RouterOperations(
         RouterOperation(

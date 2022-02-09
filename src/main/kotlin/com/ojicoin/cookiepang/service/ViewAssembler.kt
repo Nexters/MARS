@@ -1,10 +1,10 @@
 package com.ojicoin.cookiepang.service
 
+import com.ojicoin.cookiepang.config.ContractProperties
 import com.ojicoin.cookiepang.controller.Action
 import com.ojicoin.cookiepang.controller.CookieHistory
 import com.ojicoin.cookiepang.controller.CookieView
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Instant
 
@@ -13,7 +13,7 @@ class ViewAssembler(
     @Autowired val cookieService: CookieService,
     @Autowired val userService: UserService,
     @Autowired val viewCountService: ViewCountService,
-    @Value("\${contract.address}") val contractAddress: String,
+    @Autowired val contractProperties: ContractProperties,
 ) {
 
     fun cookieView(viewUserId: Long, cookieId: Long): CookieView {
@@ -33,7 +33,7 @@ class ViewAssembler(
             answer = answer,
             collectorName = owner.nickname,
             creatorName = creator.nickname,
-            contractAddress = contractAddress,
+            contractAddress = contractProperties.address,
             tokenAddress = cookie.tokenAddress,
             viewCount = viewCount,
             price = cookie.price,
