@@ -49,7 +49,7 @@ class CookieServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun deleteNotExistsThrows() {
-        val toDeleteCookieId = 1L
+        val toDeleteCookieId = -1L
 
         // when
         thenThrownBy { sut.delete(cookieId = toDeleteCookieId) }
