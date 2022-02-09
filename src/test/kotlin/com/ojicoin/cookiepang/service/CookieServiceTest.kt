@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.dto.CreateCookie
@@ -55,22 +56,34 @@ class CookieServiceTest(
             .sample()
         val saved = cookieRepository.save(cookie)
         val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
-            .set("price", Arbitraries.longs().filter { it != cookie.price })
+            .set("price", Arbitraries.longs().filter { it != cookie.price }.injectNull(0.1))
+            .set(
+                "status",
+                Arbitraries.of(CookieStatus::class.java)
+                    .filter { it != CookieStatus.DELETED }.injectNull(0.1)
+            )
             .sample()
 
         val updated = sut.modify(cookieId = saved.id!!, dto = updateCookie)
 
-        then(updated.id).isEqualTo(saved.id)
-        then(updated.title).isEqualTo(saved.title)
-        then(updated.price).isEqualTo(updateCookie.price)
-        then(updated.content).isEqualTo(saved.content)
-        then(updated.imageUrl).isEqualTo(saved.imageUrl)
-        then(updated.authorUserId).isEqualTo(saved.authorUserId)
-        then(updated.ownedUserId).isEqualTo(saved.ownedUserId)
-        then(updated.createdAt).isEqualTo(saved.createdAt)
-        then(updated.status).isEqualTo(saved.status)
-        then(updated.tokenAddress).isEqualTo(saved.tokenAddress)
-        then(updated.cookieCategoryId).isEqualTo(saved.cookieCategoryId)
+        updateCookie.price?.also { then(updated.price).isEqualTo(it) }
+        updateCookie.status?.also { then(updated.status).isEqualTo(it) }
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun updateDeletedThrows() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .sample()
+        val saved = cookieRepository.save(cookie)
+        val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
+            .set("status", CookieStatus.DELETED)
+            .sample()
+
+        // when, then
+        thenThrownBy { sut.modify(cookieId = saved.id!!, dto = updateCookie) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("cannot update cookie status to DELETED, use delete instead")
     }
 
     @RepeatedTest(REPEAT_COUNT)

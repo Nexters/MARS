@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.dto
 
+import com.ojicoin.cookiepang.domain.CookieStatus
+
 data class CreateCookie(
     val question: String,
     val answer: String,
@@ -17,5 +19,6 @@ data class ViewCategory(
 )
 
 data class UpdateCookie(
-    val price: Long,
+    val price: Long?,
+    val status: CookieStatus?,
 )
