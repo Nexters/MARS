@@ -24,11 +24,8 @@ import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.created
-import org.springframework.web.servlet.function.ServerResponse.ok
-import org.springframework.web.servlet.function.body
-import java.net.URI
-import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.ServerResponse.noContent
+import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
 
