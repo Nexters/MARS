@@ -15,7 +15,7 @@ import java.time.Instant
 class CookieService(
     private val cookieRepository: CookieRepository,
 ) {
-    fun get(cookieId: Long): Cookie = cookieRepository.findById(cookieId).orElseThrow()
+    fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
 
     fun getCookies(page: Int, size: Int): List<Cookie> =
         cookieRepository.findByStatusIsNot(pageable = PageRequest.of(page, size))

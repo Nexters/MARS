@@ -14,7 +14,7 @@ class ViewController(private val viewAssembler: ViewAssembler) {
     fun cookieDetailView() = route(GET("/users/{userId}/cookies/{cookieId}/detail")) {
         val userId = it.pathVariable("userId").toLong()
         val cookieId = it.pathVariable("cookieId").toLong()
-        ok().body(viewAssembler.cookieView(viewUserId = userId, cookieId = cookieId))
+        ok().body(viewAssembler.cookieView(viewerId = userId, cookieId = cookieId))
     }
 }
 

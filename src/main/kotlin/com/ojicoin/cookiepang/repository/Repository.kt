@@ -8,6 +8,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 
@@ -21,6 +22,9 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     ): List<Cookie>
 
     fun findByStatusIsNot(status: CookieStatus = CookieStatus.DELETED, pageable: Pageable): List<Cookie>
+
+    @Query("""SELECT * FROM "cookies" c WHERE c."status" != 'DELETED' AND c."cookie_id" = :cookieId""")
+    fun findActiveCookieById(cookieId: Long): Cookie?
 }
 
 interface InquiryRepository : CrudRepository<Inquiry, Long>
