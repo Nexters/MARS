@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.InquiryService
@@ -53,6 +54,23 @@ class ApiController(
                 ),
                 responses = [ApiResponse(responseCode = "200")]
             ),
+        ),
+        RouterOperation(
+            path = "/cookies",
+            consumes = ["application/json"],
+            operation = Operation(
+                operationId = "createCookies",
+                requestBody = RequestBody(
+                    required = true,
+                    content = [Content(schema = Schema(implementation = CreateCookie::class))]
+                ),
+                responses = [
+                    ApiResponse(
+                        responseCode = "201",
+                        content = [Content(schema = Schema(implementation = Cookie::class))]
+                    )
+                ]
+            ),
         )
     )
     fun create() = route(POST("/inquiries")) {
@@ -75,7 +93,7 @@ class ApiController(
     }.andRoute(POST("/cookies")) {
         val dto = it.body(CreateCookie::class.java)
         val cookie = cookieService.create(dto)
-        created(URI.create("/users/${dto.ownedUserId}/cookies/${cookie.id}/detail")).build()
+        created(URI.create("/users/${dto.ownedUserId}/cookies/${cookie.id}/detail")).body(cookie)
     }
 }
 
