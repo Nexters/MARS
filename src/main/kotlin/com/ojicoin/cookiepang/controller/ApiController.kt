@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import java.net.URI
 import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
@@ -31,6 +30,7 @@ import java.net.URI
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.ServerResponse.noContent
 import org.springframework.web.servlet.function.body
+import java.net.URI
 
 @Controller
 class ApiController(
