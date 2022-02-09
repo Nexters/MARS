@@ -63,7 +63,7 @@ class CookieServiceTest(
             )
             .sample()
 
-        val updated = sut.modify(cookieId = saved.id!!, dto = updateCookie)
+        val updated = sut.modify(cookieId = saved.id!!, updateCookie = updateCookie)
 
         updateCookie.price?.also { then(updated.price).isEqualTo(it) }
         updateCookie.status?.also { then(updated.status).isEqualTo(it) }
@@ -81,7 +81,7 @@ class CookieServiceTest(
             .sample()
 
         // when, then
-        thenThrownBy { sut.modify(cookieId = saved.id!!, dto = updateCookie) }
+        thenThrownBy { sut.modify(cookieId = saved.id!!, updateCookie = updateCookie) }
             .isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("cannot update cookie status to DELETED, use delete instead")
     }

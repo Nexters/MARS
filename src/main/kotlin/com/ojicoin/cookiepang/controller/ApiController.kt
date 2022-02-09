@@ -171,7 +171,7 @@ class ApiController(
     fun modify() = route(PUT("/cookies/{cookieId}")) {
         val cookieId = it.pathVariable("cookieId").toLong()
         val dto = it.body(UpdateCookie::class.java)
-        val updated = cookieService.modify(cookieId = cookieId, dto = dto)
+        val updated = cookieService.modify(cookieId = cookieId, updateCookie = dto)
         ok().body(updated)
     }
 }

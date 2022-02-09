@@ -38,24 +38,13 @@ class CookieService(
     }
 
     @Transactional
-    fun modify(cookieId: Long, dto: UpdateCookie): Cookie {
+    fun modify(cookieId: Long, updateCookie: UpdateCookie): Cookie {
         val cookie = cookieRepository.findById(cookieId).orElseThrow()
-        if (dto.status == DELETED) {
+        if (updateCookie.status == DELETED) {
             throw IllegalArgumentException("cannot update cookie status to DELETED, use delete instead")
         }
 
-        if (dto.price != null) {
-            cookie.price = dto.price
-        }
-
-        if (dto.status != null) {
-            cookie.status = dto.status
-        }
-
-        if (dto.purchaserUserId != null) {
-            cookie.ownedUserId = dto.purchaserUserId
-        }
-
+        cookie.apply(updateCookie)
         return cookieRepository.save(cookie)
     }
 

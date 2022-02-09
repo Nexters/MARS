@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.domain
 
+import com.ojicoin.cookiepang.dto.UpdateCookie
 import org.springframework.context.ApplicationEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.AbstractAggregateRoot
@@ -24,6 +25,12 @@ data class Cookie(
 ) : AbstractAggregateRoot<Cookie>() {
     fun addEvent(event: ApplicationEvent) {
         registerEvent(event)
+    }
+
+    fun apply(updateCookie: UpdateCookie) {
+        updateCookie.price?.also { price = it }
+        updateCookie.status?.also { status = it }
+        updateCookie.purchaserUserId?.also { ownedUserId = it }
     }
 }
 
