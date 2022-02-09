@@ -15,6 +15,8 @@ class CookieService(
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findById(cookieId).orElseThrow()
 
+    fun getCookiesByCategoryId(categoryId: Long): List<Cookie> = cookieRepository.findByCategoryId(categoryId)
+
     fun create(dto: CreateCookie): Cookie {
         if (cookieRepository.findByTokenAddress(dto.tokenAddress) != null) {
             throw IllegalArgumentException("Attempting duplicate token creation.")
@@ -28,7 +30,7 @@ class CookieService(
                 authorUserId = dto.authorUserId,
                 ownedUserId = dto.ownedUserId,
                 tokenAddress = dto.tokenAddress,
-                cookieCategoryId = dto.categoryId,
+                categoryId = dto.categoryId,
                 imageUrl = null,
                 status = ACTIVE,
                 createdAt = Instant.now(),

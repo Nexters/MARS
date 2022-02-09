@@ -2,7 +2,6 @@ package com.ojicoin.cookiepang.repository
 
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
-import com.ojicoin.cookiepang.domain.CookieCategory
 import com.ojicoin.cookiepang.domain.Inquiry
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserCategory
@@ -11,9 +10,10 @@ import org.springframework.data.repository.CrudRepository
 
 interface CookieRepository : CrudRepository<Cookie, Long> {
     fun findByTokenAddress(tokenAddress: String): Cookie?
+
+    fun findByCategoryId(categoryId: Long): List<Cookie>
 }
 
-interface CookieTagRepository : CrudRepository<CookieCategory, Long>
 interface InquiryRepository : CrudRepository<Inquiry, Long>
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long>

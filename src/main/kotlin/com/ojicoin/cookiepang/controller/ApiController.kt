@@ -122,10 +122,31 @@ class ApiController(
                     )
                 ]
             )
-        )
+        ),
+        RouterOperation(
+            path = "/categories/{categoryId}/cookies",
+            operation = Operation(
+                operationId = "getCookiesByCategory",
+                parameters = [Parameter(name = "categoryId", `in` = ParameterIn.PATH)],
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [
+                            Content(
+                                mediaType = "application/json",
+                                array = ArraySchema(schema = Schema(implementation = Cookie::class))
+                            )
+                        ]
+                    )
+                ]
+            )
+        ),
     )
     fun view() = route(GET("/categories")) {
         ok().body(categoryService.getAll())
+    }.andRoute(GET("/categories/{categoryId}/cookies")) {
+        val categoryId = it.pathVariable("categoryId").toLong()
+        ok().body(cookieService.getCookiesByCategoryId(categoryId = categoryId))
     }
 
     @Bean
