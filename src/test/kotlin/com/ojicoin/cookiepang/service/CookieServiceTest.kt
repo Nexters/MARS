@@ -78,7 +78,6 @@ class CookieServiceTest(
         val savedCookieId = cookieRepository.save(cookie).id!!
         sut.delete(cookieId = savedCookieId)
 
-
         thenThrownBy { sut.delete(cookieId = savedCookieId) }
             .isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("already deleted.")
