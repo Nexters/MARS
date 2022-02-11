@@ -23,7 +23,7 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByStatusIsNot(status: CookieStatus = CookieStatus.DELETED, pageable: Pageable): List<Cookie>
 }
 
-interface AskRepository : CrudRepository<Asks, Long>
+interface AskRepository : CrudRepository<Ask, Long>
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {
