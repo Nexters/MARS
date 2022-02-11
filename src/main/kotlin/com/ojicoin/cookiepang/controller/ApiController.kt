@@ -5,9 +5,10 @@ import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.User
-import com.ojicoin.cookiepang.dto.AskRequestDto
+import com.ojicoin.cookiepang.dto.CreateAsk
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateUser
+import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.dto.ViewCategory
@@ -85,7 +86,7 @@ class ApiController(
                 operationId = "createAsks",
                 requestBody = RequestBody(
                     required = true,
-                    content = [Content(schema = Schema(implementation = AskRequestDto::class))],
+                    content = [Content(schema = Schema(implementation = CreateAsk::class))],
                 ),
                 responses = [
                     ApiResponse(
@@ -145,9 +146,9 @@ class ApiController(
         )
     )
     fun create() = route(POST("/asks")) {
-        val askRequestDto = it.body<AskRequestDto>()
+        val createAskDto = it.body<CreateAsk>()
 
-        val savedAsk = askService.create(askRequestDto.title, askRequestDto.senderUserId, askRequestDto.receiverUserId)
+        val savedAsk = askService.create(createAskDto.title, createAskDto.senderUserId, createAskDto.receiverUserId)
 
         created(URI.create("")).body(savedAsk)
     }.andRoute(POST("/users/{userId}/categories")) {
@@ -387,6 +388,13 @@ class ApiController(
         )
 
         ok().body(updatedUser)
+    }.andRoute(PUT("/asks/{askId}")) {
+        val askId = it.pathVariable("askId").toLong()
+        val dto = it.body(UpdateAsk::class.java)
+
+        val modifiedAsk = askService.modify(id = askId, dto = dto)
+
+        ok().body(modifiedAsk)
     }
 
     fun uploadPictureAndGetPictureUrlIfExistPicture(
