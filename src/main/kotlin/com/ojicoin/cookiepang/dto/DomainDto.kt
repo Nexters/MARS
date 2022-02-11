@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.dto
 
+import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.CookieStatus
 
 data class CreateCookie(
@@ -24,8 +25,13 @@ data class UpdateCookie(
     val purchaserUserId: Long?,
 )
 
-data class AskRequestDto(
+data class CreateAsk(
     val title: String,
     val senderUserId: Long,
     val receiverUserId: Long,
+)
+
+data class UpdateAsk(
+    val title: String?,
+    val status: AskStatus?,
 )

@@ -1,8 +1,9 @@
 package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.domain.Cookie
-import com.ojicoin.cookiepang.dto.AskRequestDto
+import com.ojicoin.cookiepang.dto.CreateAsk
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.AskService
@@ -75,12 +76,12 @@ class ApiController(
                 operationId = "createAsks",
                 requestBody = RequestBody(
                     required = true,
-                    content = [Content(schema = Schema(implementation = AskRequestDto::class))],
+                    content = [Content(schema = Schema(implementation = CreateAsk::class))],
                 ),
                 responses = [
                     ApiResponse(
                         responseCode = "201",
-                        content = [Content(schema = Schema(implementation = AskRequestDto::class))],
+                        content = [Content(schema = Schema(implementation = CreateAsk::class))],
                     )
                 ]
             ),
@@ -118,9 +119,9 @@ class ApiController(
         )
     )
     fun create() = route(POST("/asks")) {
-        val askRequestDto = it.body<AskRequestDto>()
+        val createAskDto = it.body<CreateAsk>()
 
-        val savedAsk = askService.create(askRequestDto.title, askRequestDto.senderUserId, askRequestDto.receiverUserId)
+        val savedAsk = askService.create(createAskDto.title, createAskDto.senderUserId, createAskDto.receiverUserId)
 
         created(URI.create("")).body(savedAsk)
     }.andRoute(POST("/users/{userId}/categories")) {
@@ -205,6 +206,13 @@ class ApiController(
         val dto = it.body(UpdateCookie::class.java)
         val updated = cookieService.modify(cookieId = cookieId, updateCookie = dto)
         ok().body(updated)
+    }.andRoute(PUT("/asks/{askId}")) {
+        val askId = it.pathVariable("askId").toLong()
+        val dto = it.body(UpdateAsk::class.java)
+
+        val modifiedAsk = askService.modify(id = askId, dto = dto)
+
+        ok().body(modifiedAsk)
     }
 }
 
