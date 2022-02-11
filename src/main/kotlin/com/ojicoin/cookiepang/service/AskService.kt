@@ -1,7 +1,7 @@
 package com.ojicoin.cookiepang.service
 
-import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.domain.Ask
+import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.repository.AskRepository
 import org.springframework.stereotype.Service
 
@@ -11,8 +11,19 @@ class AskService(
 ) {
 
     fun create(title: String, senderUserId: Long, receiverUserId: Long): Ask {
+        if (senderUserId == receiverUserId) {
+            throw IllegalArgumentException("senderUserId is same receiverUserId. senderUserId=$senderUserId, receiverUserId=$receiverUserId")
+        }
+
         val savedAsk =
-            askRepository.save(Ask(title = title, status = PENDING, senderUserId = senderUserId, receiverUserId = receiverUserId))
+            askRepository.save(
+                Ask(
+                    title = title,
+                    status = PENDING,
+                    senderUserId = senderUserId,
+                    receiverUserId = receiverUserId
+                )
+            )
 
         // TODO make notification
         return savedAsk
