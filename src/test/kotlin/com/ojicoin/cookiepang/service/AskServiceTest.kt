@@ -2,8 +2,8 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
-import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.domain.Ask
+import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.RepeatedTest
