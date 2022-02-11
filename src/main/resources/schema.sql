@@ -1,26 +1,17 @@
 CREATE TABLE IF NOT EXISTS "cookies"
 (
-    "cookie_id"          bigserial,
-    "title"              varchar(255),
-    "price"              bigint,
-    "content"            text,
-    "image_url"          varchar(255),
-    "owned_user_id"      bigint,
-    "author_user_id"     bigint,
-    "created_at"         timestamp,
-    "cookie_category_id" bigint,
-    "contractAddress"    varchar(255),
-    "tokenAddress"       varchar(255) unique,
-    "status"             varchar(10),
+    "cookie_id"      bigserial,
+    "title"          varchar(255),
+    "price"          bigint,
+    "content"        text,
+    "image_url"      varchar(255),
+    "owned_user_id"  bigint,
+    "author_user_id" bigint,
+    "created_at"     timestamp,
+    "status"         varchar(10),
+    "tokenAddress"   varchar(255) unique,
+    "categoryId"     bigint,
     PRIMARY KEY ("cookie_id")
-);
-
-CREATE TABLE IF NOT EXISTS "cookie_categories"
-(
-    "cookie_category_id" bigserial,
-    "cookie_id"          bigint,
-    "category_id"        bigint,
-    PRIMARY KEY ("cookie_category_id")
 );
 
 CREATE TABLE IF NOT EXISTS "categories"
