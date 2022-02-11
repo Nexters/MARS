@@ -1,6 +1,6 @@
 package com.ojicoin.cookiepang.repository
 
-import com.ojicoin.cookiepang.domain.Asks
+import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
