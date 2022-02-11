@@ -1,6 +1,6 @@
 package com.ojicoin.cookiepang.repository
 
-import com.ojicoin.cookiepang.domain.Asks
+import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieCategory
@@ -14,7 +14,7 @@ interface CookieRepository : CrudRepository<Cookie, Long> {
 }
 
 interface CookieTagRepository : CrudRepository<CookieCategory, Long>
-interface AskRepository : CrudRepository<Asks, Long>
+interface AskRepository : CrudRepository<Ask, Long>
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {

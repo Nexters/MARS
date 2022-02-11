@@ -3,7 +3,7 @@ package com.ojicoin.cookiepang.repository
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
-import com.ojicoin.cookiepang.domain.Asks
+import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieCategory
@@ -32,7 +32,7 @@ class RepositoryTest(
             .setNull("id")
             .sample()
 
-        val asks = fixture.giveMeBuilder<Asks>()
+        val ask = fixture.giveMeBuilder<Ask>()
             .setNull("id")
             .sample()
 
@@ -51,7 +51,7 @@ class RepositoryTest(
         thenNoException().isThrownBy {
             cookieRepository.save(cookie)
             cookieTagRepository.save(cookieTag)
-            askRepository.save(asks)
+            askRepository.save(ask)
             categoryRepository.save(tag)
             userRepository.save(user)
             viewCountRepository.save(viewCount)

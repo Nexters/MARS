@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table
 import javax.validation.constraints.Size
 
 @Table("asks")
-class Asks(
+class Ask(
     @Id @Column("ask_id") var id: Long? = null,
     @Column("title") @field:Size(max = 255) val title: String,
     @Column("status") var status: AskStatus,
