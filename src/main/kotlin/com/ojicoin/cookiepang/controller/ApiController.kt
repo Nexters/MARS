@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.AskRequestDto
 import com.ojicoin.cookiepang.dto.CreateCookie
@@ -80,7 +81,7 @@ class ApiController(
                 responses = [
                     ApiResponse(
                         responseCode = "201",
-                        content = [Content(schema = Schema(implementation = AskRequestDto::class))],
+                        content = [Content(schema = Schema(implementation = Ask::class))],
                     )
                 ]
             ),

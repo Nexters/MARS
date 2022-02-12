@@ -12,7 +12,7 @@ class AskService(
 
     fun create(title: String, senderUserId: Long, receiverUserId: Long): Ask {
         if (senderUserId == receiverUserId) {
-            throw IllegalArgumentException("senderUserId is same receiverUserId. senderUserId=$senderUserId, receiverUserId=$receiverUserId")
+            throw IllegalArgumentException("senderUserId is same as receiverUserId. senderUserId=$senderUserId, receiverUserId=$receiverUserId")
         }
 
         val savedAsk =
