@@ -229,6 +229,20 @@ class ApiController(
         val page = it.param("page").map { page -> page.toInt() }.orElse(0)
         val size = it.param("size").map { size -> size.toInt() }.orElse(3)
         ok().body(cookieService.getCookiesByCategoryId(categoryId = categoryId, page = page, size = size))
+    }.andRoute(GET("/asks/users/{userId}")) {
+        val userId = it.pathVariable("userId").toLong()
+        // target: sender, receiver
+        val target = it.param("target").orElseThrow()
+
+        val asks = when (target) {
+            "sender" -> askService.viewAboutSender(userId = userId)
+
+            "receiver" -> askService.viewAboutReceiver(userId = userId)
+
+            else -> throw IllegalArgumentException("target value must be 'sender', 'receiver'. target=$target")
+        }
+
+        ok().body(asks)
     }
 
     @Bean

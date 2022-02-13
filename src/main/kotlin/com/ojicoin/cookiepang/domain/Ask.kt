@@ -18,4 +18,5 @@ enum class AskStatus {
     PENDING,
     IGNORED,
     ACCEPTED,
+    DELETED,
 }

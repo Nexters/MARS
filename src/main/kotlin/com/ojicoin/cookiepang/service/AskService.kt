@@ -10,6 +10,14 @@ class AskService(
     private val askRepository: AskRepository
 ) {
 
+    fun viewAboutSender(userId: Long): List<Ask> {
+        return askRepository.findBySenderUserId(senderUserId = userId)
+    }
+
+    fun viewAboutReceiver(userId: Long): List<Ask> {
+        return askRepository.findByReceiverUserIdAndStatus(receiverUserId = userId, status = PENDING)
+    }
+
     fun create(title: String, senderUserId: Long, receiverUserId: Long): Ask {
         if (senderUserId == receiverUserId) {
             throw IllegalArgumentException("senderUserId is same as receiverUserId. senderUserId=$senderUserId, receiverUserId=$receiverUserId")
