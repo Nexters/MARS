@@ -61,3 +61,14 @@ CREATE TABLE IF NOT EXISTS "user_categories"
     "category_id"      bigint,
     PRIMARY KEY ("user_category_id")
 );
+
+CREATE TABLE IF NOT EXISTS "notifications"
+(
+    "notification_id"   bigserial,
+    "type"              varchar(20),
+    "content"           varchar(255),
+    "receiver_user_id"  bigint,
+    "sender_user_id"    bigint,
+    "created_at"        timestamp,
+    PRIMARY KEY ("notification_id")
+);
