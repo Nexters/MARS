@@ -20,7 +20,10 @@ class User(
         if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {
             throw IllegalArgumentException("cookie $cookie.id is hidden, only owner could view")
         }
-        cookie.addEvent(ViewCookieEvent(this, this.id!!, cookie.id!!))
+
+        if (cookie.ownedUserId != this.id) {
+            cookie.addEvent(ViewCookieEvent(this, this.id!!, cookie.id!!))
+        }
     }
 }
 
