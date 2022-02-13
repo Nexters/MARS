@@ -1,0 +1,12 @@
+storage:
+  domain: "127.0.0.1:${server.port}"
+
+contract:
+  address: 123456
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://cooiepang-db.ctsd0extrjqk.ap-northeast-2.rds.amazonaws.com:5432/cookiepang
+    username: cookiepang
+    password: cookiepang123

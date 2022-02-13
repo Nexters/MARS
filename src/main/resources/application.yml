@@ -1,12 +1,10 @@
+spring:
+  profiles:
+    active: local
+
 server:
   port: 8080
-
-storage:
-  domain: "127.0.0.1:${server.port}"
 
 springdoc:
   packages-to-scan: com.ojicoin.cookiepang.controller
   paths-to-match: /**
-
-contract:
-  address: 123456
