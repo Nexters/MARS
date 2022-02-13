@@ -16,16 +16,19 @@ class ViewAssembler(
     @Autowired val contractProperties: ContractProperties,
 ) {
 
-    fun cookieView(viewUserId: Long, cookieId: Long): CookieView {
+    fun cookieView(viewerId: Long, cookieId: Long): CookieView {
         val cookie = cookieService.get(cookieId)
         val creator = userService.getById(cookie.authorUserId)
         val owner = userService.getById(cookie.ownedUserId)
+        val viewer = userService.getById(viewerId)
         val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
-        val answer: String? = if (viewUserId != owner.id) {
+        val answer: String? = if (viewerId != owner.id) {
             null
         } else {
             cookie.content
         }
+
+        viewer.view(cookie)
 
         // TODO: 블록체인 네트워크에서 히스토리 조회후 변환 로직 추가
         return CookieView(

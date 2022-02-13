@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.domain
 
+import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
+import com.ojicoin.cookiepang.event.ViewCookieEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -13,6 +15,16 @@ class User(
     @Column("profile_url") @field:Size(max = 255) var profileUrl: String,
     @Column("wallet_address") @field:Size(max = 255) val walletAddress: String,
     @Column("status") var status: UserStatus,
-)
+) {
+    fun view(cookie: Cookie) {
+        if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {
+            throw IllegalArgumentException("cookie $cookie.id is hidden, only owner could view")
+        }
+
+        if (cookie.ownedUserId != this.id) {
+            cookie.addEvent(ViewCookieEvent(this, this.id!!, cookie.id!!))
+        }
+    }
+}
 
 enum class UserStatus { ACTIVE }
