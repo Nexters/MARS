@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.dto
 
 import com.ojicoin.cookiepang.domain.CookieStatus
+import javax.validation.constraints.Size
 
 data class CreateCookie(
     val question: String,
@@ -28,4 +29,14 @@ data class AskRequestDto(
     val title: String,
     val senderUserId: Long,
     val receiverUserId: Long,
+)
+
+data class CreateUser(
+    val walletAddress: String,
+
+    @field:Size(max = 100)
+    val nickname: String,
+    val introduction: String?,
+    val profileUrl: String?,
+    val backgroundUrl: String?,
 )

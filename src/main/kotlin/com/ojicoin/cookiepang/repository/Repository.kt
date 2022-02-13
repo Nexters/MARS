@@ -10,6 +10,7 @@ import com.ojicoin.cookiepang.domain.ViewCount
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
+import java.util.Optional
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByTokenAddress(tokenAddress: String): Cookie?
@@ -25,7 +26,10 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
 
 interface AskRepository : CrudRepository<Ask, Long>
 interface CategoryRepository : CrudRepository<Category, Long>
-interface UserRepository : CrudRepository<User, Long>
+interface UserRepository : CrudRepository<User, Long> {
+    fun findByNickname(nickname: String): Optional<User>
+}
+
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {
     fun findAllByCookieId(cookieId: Long): List<ViewCount>
 }
