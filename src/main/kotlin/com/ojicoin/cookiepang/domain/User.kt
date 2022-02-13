@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.domain
 
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
+import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.event.ViewCookieEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -25,6 +26,12 @@ class User(
         if (cookie.ownedUserId != this.id) {
             cookie.addEvent(ViewCookieEvent(this, this.id!!, cookie.id!!))
         }
+    }
+
+    fun apply(profileUrl: String?, backgroundUrl: String?, dto: UpdateUser) {
+        profileUrl?.also { this.profileUrl = it }
+        backgroundUrl?.also { this.backgroundUrl = it }
+        dto.introduction?.also { this.introduction = it }
     }
 }
 

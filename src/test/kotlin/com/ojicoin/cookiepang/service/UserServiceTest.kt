@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
+import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -46,8 +47,39 @@ class UserServiceTest(
                 status = UserStatus.ACTIVE
             )
         )
+
         thenThrownBy { sut.create(createUserDto) }.isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("There is same nickname user.")
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun modify() {
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+
+        val savedUser = userRepository.save(user)
+
+        val profilePictureUrl = fixture.giveMeOne(String::class.java)
+        val profileBackgroundUrl = fixture.giveMeOne(String::class.java)
+        val updateUserDto = fixture.giveMeOne(UpdateUser::class.java)
+
+        val updatedUser = sut.modify(savedUser.id!!, profilePictureUrl, profileBackgroundUrl, updateUserDto)
+
+        profilePictureUrl?.also { then(updatedUser.profileUrl).isEqualTo(it) }
+        if (profilePictureUrl == null) then(updatedUser.profileUrl).isEqualTo(savedUser.profileUrl)
+        profileBackgroundUrl?.also { then(updatedUser.backgroundUrl).isEqualTo(it) }
+        if (profileBackgroundUrl == null) then(updatedUser.backgroundUrl).isEqualTo(savedUser.backgroundUrl)
+        updateUserDto.introduction?.also { then(updatedUser.introduction).isEqualTo(it) }
+        if (updateUserDto.introduction == null) then(updatedUser.introduction).isEqualTo(savedUser.introduction)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun modifyThrowNotExistUser() {
+        val userId = fixture.giveMeOne(Long::class.java)
+
+        thenThrownBy { sut.modify(userId, null, null, UpdateUser(null)) }
+            .isExactlyInstanceOf(NoSuchElementException::class.java)
     }
 
     @AfterEach
