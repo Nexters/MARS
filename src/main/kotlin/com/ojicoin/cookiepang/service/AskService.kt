@@ -3,12 +3,15 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.dto.UpdateAsk
+import com.ojicoin.cookiepang.event.AskNotificationEvent
 import com.ojicoin.cookiepang.repository.AskRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
 class AskService(
-    private val askRepository: AskRepository
+    private val askRepository: AskRepository,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
 
     fun viewAboutSender(userId: Long): List<Ask> {
@@ -34,7 +37,15 @@ class AskService(
                 )
             )
 
-        // TODO make notification about PENDING to receiverUserId
+        eventPublisher.publishEvent(
+            AskNotificationEvent(
+                senderUserId = senderUserId,
+                receiverUserId = receiverUserId,
+                cookieTitle = savedAsk.title,
+                askId = savedAsk.id!!,
+            )
+        )
+
         return savedAsk
     }
 

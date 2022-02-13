@@ -9,6 +9,7 @@ import com.ojicoin.cookiepang.domain.AskStatus.IGNORED
 import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.repository.AskRepository
+import com.ojicoin.cookiepang.repository.NotificationRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
 internal class AskServiceTest(
     @Autowired val sut: AskService,
     @Autowired val askRepository: AskRepository,
+    @Autowired val notificationRepository: NotificationRepository,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -87,6 +89,9 @@ internal class AskServiceTest(
         then(ask.status).isEqualTo(create.status)
         then(ask.senderUserId).isEqualTo(create.senderUserId)
         then(ask.receiverUserId).isEqualTo(create.receiverUserId)
+
+        // test about notification
+        then(notificationRepository.findAll()).hasSize(1)
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -145,6 +150,7 @@ internal class AskServiceTest(
 
     @AfterEach
     fun tearDown() {
+        notificationRepository.deleteAll()
         askRepository.deleteAll()
     }
 }
