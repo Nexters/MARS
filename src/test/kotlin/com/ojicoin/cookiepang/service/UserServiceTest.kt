@@ -29,8 +29,6 @@ class UserServiceTest(
         createUserDto.introduction?.also { then(it).isEqualTo(actual.introduction) }
 
         // TODO test about default url
-        then(actual.profileUrl).isEqualTo("")
-        then(actual.backgroundUrl).isEqualTo("")
     }
 
     @RepeatedTest(REPEAT_COUNT)
