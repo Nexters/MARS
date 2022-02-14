@@ -19,9 +19,9 @@ class UserService(val userRepository: UserRepository) {
         val user = User(
             walletAddress = dto.walletAddress,
             nickname = dto.nickname,
-            introduction = dto.introduction ?: "",
-            profileUrl = dto.profileUrl ?: "",
-            backgroundUrl = dto.backgroundUrl ?: "",
+            introduction = dto.introduction,
+            profileUrl = dto.profileUrl,
+            backgroundUrl = dto.backgroundUrl,
             status = ACTIVE
         )
 
