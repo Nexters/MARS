@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.TransferInfo
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
@@ -77,5 +78,45 @@ class CookieService(
         toDeleteCookie.status = DELETED
         cookieRepository.save(toDeleteCookie)
         return toDeleteCookie
+    }
+
+    fun getOwnedCookies(userId: Long, viewUserId: Long, page: Int, size: Int): GetCookiesResponse {
+        val cookies = if (userId == viewUserId) {
+            // find all user owned cookies not delete status
+            cookieRepository.findByStatusIsNotAndOwnedUserId(
+                ownedUserId = userId,
+                pageable = PageRequest.of(page, size)
+            )
+        } else {
+            // find all user owned cookies only active status
+            cookieRepository.findByStatusAndOwnedUserId(ownedUserId = userId, pageable = PageRequest.of(page, size))
+        }
+
+        return GetCookiesResponse(
+            totalCount = cookies.size,
+            page = page,
+            size = size,
+            cookies = cookies
+        )
+    }
+
+    fun getAuthorCookies(userId: Long, viewUserId: Long, page: Int, size: Int): GetCookiesResponse {
+        val cookies = if (userId == viewUserId) {
+            // find all user author cookies without delete status
+            cookieRepository.findByStatusIsNotAndAuthorUserId(
+                authorUserId = userId,
+                pageable = PageRequest.of(page, size)
+            )
+        } else {
+            // find all user author cookies only active status
+            cookieRepository.findByStatusAndAuthorUserId(authorUserId = userId, pageable = PageRequest.of(page, size))
+        }
+
+        return GetCookiesResponse(
+            totalCount = cookies.size,
+            page = page,
+            size = size,
+            cookies = cookies
+        )
     }
 }
