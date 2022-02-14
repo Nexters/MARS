@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
+import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.AskRequestDto
@@ -234,12 +236,10 @@ class ApiController(
         // target: sender, receiver
         val target = it.param("target").orElseThrow()
 
-        val asks = when (target) {
-            "sender" -> askService.viewAboutSender(userId = userId)
+        val asks = when (GetAskTarget.valueOf(target.uppercase())) {
+            SENDER -> askService.viewAboutSender(userId = userId)
 
-            "receiver" -> askService.viewAboutReceiver(userId = userId)
-
-            else -> throw IllegalArgumentException("target value must be 'sender', 'receiver'. target=$target")
+            RECEIVER -> askService.viewAboutReceiver(userId = userId)
         }
 
         ok().body(asks)
@@ -290,6 +290,8 @@ class ApiController(
         ok().body(updated)
     }
 }
+
+enum class GetAskTarget { SENDER, RECEIVER }
 
 data class UserCategoryCreateDto(
     val categoryIdList: List<Long>,

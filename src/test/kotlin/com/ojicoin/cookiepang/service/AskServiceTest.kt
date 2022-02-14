@@ -30,8 +30,6 @@ internal class AskServiceTest(
 
         val asksFromSender = sut.viewAboutSender(ask.senderUserId)
 
-        then(asksFromSender.size).isEqualTo(1)
-
         val foundAsk = asksFromSender[0]
         then(ask.title).isEqualTo(foundAsk.title)
         then(ask.senderUserId).isEqualTo(foundAsk.senderUserId)
@@ -42,7 +40,7 @@ internal class AskServiceTest(
     fun viewAboutReceiver() {
         val ask = fixture.giveMeBuilder(Ask::class.java)
             .setNull("id")
-            .set("status", Arbitraries.of(PENDING))
+            .set("status", PENDING)
             .sample()
 
         askRepository.save(ask)
@@ -75,7 +73,7 @@ internal class AskServiceTest(
         // given
         val ask = fixture.giveMeBuilder(Ask::class.java)
             .setNull("id")
-            .set("status", Arbitraries.of(PENDING))
+            .set("status", PENDING)
             .sample()
 
         val create = sut.create(
@@ -95,7 +93,7 @@ internal class AskServiceTest(
         // given
         val ask = fixture.giveMeBuilder(Ask::class.java)
             .setNull("id")
-            .set("status", Arbitraries.of(PENDING))
+            .set("status", PENDING)
             .sample()
 
         thenThrownBy {
