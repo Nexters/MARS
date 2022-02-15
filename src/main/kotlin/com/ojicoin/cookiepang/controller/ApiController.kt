@@ -4,8 +4,10 @@ import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
 import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.AskRequestDto
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.AskService
@@ -13,6 +15,7 @@ import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
 import com.ojicoin.cookiepang.service.StorageService
 import com.ojicoin.cookiepang.service.UserCategoryService
+import com.ojicoin.cookiepang.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -40,6 +43,7 @@ import java.net.URI
 @Controller
 class ApiController(
     private val askService: AskService,
+    private val userService: UserService,
     private val userCategoryService: UserCategoryService,
     private val cookieService: CookieService,
     private val categoryService: CategoryService,
@@ -118,6 +122,23 @@ class ApiController(
                     )
                 ]
             ),
+        ),
+        RouterOperation(
+            path = "/users",
+            consumes = ["application/json"],
+            operation = Operation(
+                operationId = "createUsers",
+                requestBody = RequestBody(
+                    required = true,
+                    content = [Content(schema = Schema(implementation = CreateUser::class))]
+                ),
+                responses = [
+                    ApiResponse(
+                        responseCode = "201",
+                        content = [Content(schema = Schema(implementation = User::class))]
+                    )
+                ]
+            ),
         )
     )
     fun create() = route(POST("/asks")) {
@@ -139,6 +160,12 @@ class ApiController(
         val dto = it.body(CreateCookie::class.java)
         val cookie = cookieService.create(dto)
         created(URI.create("/users/${dto.ownedUserId}/cookies/${cookie.id}/detail")).body(cookie)
+    }.andRoute(POST("/users")) {
+        val dto = it.body(CreateUser::class.java)
+        val savedUser = userService.create(dto = dto)
+
+        // TODO create certain uri path about created resource
+        created(URI.create("")).body(savedUser)
     }
 
     @Bean
