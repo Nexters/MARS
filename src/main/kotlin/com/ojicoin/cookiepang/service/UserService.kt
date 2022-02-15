@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
+import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
 
@@ -29,4 +30,12 @@ class UserService(val userRepository: UserRepository) {
     }
 
     fun getById(id: Long): User = userRepository.findById(id).orElseThrow()
+
+    fun modify(userId: Long, profilePictureUrl: String?, backgroundPictureUrl: String?, dto: UpdateUser): User {
+        val user = userRepository.findById(userId).orElseThrow()
+
+        user.apply(profileUrl = profilePictureUrl, backgroundUrl = backgroundPictureUrl, dto = dto)
+
+        return userRepository.save(user)
+    }
 }

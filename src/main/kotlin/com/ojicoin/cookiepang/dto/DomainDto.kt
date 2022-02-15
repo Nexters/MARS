@@ -40,3 +40,7 @@ data class CreateUser(
     val profileUrl: String?,
     val backgroundUrl: String?,
 )
+
+data class UpdateUser(
+    val introduction: String?
+)

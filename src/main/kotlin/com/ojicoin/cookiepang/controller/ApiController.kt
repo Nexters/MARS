@@ -9,6 +9,7 @@ import com.ojicoin.cookiepang.dto.AskRequestDto
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateCookie
+import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.AskService
 import com.ojicoin.cookiepang.service.CategoryService
@@ -29,6 +30,7 @@ import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
+import org.springframework.util.MultiValueMap
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RequestPredicates.POST
@@ -39,6 +41,7 @@ import org.springframework.web.servlet.function.ServerResponse.noContent
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import java.net.URI
+import javax.servlet.http.Part
 
 @Controller
 class ApiController(
@@ -309,12 +312,70 @@ class ApiController(
                 ]
             ),
         ),
+        RouterOperation(
+            path = "/users/{userId}",
+            consumes = ["multipart/form-data"],
+            produces = ["application/json"],
+            operation = Operation(
+                operationId = "updateUser",
+                tags = ["User"],
+                method = "PUT",
+                parameters = [Parameter(name = "userId", `in` = ParameterIn.PATH)],
+                requestBody = RequestBody(
+                    required = true,
+                    content = [
+                        Content(schema = Schema(name = "updateUser", implementation = UpdateUser::class)),
+                        // TODO add profilePicture, backgroundPicture as multipart/form-data
+                    ],
+                ),
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [Content(schema = Schema(implementation = User::class))]
+                    )
+                ]
+            )
+        )
     )
     fun modify() = route(PUT("/cookies/{cookieId}")) {
         val cookieId = it.pathVariable("cookieId").toLong()
         val dto = it.body(UpdateCookie::class.java)
         val updated = cookieService.modify(cookieId = cookieId, updateCookie = dto)
         ok().body(updated)
+    }.andRoute(PUT("/users/{userId}")) {
+        val userId = it.pathVariable("userId").toLong()
+
+        val multiPartMap = it.multipartData()
+        // upload profile picture
+        val profilePictureUrl = uploadPictureAndGetPictureUrlIfExistPicture(multiPartMap, "profilePicture", userId)
+
+        // upload background picture
+        val backgroundPictureUrl =
+            uploadPictureAndGetPictureUrlIfExistPicture(multiPartMap, "backgroundPicture", userId)
+
+        val dto = UpdateUser(introduction = it.param("introduction").orElse(null))
+
+        val updatedUser = userService.modify(
+            userId = userId,
+            profilePictureUrl = profilePictureUrl,
+            backgroundPictureUrl = backgroundPictureUrl,
+            dto = dto
+        )
+
+        ok().body(updatedUser)
+    }
+
+    fun uploadPictureAndGetPictureUrlIfExistPicture(
+        multipartData: MultiValueMap<String, Part>,
+        pictureKey: String,
+        userId: Long
+    ): String? {
+        if (multipartData[pictureKey].isNullOrEmpty()) {
+            return null
+        }
+
+        val profilePicture = multipartData["profilePicture"]!![0]
+        return storageService.saveProfilePicture(userId, profilePicture.submittedFileName, profilePicture.inputStream)
     }
 }
 
