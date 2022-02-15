@@ -249,6 +249,26 @@ class ApiController(
                 ]
             )
         ),
+        RouterOperation(
+            path = "/users/{userId}",
+            operation = Operation(
+                operationId = "getUser",
+                method = "GET",
+                tags = ["user"],
+                parameters = [Parameter(name = "userId", `in` = ParameterIn.PATH)],
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [
+                            Content(
+                                mediaType = "application/json",
+                                schema = Schema(implementation = User::class)
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
     )
     fun view() = route(GET("/categories")) {
         ok().body(categoryService.getAll())
@@ -273,6 +293,10 @@ class ApiController(
         }
 
         ok().body(asks)
+    }.andRoute(GET("/users/{userId}")) {
+        val userId = it.pathVariable("userId").toLong()
+
+        ok().body(userService.getById(id = userId))
     }
 
     @Bean
