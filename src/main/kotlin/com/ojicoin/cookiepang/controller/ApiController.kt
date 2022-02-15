@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
+import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.AskRequestDto
@@ -229,6 +231,18 @@ class ApiController(
         val page = it.param("page").map { page -> page.toInt() }.orElse(0)
         val size = it.param("size").map { size -> size.toInt() }.orElse(3)
         ok().body(cookieService.getCookiesByCategoryId(categoryId = categoryId, page = page, size = size))
+    }.andRoute(GET("/asks/users/{userId}")) {
+        val userId = it.pathVariable("userId").toLong()
+        // target: sender, receiver
+        val target = it.param("target").orElseThrow()
+
+        val asks = when (GetAskTarget.valueOf(target.uppercase())) {
+            SENDER -> askService.viewAboutSender(userId = userId)
+
+            RECEIVER -> askService.viewAboutReceiver(userId = userId)
+        }
+
+        ok().body(asks)
     }
 
     @Bean
@@ -276,6 +290,8 @@ class ApiController(
         ok().body(updated)
     }
 }
+
+enum class GetAskTarget { SENDER, RECEIVER }
 
 data class UserCategoryCreateDto(
     val categoryIdList: List<Long>,

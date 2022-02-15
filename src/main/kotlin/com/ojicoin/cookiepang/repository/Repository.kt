@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.repository
 
 import com.ojicoin.cookiepang.domain.Ask
+import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
@@ -27,7 +28,12 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findActiveCookieById(cookieId: Long): Cookie?
 }
 
-interface AskRepository : CrudRepository<Ask, Long>
+interface AskRepository : CrudRepository<Ask, Long> {
+    fun findBySenderUserId(senderUserId: Long): List<Ask>
+
+    fun findByReceiverUserIdAndStatus(receiverUserId: Long, status: AskStatus): List<Ask>
+}
+
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long>
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {
