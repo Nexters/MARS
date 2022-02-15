@@ -7,6 +7,7 @@ import com.ojicoin.cookiepang.domain.AskStatus.ACCEPTED
 import com.ojicoin.cookiepang.domain.AskStatus.DELETED
 import com.ojicoin.cookiepang.domain.AskStatus.IGNORED
 import com.ojicoin.cookiepang.domain.AskStatus.PENDING
+import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.repository.AskRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
@@ -104,6 +105,42 @@ internal class AskServiceTest(
             )
         }.isExactlyInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("senderUserId is same as receiverUserId. senderUserId=${ask.senderUserId}, receiverUserId=${ask.senderUserId}")
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun modify() {
+        // given
+        val ask = fixture.giveMeBuilder(Ask::class.java)
+            .setNull("id")
+            .set("status", Arbitraries.of(PENDING))
+            .sample()
+        val savedAskId = askRepository.save(ask).id!!
+
+        val updateAsk = fixture.giveMeBuilder(UpdateAsk::class.java)
+            .set("status", Arbitraries.of(ACCEPTED, IGNORED, DELETED))
+            .sample()
+        val modifiedAsk = sut.modify(id = savedAskId, dto = updateAsk)
+
+        updateAsk.title?.also { then(it).isEqualTo(modifiedAsk.title) }
+        updateAsk.status?.also { then(it).isEqualTo(modifiedAsk.status) }
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun modifyThrowNotPendingStatus() {
+        // given
+        val ask = fixture.giveMeBuilder(Ask::class.java)
+            .setNull("id")
+            .set("status", Arbitraries.of(ACCEPTED, IGNORED, DELETED))
+            .sample()
+
+        val savedAskId = askRepository.save(ask).id!!
+        val updateAsk = fixture.giveMeBuilder(UpdateAsk::class.java)
+            .set("status", Arbitraries.of(ACCEPTED, IGNORED, DELETED))
+            .sample()
+
+        thenThrownBy { sut.modify(id = savedAskId, dto = updateAsk) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("cannot update ask. This ask status is already changed or is deleted. status=${ask.status}")
     }
 
     @AfterEach
