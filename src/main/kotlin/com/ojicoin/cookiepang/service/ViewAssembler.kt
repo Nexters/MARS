@@ -21,7 +21,6 @@ class ViewAssembler(
         val creator = userService.getById(cookie.authorUserId)
         val owner = userService.getById(cookie.ownedUserId)
         val viewer = userService.getById(viewerId)
-        val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
         val answer: String? = if (viewerId != owner.id) {
             null
         } else {
@@ -29,6 +28,9 @@ class ViewAssembler(
         }
 
         viewer.view(cookie)
+        cookieService.publishEvent(cookie)
+
+        val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
 
         // TODO: 블록체인 네트워크에서 히스토리 조회후 변환 로직 추가
         return CookieView(
