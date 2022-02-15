@@ -60,18 +60,34 @@ class UserServiceTest(
 
         val savedUser = userRepository.save(user)
 
-        val profilePictureUrl = fixture.giveMeOne(String::class.java)
-        val profileBackgroundUrl = fixture.giveMeOne(String::class.java)
-        val updateUserDto = fixture.giveMeOne(UpdateUser::class.java)
+        val profilePictureUrl = fixture.giveMeBuilder(String::class.java).setNotNull("$").sample()
+        val profileBackgroundUrl = fixture.giveMeBuilder(String::class.java).setNotNull("$").sample()
+        val updateUserDto = fixture.giveMeBuilder(UpdateUser::class.java).setNotNull("introduction").sample()
 
         val updatedUser = sut.modify(savedUser.id!!, profilePictureUrl, profileBackgroundUrl, updateUserDto)
 
         profilePictureUrl?.also { then(updatedUser.profileUrl).isEqualTo(it) }
-        if (profilePictureUrl == null) then(updatedUser.profileUrl).isEqualTo(savedUser.profileUrl)
         profileBackgroundUrl?.also { then(updatedUser.backgroundUrl).isEqualTo(it) }
-        if (profileBackgroundUrl == null) then(updatedUser.backgroundUrl).isEqualTo(savedUser.backgroundUrl)
         updateUserDto.introduction?.also { then(updatedUser.introduction).isEqualTo(it) }
-        if (updateUserDto.introduction == null) then(updatedUser.introduction).isEqualTo(savedUser.introduction)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun modifyAboutNullFields() {
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+
+        val savedUser = userRepository.save(user)
+
+        val profilePictureUrl = fixture.giveMeBuilder(String::class.java).setNull("$").sample()
+        val profileBackgroundUrl = fixture.giveMeBuilder(String::class.java).setNull("$").sample()
+        val updateUserDto = fixture.giveMeBuilder(UpdateUser::class.java).setNull("introduction").sample()
+
+        val updatedUser = sut.modify(savedUser.id!!, profilePictureUrl, profileBackgroundUrl, updateUserDto)
+
+        then(updatedUser.profileUrl).isEqualTo(savedUser.profileUrl)
+        then(updatedUser.backgroundUrl).isEqualTo(savedUser.backgroundUrl)
+        then(updatedUser.introduction).isEqualTo(savedUser.introduction)
     }
 
     @RepeatedTest(REPEAT_COUNT)
