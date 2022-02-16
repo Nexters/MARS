@@ -24,6 +24,7 @@ configurations {
 }
 
 repositories {
+    maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.spring.io/release") }
     mavenCentral()
 }
@@ -38,6 +39,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:$springDocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springDocVersion")
     implementation("org.postgresql:postgresql:42.1.4")
+    implementation ("com.klaytn.caver:core:1.6.2")
+    implementation("com.squareup.okhttp3:okhttp:4.3.1")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")

@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "name": "contract.address",
+      "name": "contract.address.cookie",
       "type": "java.lang.String",
       "description": "Specifying Cookie Contract Address."
     },
