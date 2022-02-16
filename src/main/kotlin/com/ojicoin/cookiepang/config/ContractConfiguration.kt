@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Import
 @Configuration
 class ContractConfiguration(
 	private val caver: Caver,
-	@Value("\${contract.address.cookie}") val cookieAddress: String,
-	@Value("\${contract.address.hammer}") val coinAddress: String,
+	@Value("\${contract.addr.cookie}") val cookieAddress: String,
+	@Value("\${contract.addr.hammer}") val coinAddress: String,
 ) {
 	var cookieABI: String = ContractABI.COOKIE_FACTORY
 	var coinABI: String = ContractABI.HAMMER_COIN
