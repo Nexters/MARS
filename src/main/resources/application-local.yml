@@ -1,0 +1,5 @@
+storage:
+  domain: "127.0.0.1:${server.port}"
+
+contract:
+  address: 123456

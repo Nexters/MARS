@@ -37,6 +37,7 @@ dependencies {
     implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("org.springdoc:springdoc-openapi-ui:$springDocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springDocVersion")
+    implementation("org.postgresql:postgresql:42.1.4")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")

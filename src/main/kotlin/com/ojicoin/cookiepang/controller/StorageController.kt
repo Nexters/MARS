@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.service.StorageService
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.POST
 import org.springframework.web.servlet.function.RouterFunctions.route
@@ -11,9 +12,10 @@ import java.net.URI
 
 @Controller
 class StorageController(
-    val storageService: StorageService
+    val storageService: StorageService,
 ) {
 
+    @Profile("dev")
     @Deprecated("This api is only for test.")
     @Bean
     fun addNewPicture() = route(POST("/users/{userId}/pictures")) {

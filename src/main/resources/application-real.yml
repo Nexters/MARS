@@ -1,0 +1,5 @@
+storage:
+  domain: "api.cookiepang.site"
+
+contract:
+  address: 123456
