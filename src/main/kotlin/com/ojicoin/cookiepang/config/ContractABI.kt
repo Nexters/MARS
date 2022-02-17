@@ -5,8 +5,8 @@ package com.ojicoin.cookiepang.config
  */
 object ContractABI {
 
-	const val HAMMER_COIN =
-		"""
+    const val HAMMER_COIN =
+        """
 		[
 	{
 		"constant": false,
@@ -779,8 +779,8 @@ object ContractABI {
 ]	
 	"""
 
-	const val COOKIE_FACTORY =
-		"""
+    const val COOKIE_FACTORY =
+        """
 		[
 	{
 		"constant": false,
