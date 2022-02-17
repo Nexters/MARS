@@ -1,5 +1,5 @@
 storage:
-  domain: "127.0.0.1:${server.port}"
+  domain: "api.cookiepang.site"
 
 contract:
   address: 123456
