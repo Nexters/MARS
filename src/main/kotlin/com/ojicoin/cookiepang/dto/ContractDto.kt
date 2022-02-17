@@ -9,16 +9,16 @@ import java.math.BigInteger
  * @author seongchan.kang
  */
 data class CookieInfo(
-	val creatorAddress: String,
-	val title: String,
-	val content: String,
-	val imageUrl: String,
-	val tag: String,
-	val hammerPrice: BigInteger
+    val creatorAddress: String,
+    val title: String,
+    val content: String,
+    val imageUrl: String,
+    val tag: String,
+    val hammerPrice: BigInteger
 )
 
 data class TransferInfo(
-	val fromAddrees: String,
-	val toAddress: String,
-	val cookieId: BigInteger
+    val fromAddrees: String,
+    val toAddress: String,
+    val cookieId: BigInteger
 )
