@@ -50,10 +50,6 @@ class CookieContractService(
         COOKIE_EVENTED("CookieEvented");
     }
 
-    fun Contract.call(callObject: CallObject, event: CookieContractMethod, vararg any: Any) = this.call(callObject, event.methodName, any)
-    fun Contract.call(event: CookieContractMethod, vararg any: Any) = this.call(event.methodName, any)
-    fun Contract.getMethod(event: CookieContractMethod) = this.getMethod(event.methodName)
-
     // FIXME: 커스텀 익셉션 추가
     fun getTransferInfoByTxHash(txHash: String): TransferInfo {
         return try {
@@ -74,7 +70,7 @@ class CookieContractService(
     fun getContent(cookieId: String, senderAddress: String): String {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
-            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_CONTENT, cookieId)
+            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_CONTENT.methodName, cookieId)
             val result: Type<String> = callResult[0] as Type<String>
             result.value
         } catch (e: java.lang.Exception) {
@@ -85,7 +81,7 @@ class CookieContractService(
 
     val mintingPriceForHammer: BigInteger
         get() = try {
-            val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_HAMMER)
+            val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_HAMMER.methodName)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
             result.value
         } catch (e: Exception) {
@@ -96,7 +92,7 @@ class CookieContractService(
     val mintingPriceForKlaytn: BigInteger
         get() {
             return try {
-                val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_KALYTN)
+                val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_KALYTN.methodName)
                 val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
                 result.value
             } catch (e: Exception) {
@@ -108,7 +104,7 @@ class CookieContractService(
     fun getOwnedCookieIds(senderAddress: String): List<String> {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
-            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_OWNED_COOKIE_IDS)
+            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_OWNED_COOKIE_IDS.methodName)
             val result: Type<List<Uint256>> = callResult[0] as Type<List<Uint256>>
             result.value.stream()
                 .map { uint256: Uint256 -> uint256.getValue().toString() }
@@ -121,7 +117,7 @@ class CookieContractService(
 
     fun balanceOf(address: String): BigInteger {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.BALANCE_OF, address)
+            val callResult = cookieContract.call(CookieContractMethod.BALANCE_OF.methodName, address)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
             result.value
         } catch (e: Exception) {
@@ -132,7 +128,7 @@ class CookieContractService(
 
     fun isHide(cookieId: String): Boolean {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.IS_HIDE, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.IS_HIDE.methodName, cookieId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
             result.value
         } catch (e: Exception) {
@@ -143,7 +139,7 @@ class CookieContractService(
 
     fun isSale(cookieId: String): Boolean {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.IS_SALE, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.IS_SALE.methodName, cookieId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
             result.value
         } catch (e: Exception) {
@@ -154,7 +150,7 @@ class CookieContractService(
 
     fun getHammerPrice(cookieId: String): BigInteger {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.GET_HAMMER_PRICE, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.GET_HAMMER_PRICE.methodName, cookieId)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
             result.value
         } catch (e: Exception) {
@@ -166,7 +162,7 @@ class CookieContractService(
     fun getCookieIdByIndex(senderAddress: String, index: BigInteger): BigInteger {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
-            val callResult = cookieContract.call(callObject, CookieContractMethod.TOKEN_BY_INDEX, index)
+            val callResult = cookieContract.call(callObject, CookieContractMethod.TOKEN_BY_INDEX.methodName, index)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
             result.value
         } catch (e: Exception) {
@@ -178,7 +174,7 @@ class CookieContractService(
     val totalSupply: BigInteger
         get() {
             return try {
-                val callResult = cookieContract.call(CookieContractMethod.TOTAL_SUPPLY)
+                val callResult = cookieContract.call(CookieContractMethod.TOTAL_SUPPLY.methodName)
                 val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
                 result.value
             } catch (e: Exception) {
@@ -200,7 +196,7 @@ class CookieContractService(
         return try {
             val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
             val functionParams: List<Any> = listOf(cookieInfo.creatorAddress, cookieInfo.title, cookieInfo.content, cookieInfo.imageUrl, cookieInfo.tag, cookieInfo.hammerPrice)
-            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER).send(functionParams, sendOptions)
+            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName).send(functionParams, sendOptions)
 
             // first transfered event index = 0
             val log = receiptData.logs[0]
