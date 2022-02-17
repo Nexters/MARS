@@ -41,7 +41,6 @@ dependencies {
     implementation("org.postgresql:postgresql:42.1.4")
     implementation("com.klaytn.caver:core:1.6.2")
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
