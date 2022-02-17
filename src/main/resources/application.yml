@@ -8,3 +8,16 @@ server:
 springdoc:
   packages-to-scan: com.ojicoin.cookiepang.controller
   paths-to-match: /**
+
+contract:
+  admin-address: "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa"
+  admin-private-key: "0x7eb4f3935ba5e8ef2a678aaa2723f376c6b6b5c693be4b301d7ef635b09cd8b8"
+  kas:
+    chain-id: "1001"
+    node-api-url: "https://node-api.klaytnapi.com/v1/klaytn"
+    access-key-id: "KASKDSVYCQGMXLTVIF19YS4M"
+    secret-access-key: "JPcHBSx3sIal8PhS7NK4lRXcvA0qkut0Hi01IRsD"
+  addr:
+    cookie: "0x852032B03A4C8de850E4F63d2a3e670D403868D0"
+    hammer: "0xeaBA4EEaa87d9395A6554CC0B526a4510196aAf7"
+  address: 123456
