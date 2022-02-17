@@ -7,14 +7,20 @@ import com.klaytn.caver.contract.SendOptions
 import com.klaytn.caver.methods.request.CallObject
 import com.klaytn.caver.methods.request.KlayLogFilter
 import com.klaytn.caver.methods.response.KlayLogs
+import com.klaytn.caver.methods.response.KlayLogs.LogResult
+import com.ojicoin.cookiepang.dto.CookieEvent
+import com.ojicoin.cookiepang.dto.CookieEventStatus
 import com.ojicoin.cookiepang.dto.CookieInfo
 import com.ojicoin.cookiepang.dto.TransferInfo
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.tx.gas.DefaultGasProvider
-import java.io.IOException
 import java.math.BigInteger
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.TimeZone
 import java.util.function.Predicate
 import java.util.stream.Collectors
 
@@ -30,6 +36,10 @@ class CookieContractService(
     private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
     private val TRANSACTION_ZERONUM_DIGIT_LENGTH = 24
     private val TRANSACTION_ADDRESS_DIGIT_LENGTH = 66
+
+    // FIXME: Event Log의 인덱스 값들에 대한 관리를 어떻게하면 좋을지 고민 필요..
+    private val COOKIE_TRANSFER_ADDRESS_INDEX = 2
+    private val COOKIE_EVENT_COOKIE_ID_INDEX = 2
 
     enum class CookieContractMethod(val methodName: String) {
         GET_CONTENT("getContent"),
@@ -53,8 +63,8 @@ class CookieContractService(
     // FIXME: 커스텀 익셉션 추가
     fun getTransferInfoByTxHash(txHash: String): TransferInfo {
         return try {
-            val transferLogs = getTransferLogs()
-            val txHashLog = transferLogs.stream().map { obj: KlayLogs.LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(fromAddressNotZeroPredicate()).findFirst().orElseThrow { RuntimeException() }
+            val transferLogs = getLogsByEventName(CookieContractEvent.TRANSFER.eventName)
+            val txHashLog = transferLogs.stream().map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(indexedLogDataNotZeroAddressPredicate(COOKIE_TRANSFER_ADDRESS_INDEX)).findFirst().orElseThrow { RuntimeException() }
 
             val fromAddress = txHashLog.topics[1]
             val toAddress = txHashLog.topics[2]
@@ -211,12 +221,53 @@ class CookieContractService(
         }
     }
 
-    @Throws(IOException::class)
-    private fun getTransferLogs(): List<KlayLogs.LogResult<*>> {
-        // FIXME: 매번 모든 Block 조회하는건 부하가 큼. 이벤트로그에대한 블록을 오프체인에서 관리하고, 그 이후 값에 대해서 조회하는 부분만 추가하는게 좋을듯
-        val filter = KlayLogFilter(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST, cookieContract.contractAddress, null)
-        val logs = cookieContract.getPastEvent(CookieContractEvent.TRANSFER.eventName, filter)
-        return logs.logs
+    fun getCookieEventsByCookieId(cookieId: String): List<CookieEvent> {
+        return getCookieEventsByCookieId(DefaultBlockParameterName.EARLIEST, cookieId)
+    }
+
+    fun getCookieEventsByCookieId(fromBlock: DefaultBlockParameter, cookieId: String): List<CookieEvent> {
+        return try {
+            val logs = getLogsByEventName(fromBlock, CookieContractEvent.COOKIE_EVENTED.eventName)
+            val filteredLogs = logs.stream()
+                .map { obj: LogResult<*> -> obj as KlayLogs.Log }
+                .filter(indexedLogDataPredicateByBigInteger(COOKIE_EVENT_COOKIE_ID_INDEX, cookieId))
+                .collect(Collectors.toList())
+            getCookieEvents(filteredLogs)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            throw RuntimeException()
+        }
+    }
+
+    private fun getCookieEvents(logs: List<KlayLogs.Log>): MutableList<CookieEvent> {
+        return logs.stream()
+            .map { log: KlayLogs.Log ->
+                val indexedDatas = log.topics
+                val normalDatas: String = log.data.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH)
+                val splitLength = normalDatas.length / 2
+                val hammerPriceHexStr = normalDatas.substring(0, splitLength)
+                val createdAtHexStr = normalDatas.substring(splitLength)
+                val createdAtTimestamp = getBigIntegerFromHexStr(createdAtHexStr)!!.toLong() * 1000
+
+                val hammerPrice = getBigIntegerFromHexStr(hammerPriceHexStr)
+                val createdAt = LocalDateTime.ofInstant(Instant.ofEpochMilli(createdAtTimestamp), TimeZone.getDefault().toZoneId())
+                val cookieStatus: CookieEventStatus = CookieEventStatus.findByNum(getBigIntegerFromHexStr(indexedDatas[1])!!.toInt())
+                val cookieId = getBigIntegerFromHexStr(indexedDatas[2])
+                val fromAddress = fixAddressDigits(indexedDatas[3])
+                CookieEvent(cookieStatus, cookieId, fromAddress, hammerPrice, createdAt)
+            }
+            .collect(Collectors.toList())
+    }
+
+    private fun getLogsByEventName(fromBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
+        val filter = KlayLogFilter(fromBlock, DefaultBlockParameterName.LATEST, cookieContract.contractAddress, null)
+        val klayLogs = cookieContract.getPastEvent(eventName, filter)
+        val logs = klayLogs.logs
+        return logs
+    }
+
+    private fun getLogsByEventName(eventName: String): List<LogResult<*>> {
+        return getLogsByEventName(DefaultBlockParameterName.EARLIEST, eventName)
     }
 
     private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
@@ -228,11 +279,19 @@ class CookieContractService(
         return address.substring(0, TRANSACTION_HEX_PREFIX_DIGIT_LENGTH) + address.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH + TRANSACTION_ZERONUM_DIGIT_LENGTH, TRANSACTION_ADDRESS_DIGIT_LENGTH)
     }
 
-    private fun fromAddressNotZeroPredicate(): Predicate<KlayLogs.Log>? {
+    private fun indexedLogDataNotZeroAddressPredicate(index: Int): Predicate<KlayLogs.Log> {
         return Predicate { log: KlayLogs.Log ->
-            val fromAddress = log.topics[1]
+            val fromAddress = log.topics[index]
             val result = getBigIntegerFromHexStr(fromAddress)
             result != BigInteger.ZERO
+        }
+    }
+
+    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: String): Predicate<KlayLogs.Log> {
+        return Predicate { log: KlayLogs.Log ->
+            val cookieIdHex = log.topics[index]
+            val value = getBigIntegerFromHexStr(cookieIdHex).toString()
+            expectedValue == value
         }
     }
 }
