@@ -20,5 +20,5 @@ data class CookieInfo(
 data class TransferInfo(
     val fromAddrees: String,
     val toAddress: String,
-    val cookieId: BigInteger
+    val tokenId: BigInteger
 )

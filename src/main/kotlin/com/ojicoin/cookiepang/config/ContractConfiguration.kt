@@ -1,9 +1,3 @@
-/*
- * ContractConfiguration.java 2022. 02. 15
- *
- * Copyright 2022 NAVERBUSINESS PLATFORM Corp. All rights Reserved.
- * NAVERBUSINESS PLATFORM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
 package com.ojicoin.cookiepang.config
 
 import com.klaytn.caver.Caver
