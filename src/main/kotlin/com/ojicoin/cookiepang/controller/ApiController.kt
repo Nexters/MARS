@@ -198,12 +198,12 @@ class ApiController(
                 parameters = [
                     Parameter(
                         name = "page",
-                        content = [Content(schema = Schema(implementation = Int::class))],
+                        schema = Schema(implementation = Int::class),
                         `in` = ParameterIn.QUERY
                     ),
                     Parameter(
                         name = "size",
-                        content = [Content(schema = Schema(implementation = Int::class))],
+                        schema = Schema(implementation = Int::class),
                         `in` = ParameterIn.QUERY
                     ),
                 ],
@@ -228,12 +228,12 @@ class ApiController(
                     Parameter(name = "categoryId", `in` = ParameterIn.PATH),
                     Parameter(
                         name = "page",
-                        content = [Content(schema = Schema(implementation = Int::class))],
+                        schema = Schema(implementation = Int::class),
                         `in` = ParameterIn.QUERY
                     ),
                     Parameter(
                         name = "size",
-                        content = [Content(schema = Schema(implementation = Int::class))],
+                        schema = Schema(implementation = Int::class),
                         `in` = ParameterIn.QUERY
                     ),
                 ],
@@ -400,7 +400,7 @@ class ApiController(
     fun uploadPictureAndGetPictureUrlIfExistPicture(
         multipartData: MultiValueMap<String, Part>,
         pictureKey: String,
-        userId: Long
+        userId: Long,
     ): String? {
         if (multipartData[pictureKey].isNullOrEmpty()) {
             return null
