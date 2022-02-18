@@ -68,7 +68,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getHammerPrice() {
-        val hammerPrice: BigInteger = sut.getHammerPrice("1")
+        val hammerPrice: BigInteger = sut.getHammerPrice(BigInteger.ONE)
         println(hammerPrice)
     }
 
@@ -113,13 +113,13 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieEventsByCookieId() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId("1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(BigInteger.ONE)
         println(result)
     }
 
     @Test
     fun getCookieEventsByCookieIdWithBlockNum() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), "1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
         println(result)
     }
 }

@@ -46,17 +46,17 @@ class CookieContractService(
             val txHashLog = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(indexedLogDataNotZeroAddressPredicate(COOKIE_TRANSFER_ADDRESS_INDEX)).first()
             val fromAddress = txHashLog.topics[1]
             val toAddress = txHashLog.topics[2]
-            val nftTokenIdHex = txHashLog.topics[3]
+            val nftTokenIdHexStr = txHashLog.topics[3]
             val blockNumber = txHashLog.blockNumber
 
-            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHex)!!, blockNumber)
+            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHexStr)!!, blockNumber)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
         }
     }
 
-    fun getContent(nftTokenId: String, senderAddress: String): String {
+    fun getContent(nftTokenId: BigInteger, senderAddress: String): String {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
             val callResult = cookieContract.call(callObject, CookieContractMethod.GET_CONTENT.methodName, nftTokenId)
@@ -120,7 +120,7 @@ class CookieContractService(
         }
     }
 
-    fun isHide(nftTokenId: String): Boolean {
+    fun isHide(nftTokenId: BigInteger): Boolean {
         return try {
             val callResult = cookieContract.call(CookieContractMethod.IS_HIDE.methodName, nftTokenId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
@@ -132,7 +132,7 @@ class CookieContractService(
         }
     }
 
-    fun isSale(nftTokenId: String): Boolean {
+    fun isSale(nftTokenId: BigInteger): Boolean {
         return try {
             val callResult = cookieContract.call(CookieContractMethod.IS_SALE.methodName, nftTokenId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
@@ -144,7 +144,7 @@ class CookieContractService(
         }
     }
 
-    fun getHammerPrice(nftTokenId: String): BigInteger {
+    fun getHammerPrice(nftTokenId: BigInteger): BigInteger {
         return try {
             val callResult = cookieContract.call(CookieContractMethod.GET_HAMMER_PRICE.methodName, nftTokenId)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
@@ -186,11 +186,11 @@ class CookieContractService(
         return tokenInfos.map { cookieInfo: CookieInfo -> mintCookieByAdmin(cookieInfo!!) }.toList()
     }
 
-    fun getCookieEventsByNftTokenId(nftTokenId: String): List<CookieEvent> {
+    fun getCookieEventsByNftTokenId(nftTokenId: BigInteger): List<CookieEvent> {
         return getCookieEventsByNftTokenId(DefaultBlockParameterName.EARLIEST, nftTokenId)
     }
 
-    fun getCookieEventsByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: String): List<CookieEvent> {
+    fun getCookieEventsByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: BigInteger): List<CookieEvent> {
         return try {
             val logs = getLogsByEventName(fromBlock, CookieContractEvent.COOKIE_EVENTED.eventName)
             val filteredLogs = logs
@@ -254,8 +254,8 @@ class CookieContractService(
         return getLogsByEventName(DefaultBlockParameterName.EARLIEST, eventName)
     }
 
-    private fun getBigIntegerFromHexStr(nftTokenIdHex: String): BigInteger? {
-        return BigInteger(nftTokenIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
+    private fun getBigIntegerFromHexStr(nftTokenIdHexStr: String): BigInteger? {
+        return BigInteger(nftTokenIdHexStr.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
     }
 
     private fun fixAddressDigits(address: String): String? {
@@ -271,10 +271,10 @@ class CookieContractService(
         }
     }
 
-    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: String): (KlayLogs.Log) -> Boolean {
+    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: BigInteger): (KlayLogs.Log) -> Boolean {
         return { log: KlayLogs.Log ->
-            val nftTokenIdHex = log.topics[index]
-            val value = getBigIntegerFromHexStr(nftTokenIdHex).toString()
+            val nftTokenIdHexStr = log.topics[index]
+            val value = getBigIntegerFromHexStr(nftTokenIdHexStr)
             expectedValue == value
         }
     }
