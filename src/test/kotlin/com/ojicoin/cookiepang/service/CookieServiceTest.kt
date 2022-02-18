@@ -22,10 +22,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 class CookieServiceTest(
     @Autowired val sut: CookieService,
     @Autowired val cookieRepository: CookieRepository,
+    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferInfo>,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
-    fun create(@Qualifier("transferInfoByTxHashCacheTemplate") cacheTemplate: CacheTemplate<TransferInfo>) {
+    fun create() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
         val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
         cacheTemplate[createCookie.txHash] = transferInfo
@@ -46,8 +47,10 @@ class CookieServiceTest(
     @RepeatedTest(REPEAT_COUNT)
     fun createDuplicateTokenAddressThrows() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
+        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        cacheTemplate[createCookie.txHash] = transferInfo
         val createCookieWithSameTokenAddress = fixture.giveMeBuilder(CreateCookie::class.java)
-            .set("tokenAddress", createCookie.txHash)
+            .set("txHash", createCookie.txHash)
             .sample()
         sut.create(createCookie)
 
