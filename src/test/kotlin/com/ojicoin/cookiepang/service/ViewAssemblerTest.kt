@@ -80,6 +80,7 @@ class ViewAssemblerTest(
         val actual = sut.cookieView(viewerId = viewerId, cookieId = cookieId)
 
         then(actual.answer).isNull()
+        then(actual.viewCount).isEqualTo(1L)
     }
 
     @AfterEach

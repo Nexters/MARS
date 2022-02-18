@@ -57,6 +57,10 @@ class CookieService(
         )
     }
 
+    fun publishEvent(cookie: Cookie) {
+        cookieRepository.save(cookie) // TODO: 이벤트만 발행하도록 수정
+    }
+
     @Transactional
     fun modify(cookieId: Long, updateCookie: UpdateCookie): Cookie {
         val cookie = cookieRepository.findById(cookieId).orElseThrow()
