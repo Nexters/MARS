@@ -10,10 +10,15 @@ import javax.validation.constraints.Size
 class Notification(
     @Id @Column("notification_id") var id: Long? = null,
     @Column("type") @field:Size(max = 20) val type: NotificationType,
-    @Column("content") @field:Size(max = 255) val content: String,
+    @Column("content") @field:Size(max = 300) val content: String,
     @Column("receiver_user_id") val receiverUserId: Long,
     @Column("sender_user_id") val senderUserId: Long? = null,
     @Column("created_at") val createdAt: Instant,
+
+    // for ask type
+    @Column("ask_id") val askId: Long? = null,
+    // for cookie type
+    @Column("cookie_id") val cookieId: Long? = null,
 )
 
 enum class NotificationType { Ask, Transaction }

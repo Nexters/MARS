@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.event
 
 import org.springframework.context.ApplicationEvent
+import java.time.Instant
 
 // For prevent ktlint error
 class Event
@@ -14,3 +15,25 @@ data class ViewCookieEvent(
         return super.getSource()
     }
 }
+
+sealed class NotificationEvent
+
+data class AskNotificationEvent(
+    val receiverUserId: Long,
+    val senderUserId: Long,
+    val askId: Long,
+    val createdAt: Instant = Instant.now(),
+
+    val cookieTitle: String,
+) : NotificationEvent()
+
+data class TransactionNotificationEvent(
+    val receiverUserId: Long,
+    val senderUserId: Long,
+    val cookieId: Long,
+    val createdAt: Instant = Instant.now(),
+
+    val cookieTitle: String,
+    val senderNickname: String,
+    val hammerCount: Double,
+) : NotificationEvent()
