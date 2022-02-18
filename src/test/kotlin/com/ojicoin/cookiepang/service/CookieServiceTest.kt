@@ -150,7 +150,6 @@ class CookieServiceTest(
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.tokenAddress).isEqualTo(foundCookie.tokenAddress)
         then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
     }
 
@@ -178,7 +177,6 @@ class CookieServiceTest(
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.tokenAddress).isEqualTo(foundCookie.tokenAddress)
         then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
     }
 
@@ -200,7 +198,6 @@ class CookieServiceTest(
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.tokenAddress).isEqualTo(foundCookie.tokenAddress)
         then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
     }
 
@@ -228,7 +225,6 @@ class CookieServiceTest(
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.tokenAddress).isEqualTo(foundCookie.tokenAddress)
         then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
     }
 
