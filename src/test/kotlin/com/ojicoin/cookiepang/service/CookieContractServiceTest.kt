@@ -1,10 +1,12 @@
 package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.dto.CookieEvent
 import com.ojicoin.cookiepang.dto.CookieInfo
 import com.ojicoin.cookiepang.dto.TransferInfo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.web3j.protocol.core.DefaultBlockParameterNumber
 import java.math.BigInteger
 
 /**
@@ -18,7 +20,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getTransferInfoByTxHash() {
-        val transferInfo: TransferInfo = sut.getTransferInfoByTxHash("0x0f92242abcd881cea5ecc2642f938a76200d41e21f5b4f5705332ecdd9bccccb")
+        val transferInfo: TransferInfo = sut.getTransferInfoByTxHash("0x5e1a1d7a0d9c92638369738b1bd8ece38b630cbd26d3dc826c3a9f8257ab1f69")
         println(transferInfo)
     }
 
@@ -42,7 +44,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getOwnedCookieIds() {
-        val cookieIds: List<String> = sut.getOwnedCookieIds("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
+        val cookieIds: List<String> = sut.getOwnedNtfTokenIds("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
         println(cookieIds)
     }
 
@@ -72,7 +74,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieIdByIndex() {
-        val cookieIdByIndex: BigInteger = sut.getCookieIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
+        val cookieIdByIndex: BigInteger = sut.getNtfTokenIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
         println(cookieIdByIndex)
     }
 
@@ -107,5 +109,17 @@ internal class CookieContractServiceTest(
         ) as List<BigInteger>
 
         println(createdDefaultCookies)
+    }
+
+    @Test
+    fun getCookieEventsByCookieId() {
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId("1")
+        println(result)
+    }
+
+    @Test
+    fun getCookieEventsByCookieIdWithBlockNum() {
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), "1")
+        println(result)
     }
 }
