@@ -47,8 +47,9 @@ class CookieContractService(
             val fromAddress = txHashLog.topics[1]
             val toAddress = txHashLog.topics[2]
             val nftTokenIdHex = txHashLog.topics[3]
+            val blockNumber = txHashLog.blockNumber
 
-            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHex)!!)
+            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHex)!!, blockNumber)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
@@ -236,7 +237,8 @@ class CookieContractService(
                 val cookieStatus: CookieEventStatus = CookieEventStatus.findByNum(getBigIntegerFromHexStr(indexedDatas[1])!!.toInt())
                 val nftTokenId = getBigIntegerFromHexStr(indexedDatas[2])
                 val fromAddress = fixAddressDigits(indexedDatas[3])
-                CookieEvent(cookieStatus, nftTokenId, fromAddress, hammerPrice, createdAt)
+
+                CookieEvent(cookieStatus, nftTokenId, fromAddress, hammerPrice, createdAt, log.blockNumber)
             }
             .toList()
     }

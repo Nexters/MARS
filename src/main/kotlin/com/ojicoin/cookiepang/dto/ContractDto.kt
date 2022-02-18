@@ -21,7 +21,8 @@ data class CookieInfo(
 data class TransferInfo(
     val fromAddrees: String,
     val toAddress: String,
-    val tokenId: BigInteger
+    val tokenId: BigInteger,
+    val blockNumber: BigInteger
 )
 
 enum class CookieEventStatus(private val num: Int) {
@@ -39,5 +40,6 @@ data class CookieEvent(
     val cookieId: BigInteger?,
     val fromAddress: String?,
     val hammerPrice: BigInteger?,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+    val blockNumber: BigInteger
 )
