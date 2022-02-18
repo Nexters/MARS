@@ -20,9 +20,7 @@ import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.TimeZone
-import java.util.function.Predicate
-import java.util.stream.Collectors
+import java.util.*
 
 /**
  * @author seongchan.kang
@@ -41,47 +39,28 @@ class CookieContractService(
     private val COOKIE_TRANSFER_ADDRESS_INDEX = 2
     private val COOKIE_EVENT_COOKIE_ID_INDEX = 2
 
-    enum class CookieContractMethod(val methodName: String) {
-        GET_CONTENT("getContent"),
-        MINTING_PRICE_FOR_HAMMER("mintingPriceForHammer"),
-        MINTING_PRICE_FOR_KALYTN("mintingPriceForKlaytn"),
-        GET_OWNED_COOKIE_IDS("getOwnedCookieIds"),
-        BALANCE_OF("balanceOf"),
-        IS_HIDE("hideCookies"),
-        IS_SALE("saleCookies"),
-        GET_HAMMER_PRICE("cookieHammerPrices"),
-        TOKEN_BY_INDEX("tokenByIndex"),
-        TOTAL_SUPPLY("totalSupply"),
-        MINT_COOKIE_BY_OWNER("mintCookieByOwner");
-    }
-
-    enum class CookieContractEvent(val eventName: String) {
-        TRANSFER("Transfer"),
-        COOKIE_EVENTED("CookieEvented");
-    }
-
     // FIXME: 커스텀 익셉션 추가
     fun getTransferInfoByTxHash(txHash: String): TransferInfo {
         return try {
             val transferLogs = getLogsByEventName(CookieContractEvent.TRANSFER.eventName)
-            val txHashLog = transferLogs.stream().map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(indexedLogDataNotZeroAddressPredicate(COOKIE_TRANSFER_ADDRESS_INDEX)).findFirst().orElseThrow { RuntimeException() }
-
+            val txHashLog = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(indexedLogDataNotZeroAddressPredicate(COOKIE_TRANSFER_ADDRESS_INDEX)).first()
             val fromAddress = txHashLog.topics[1]
             val toAddress = txHashLog.topics[2]
-            val cookieIdHex = txHashLog.topics[3]
+            val nftTokenIdHex = txHashLog.topics[3]
 
-            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(cookieIdHex)!!)
+            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHex)!!)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
         }
     }
 
-    fun getContent(cookieId: String, senderAddress: String): String {
+    fun getContent(nftTokenId: String, senderAddress: String): String {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
-            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_CONTENT.methodName, cookieId)
+            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_CONTENT.methodName, nftTokenId)
             val result: Type<String> = callResult[0] as Type<String>
+
             result.value
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -93,6 +72,7 @@ class CookieContractService(
         get() = try {
             val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_HAMMER.methodName)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -104,6 +84,7 @@ class CookieContractService(
             return try {
                 val callResult = cookieContract.call(CookieContractMethod.MINTING_PRICE_FOR_KALYTN.methodName)
                 val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
                 result.value
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -111,14 +92,15 @@ class CookieContractService(
             }
         }
 
-    fun getOwnedCookieIds(senderAddress: String): List<String> {
+    fun getOwnedNtfTokenIds(senderAddress: String): List<String> {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
-            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_OWNED_COOKIE_IDS.methodName)
+            val callResult = cookieContract.call(callObject, CookieContractMethod.GET_OWNED_NFT_TOKEN_IDS.methodName)
             val result: Type<List<Uint256>> = callResult[0] as Type<List<Uint256>>
-            result.value.stream()
+
+            result.value
                 .map { uint256: Uint256 -> uint256.getValue().toString() }
-                .collect(Collectors.toList())
+                .toList()
         } catch (e: Exception) {
             e.printStackTrace()
             throw RuntimeException()
@@ -129,6 +111,7 @@ class CookieContractService(
         return try {
             val callResult = cookieContract.call(CookieContractMethod.BALANCE_OF.methodName, address)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -136,10 +119,11 @@ class CookieContractService(
         }
     }
 
-    fun isHide(cookieId: String): Boolean {
+    fun isHide(nftTokenId: String): Boolean {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.IS_HIDE.methodName, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.IS_HIDE.methodName, nftTokenId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -147,10 +131,11 @@ class CookieContractService(
         }
     }
 
-    fun isSale(cookieId: String): Boolean {
+    fun isSale(nftTokenId: String): Boolean {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.IS_SALE.methodName, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.IS_SALE.methodName, nftTokenId)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -158,10 +143,11 @@ class CookieContractService(
         }
     }
 
-    fun getHammerPrice(cookieId: String): BigInteger {
+    fun getHammerPrice(nftTokenId: String): BigInteger {
         return try {
-            val callResult = cookieContract.call(CookieContractMethod.GET_HAMMER_PRICE.methodName, cookieId)
+            val callResult = cookieContract.call(CookieContractMethod.GET_HAMMER_PRICE.methodName, nftTokenId)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -169,11 +155,12 @@ class CookieContractService(
         }
     }
 
-    fun getCookieIdByIndex(senderAddress: String, index: BigInteger): BigInteger {
+    fun getNtfTokenIdByIndex(senderAddress: String, index: BigInteger): BigInteger {
         return try {
             val callObject = CallObject.createCallObject(senderAddress)
             val callResult = cookieContract.call(callObject, CookieContractMethod.TOKEN_BY_INDEX.methodName, index)
             val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
             result.value
         } catch (e: Exception) {
             e.printStackTrace()
@@ -186,6 +173,7 @@ class CookieContractService(
             return try {
                 val callResult = cookieContract.call(CookieContractMethod.TOTAL_SUPPLY.methodName)
                 val result: Type<BigInteger> = callResult[0] as Type<BigInteger>
+
                 result.value
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -194,44 +182,21 @@ class CookieContractService(
         }
 
     fun createDefaultCookies(tokenInfos: List<CookieInfo>): List<BigInteger?> {
-        return tokenInfos.stream().map { cookieInfo: CookieInfo -> mintCookieByAdmin(cookieInfo!!) }.collect(Collectors.toList())
+        return tokenInfos.map { cookieInfo: CookieInfo -> mintCookieByAdmin(cookieInfo!!) }.toList()
     }
 
-    /**
-     *
-     * @param cookieInfo
-     * @return transaction hash 값
-     */
-    private fun mintCookieByAdmin(cookieInfo: CookieInfo): BigInteger? {
-        return try {
-            val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
-            val functionParams: List<Any> = listOf(cookieInfo.creatorAddress, cookieInfo.title, cookieInfo.content, cookieInfo.imageUrl, cookieInfo.tag, cookieInfo.hammerPrice)
-            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName).send(functionParams, sendOptions)
-
-            // first transfered event index = 0
-            val log = receiptData.logs[0]
-            // event (from, to, tokenId) 인데... 첫번째 인자에 알수없는 값이 들어가있음. 그래서 tokenId는 index 가 3
-            val cookieIdHex = log.topics[3]
-
-            // 0x prefix 제거를 위해 substring
-            getBigIntegerFromHexStr(cookieIdHex)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            throw RuntimeException()
-        }
+    fun getCookieEventsByNftTokenId(nftTokenId: String): List<CookieEvent> {
+        return getCookieEventsByNftTokenId(DefaultBlockParameterName.EARLIEST, nftTokenId)
     }
 
-    fun getCookieEventsByCookieId(cookieId: String): List<CookieEvent> {
-        return getCookieEventsByCookieId(DefaultBlockParameterName.EARLIEST, cookieId)
-    }
-
-    fun getCookieEventsByCookieId(fromBlock: DefaultBlockParameter, cookieId: String): List<CookieEvent> {
+    fun getCookieEventsByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: String): List<CookieEvent> {
         return try {
             val logs = getLogsByEventName(fromBlock, CookieContractEvent.COOKIE_EVENTED.eventName)
-            val filteredLogs = logs.stream()
+            val filteredLogs = logs
                 .map { obj: LogResult<*> -> obj as KlayLogs.Log }
-                .filter(indexedLogDataPredicateByBigInteger(COOKIE_EVENT_COOKIE_ID_INDEX, cookieId))
-                .collect(Collectors.toList())
+                .filter(indexedLogDataPredicateByBigInteger(COOKIE_EVENT_COOKIE_ID_INDEX, nftTokenId))
+                .toList()
+
             getCookieEvents(filteredLogs)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -239,8 +204,25 @@ class CookieContractService(
         }
     }
 
-    private fun getCookieEvents(logs: List<KlayLogs.Log>): MutableList<CookieEvent> {
-        return logs.stream()
+    private fun mintCookieByAdmin(cookieInfo: CookieInfo): BigInteger? {
+        return try {
+            val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
+            val functionParams: List<Any> = listOf(cookieInfo.creatorAddress, cookieInfo.title, cookieInfo.content, cookieInfo.imageUrl, cookieInfo.tag, cookieInfo.hammerPrice)
+            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName).send(functionParams, sendOptions)
+
+            val log = receiptData.logs[0]
+            val ntfTokenId = log.topics[3]
+
+            // 0x prefix 제거를 위해 substring
+            getBigIntegerFromHexStr(ntfTokenId)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            throw RuntimeException()
+        }
+    }
+
+    private fun getCookieEvents(logs: List<KlayLogs.Log>): List<CookieEvent> {
+        return logs
             .map { log: KlayLogs.Log ->
                 val indexedDatas = log.topics
                 val normalDatas: String = log.data.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH)
@@ -252,11 +234,11 @@ class CookieContractService(
                 val hammerPrice = getBigIntegerFromHexStr(hammerPriceHexStr)
                 val createdAt = LocalDateTime.ofInstant(Instant.ofEpochMilli(createdAtTimestamp), TimeZone.getDefault().toZoneId())
                 val cookieStatus: CookieEventStatus = CookieEventStatus.findByNum(getBigIntegerFromHexStr(indexedDatas[1])!!.toInt())
-                val cookieId = getBigIntegerFromHexStr(indexedDatas[2])
+                val nftTokenId = getBigIntegerFromHexStr(indexedDatas[2])
                 val fromAddress = fixAddressDigits(indexedDatas[3])
-                CookieEvent(cookieStatus, cookieId, fromAddress, hammerPrice, createdAt)
+                CookieEvent(cookieStatus, nftTokenId, fromAddress, hammerPrice, createdAt)
             }
-            .collect(Collectors.toList())
+            .toList()
     }
 
     private fun getLogsByEventName(fromBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
@@ -270,8 +252,8 @@ class CookieContractService(
         return getLogsByEventName(DefaultBlockParameterName.EARLIEST, eventName)
     }
 
-    private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
-        return BigInteger(cookieIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
+    private fun getBigIntegerFromHexStr(nftTokenIdHex: String): BigInteger? {
+        return BigInteger(nftTokenIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
     }
 
     private fun fixAddressDigits(address: String): String? {
@@ -279,19 +261,38 @@ class CookieContractService(
         return address.substring(0, TRANSACTION_HEX_PREFIX_DIGIT_LENGTH) + address.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH + TRANSACTION_ZERONUM_DIGIT_LENGTH, TRANSACTION_ADDRESS_DIGIT_LENGTH)
     }
 
-    private fun indexedLogDataNotZeroAddressPredicate(index: Int): Predicate<KlayLogs.Log> {
-        return Predicate { log: KlayLogs.Log ->
+    private fun indexedLogDataNotZeroAddressPredicate(index: Int): (KlayLogs.Log) -> Boolean {
+        return { log: KlayLogs.Log ->
             val fromAddress = log.topics[index]
             val result = getBigIntegerFromHexStr(fromAddress)
             result != BigInteger.ZERO
         }
     }
 
-    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: String): Predicate<KlayLogs.Log> {
-        return Predicate { log: KlayLogs.Log ->
-            val cookieIdHex = log.topics[index]
-            val value = getBigIntegerFromHexStr(cookieIdHex).toString()
+    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: String): (KlayLogs.Log) -> Boolean {
+        return { log: KlayLogs.Log ->
+            val nftTokenIdHex = log.topics[index]
+            val value = getBigIntegerFromHexStr(nftTokenIdHex).toString()
             expectedValue == value
         }
     }
+}
+
+enum class CookieContractMethod(val methodName: String) {
+    GET_CONTENT("getContent"),
+    MINTING_PRICE_FOR_HAMMER("mintingPriceForHammer"),
+    MINTING_PRICE_FOR_KALYTN("mintingPriceForKlaytn"),
+    GET_OWNED_NFT_TOKEN_IDS("getOwnedCookieIds"),
+    BALANCE_OF("balanceOf"),
+    IS_HIDE("hideCookies"),
+    IS_SALE("saleCookies"),
+    GET_HAMMER_PRICE("cookieHammerPrices"),
+    TOKEN_BY_INDEX("tokenByIndex"),
+    TOTAL_SUPPLY("totalSupply"),
+    MINT_COOKIE_BY_OWNER("mintCookieByOwner");
+}
+
+enum class CookieContractEvent(val eventName: String) {
+    TRANSFER("Transfer"),
+    COOKIE_EVENTED("CookieEvented");
 }

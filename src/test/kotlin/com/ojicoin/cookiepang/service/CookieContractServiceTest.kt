@@ -44,7 +44,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getOwnedCookieIds() {
-        val cookieIds: List<String> = sut.getOwnedCookieIds("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
+        val cookieIds: List<String> = sut.getOwnedNtfTokenIds("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
         println(cookieIds)
     }
 
@@ -74,7 +74,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieIdByIndex() {
-        val cookieIdByIndex: BigInteger = sut.getCookieIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
+        val cookieIdByIndex: BigInteger = sut.getNtfTokenIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
         println(cookieIdByIndex)
     }
 
@@ -113,13 +113,13 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieEventsByCookieId() {
-        val result: List<CookieEvent> = sut.getCookieEventsByCookieId("1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId("1")
         println(result)
     }
 
     @Test
     fun getCookieEventsByCookieIdWithBlockNum() {
-        val result: List<CookieEvent> = sut.getCookieEventsByCookieId(DefaultBlockParameterNumber(83541764), "1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), "1")
         println(result)
     }
 }

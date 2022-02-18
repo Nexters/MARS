@@ -29,12 +29,7 @@ enum class CookieEventStatus(private val num: Int) {
 
     companion object {
         fun findByNum(num: Int): CookieEventStatus {
-            for (cookieStatus in values()) {
-                if (cookieStatus.num == num) {
-                    return cookieStatus
-                }
-            }
-            throw RuntimeException()
+            return values().filter { it.num == num }.first()
         }
     }
 }
