@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.dto
 
 import com.ojicoin.cookiepang.domain.AskStatus
+import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import javax.validation.constraints.Size
 
@@ -49,4 +50,11 @@ data class UpdateUser(
 data class UpdateAsk(
     val title: String?,
     val status: AskStatus?,
+)
+
+data class GetCookiesResponse(
+    val totalCount: Int,
+    val page: Int,
+    val size: Int,
+    val cookies: List<Cookie>,
 )

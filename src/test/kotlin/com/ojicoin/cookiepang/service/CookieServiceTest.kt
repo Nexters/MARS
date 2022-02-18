@@ -132,6 +132,102 @@ class CookieServiceTest(
             .hasMessageContaining("already deleted.")
     }
 
+    @RepeatedTest(REPEAT_COUNT)
+    fun getOwnedCookiesSameViewUserId() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", Arbitraries.of(ACTIVE, HIDDEN))
+            .sample()
+
+        val savedCookie = cookieRepository.save(cookie)
+
+        val getCookiesResponse = sut.getOwnedCookies(savedCookie.ownedUserId, savedCookie.ownedUserId, 0, 100)
+        then(getCookiesResponse.totalCount).isEqualTo(1)
+
+        val foundCookie = getCookiesResponse.cookies[0]
+        then(savedCookie.title).isEqualTo(foundCookie.title)
+        then(savedCookie.content).isEqualTo(foundCookie.content)
+        then(savedCookie.price).isEqualTo(foundCookie.price)
+        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
+        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
+        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun getOwnedCookiesNotSameViewUserId() {
+        val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", ACTIVE)
+            .sample()
+        val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", HIDDEN)
+            .sample()
+
+        cookieRepository.save(hiddenCookie)
+
+        val savedCookie = cookieRepository.save(activeCookie)
+
+        val getCookiesResponse = sut.getOwnedCookies(savedCookie.ownedUserId, savedCookie.authorUserId, 0, 100)
+        then(getCookiesResponse.totalCount).isEqualTo(1)
+
+        val foundCookie = getCookiesResponse.cookies[0]
+        then(savedCookie.title).isEqualTo(foundCookie.title)
+        then(savedCookie.content).isEqualTo(foundCookie.content)
+        then(savedCookie.price).isEqualTo(foundCookie.price)
+        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
+        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
+        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun getAuthorCookiesSameViewUserId() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", Arbitraries.of(ACTIVE, HIDDEN))
+            .sample()
+
+        val savedCookie = cookieRepository.save(cookie)
+
+        val getCookiesResponse = sut.getAuthorCookies(savedCookie.authorUserId, savedCookie.authorUserId, 0, 100)
+        then(getCookiesResponse.totalCount).isEqualTo(1)
+
+        val foundCookie = getCookiesResponse.cookies[0]
+        then(savedCookie.title).isEqualTo(foundCookie.title)
+        then(savedCookie.content).isEqualTo(foundCookie.content)
+        then(savedCookie.price).isEqualTo(foundCookie.price)
+        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
+        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
+        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun getAuthorCookiesNotSameViewUserId() {
+        val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", ACTIVE)
+            .sample()
+        val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", HIDDEN)
+            .sample()
+
+        cookieRepository.save(hiddenCookie)
+
+        val savedCookie = cookieRepository.save(activeCookie)
+
+        val getCookiesResponse = sut.getAuthorCookies(savedCookie.authorUserId, savedCookie.ownedUserId, 0, 100)
+        then(getCookiesResponse.totalCount).isEqualTo(1)
+
+        val foundCookie = getCookiesResponse.cookies[0]
+        then(savedCookie.title).isEqualTo(foundCookie.title)
+        then(savedCookie.content).isEqualTo(foundCookie.content)
+        then(savedCookie.price).isEqualTo(foundCookie.price)
+        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
+        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
+        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+    }
+
     @AfterEach
     internal fun tearDown() {
         cookieRepository.deleteAll()

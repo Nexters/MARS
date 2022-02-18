@@ -2,6 +2,8 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
 import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
+import com.ojicoin.cookiepang.controller.GetUserCookieTarget.COLLECTED
+import com.ojicoin.cookiepang.controller.GetUserCookieTarget.COOKIES
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.Notification
@@ -9,6 +11,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateAsk
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateUser
+import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.UpdateUser
@@ -201,12 +204,12 @@ class ApiController(
                 parameters = [
                     Parameter(
                         name = "page",
-                        schema = Schema(implementation = Int::class),
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
                         `in` = ParameterIn.QUERY
                     ),
                     Parameter(
                         name = "size",
-                        schema = Schema(implementation = Int::class),
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "3"))],
                         `in` = ParameterIn.QUERY
                     ),
                 ],
@@ -231,12 +234,12 @@ class ApiController(
                     Parameter(name = "categoryId", `in` = ParameterIn.PATH),
                     Parameter(
                         name = "page",
-                        schema = Schema(implementation = Int::class),
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
                         `in` = ParameterIn.QUERY
                     ),
                     Parameter(
                         name = "size",
-                        schema = Schema(implementation = Int::class),
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "3"))],
                         `in` = ParameterIn.QUERY
                     ),
                 ],
@@ -306,6 +309,43 @@ class ApiController(
                     )
                 ]
             )
+        ),
+        RouterOperation(
+            path = "/users/{userId}/cookies",
+            operation = Operation(
+                operationId = "getUserCookies",
+                method = "GET",
+                tags = ["cookie"],
+                parameters = [
+                    Parameter(name = "userId", `in` = ParameterIn.PATH),
+                    Parameter(
+                        name = "page",
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
+                        `in` = ParameterIn.QUERY
+                    ),
+                    Parameter(
+                        name = "size",
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "3"))],
+                        `in` = ParameterIn.QUERY
+                    ),
+                    Parameter(
+                        name = "target",
+                        content = [Content(schema = Schema(implementation = GetUserCookieTarget::class))],
+                        `in` = ParameterIn.QUERY
+                    ),
+                ],
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [
+                            Content(
+                                mediaType = "application/json",
+                                array = ArraySchema(schema = Schema(implementation = GetCookiesResponse::class))
+                            )
+                        ]
+                    )
+                ]
+            )
         )
     )
     fun view() = route(GET("/categories")) {
@@ -342,6 +382,33 @@ class ApiController(
         val size = it.param("size").map { size -> size.toInt() }.orElse(5)
 
         ok().body(notificationService.get(receiverUserId = receiverUserId, page = page, size = size))
+    }.andRoute(GET("/users/{userId}/cookies")) {
+        val userId = it.pathVariable("userId").toLong()
+
+        val page = it.param("page").map { page -> page.toInt() }.orElse(0)
+        val size = it.param("size").map { size -> size.toInt() }.orElse(5)
+
+        // TODO get viewUserId
+        val viewUserId = 1
+
+        val target = it.param("target").orElseThrow()
+        val cookiesResponse = when (GetUserCookieTarget.valueOf(target.uppercase())) {
+            COLLECTED -> cookieService.getOwnedCookies(
+                userId = userId,
+                viewUserId = viewUserId.toLong(),
+                page = page,
+                size = size
+            )
+
+            COOKIES -> cookieService.getAuthorCookies(
+                userId = userId,
+                viewUserId = viewUserId.toLong(),
+                page = page,
+                size = size
+            )
+        }
+
+        ok().body(cookiesResponse)
     }
 
     @Bean
@@ -456,6 +523,11 @@ class ApiController(
 }
 
 enum class GetAskTarget { SENDER, RECEIVER }
+
+enum class GetUserCookieTarget {
+    COLLECTED,
+    COOKIES,
+}
 
 data class UserCategoryCreateDto(
     val categoryIdList: List<Long>,
