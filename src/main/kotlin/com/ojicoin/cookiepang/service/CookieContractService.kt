@@ -247,6 +247,9 @@ class CookieContractService(
         val filter = KlayLogFilter(fromBlock, DefaultBlockParameterName.LATEST, cookieContract.contractAddress, null)
         val klayLogs = cookieContract.getPastEvent(eventName, filter)
         val logs = klayLogs.logs
+        if (logs.isEmpty()) {
+            throw RuntimeException()
+        }
         return logs
     }
 
