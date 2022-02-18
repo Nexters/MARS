@@ -50,7 +50,7 @@ class ViewAssemblerTest(
         then(actual.creatorName).isEqualTo(creator.nickname)
         then(actual.contractAddress).isEqualTo(contractAddress)
         then(actual.price).isEqualTo(cookie.price)
-        then(actual.tokenAddress).isEqualTo(cookie.tokenAddress)
+        then(actual.nftTokenId).isEqualTo(cookie.txHash)
         then(actual.viewCount).isEqualTo(0L)
     }
 

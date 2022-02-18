@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.ok
+import java.math.BigInteger
 import java.time.Instant
 
 @Controller
@@ -50,7 +51,7 @@ data class CookieView(
     val collectorName: String,
     val creatorName: String,
     val contractAddress: String,
-    val tokenAddress: String,
+    val nftTokenId: BigInteger,
     val viewCount: Long,
     val price: Long,
     val histories: List<CookieHistory>,

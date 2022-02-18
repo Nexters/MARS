@@ -1,11 +1,14 @@
 package com.ojicoin.cookiepang.service
 
+import com.ojicoin.cookiepang.config.CacheTemplate
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.TransferInfo
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +17,8 @@ import java.time.Instant
 @Service
 class CookieService(
     private val cookieRepository: CookieRepository,
+    private val cookieContractService: CookieContractService,
+    @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferInfo>,
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
 
@@ -27,9 +32,11 @@ class CookieService(
         )
 
     fun create(dto: CreateCookie): Cookie {
-        if (cookieRepository.findByTokenAddress(dto.tokenAddress) != null) {
+        if (cookieRepository.findByTxHash(dto.txHash) != null) {
             throw IllegalArgumentException("Attempting duplicate token creation.")
         }
+        val transferInfo = transferInfoByTxHashCacheTemplate[dto.txHash]
+            ?: cookieContractService.getTransferInfoByTxHash(dto.txHash)
 
         return cookieRepository.save(
             Cookie(
@@ -38,10 +45,12 @@ class CookieService(
                 price = dto.price,
                 authorUserId = dto.authorUserId,
                 ownedUserId = dto.ownedUserId,
-                tokenAddress = dto.tokenAddress,
+                txHash = dto.txHash,
                 categoryId = dto.categoryId,
                 imageUrl = null,
                 status = ACTIVE,
+                nftTokenId = transferInfo.nftTokenId,
+                fromBlockAddress = transferInfo.blockNumber,
                 createdAt = Instant.now(),
             )
         )

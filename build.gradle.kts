@@ -32,6 +32,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -41,6 +42,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.1.4")
     implementation("com.klaytn.caver:core:1.6.2")
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.2")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

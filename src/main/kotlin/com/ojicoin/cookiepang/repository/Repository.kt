@@ -15,7 +15,7 @@ import org.springframework.data.repository.PagingAndSortingRepository
 import java.util.Optional
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
-    fun findByTokenAddress(tokenAddress: String): Cookie?
+    fun findByTxHash(txHash: String): Cookie?
 
     fun findByStatusIsNotAndCategoryId(
         status: CookieStatus = CookieStatus.DELETED,
