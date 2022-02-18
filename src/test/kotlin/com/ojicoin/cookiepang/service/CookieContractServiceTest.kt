@@ -26,7 +26,7 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getContent() {
-        val content: String = sut.getContent("1", "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
+        val content: String = sut.getContent(BigInteger.ONE, "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa")
         println(content)
     }
 
@@ -56,19 +56,19 @@ internal class CookieContractServiceTest(
 
     @Test
     fun isHide() {
-        val isHide: Boolean = sut.isHide("1")
+        val isHide: Boolean = sut.isHide(BigInteger.ONE)
         println(isHide)
     }
 
     @Test
     fun isSale() {
-        val isSale: Boolean = sut.isSale("1")
+        val isSale: Boolean = sut.isSale(BigInteger.ONE)
         println(isSale)
     }
 
     @Test
     fun getHammerPrice() {
-        val hammerPrice: BigInteger = sut.getHammerPrice("1")
+        val hammerPrice: BigInteger = sut.getHammerPrice(BigInteger.ONE)
         println(hammerPrice)
     }
 
@@ -113,13 +113,13 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieEventsByCookieId() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId("1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(BigInteger.ONE)
         println(result)
     }
 
     @Test
     fun getCookieEventsByCookieIdWithBlockNum() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), "1")
+        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
         println(result)
     }
 }
