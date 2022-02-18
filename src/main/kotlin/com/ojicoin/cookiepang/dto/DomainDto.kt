@@ -10,7 +10,7 @@ data class CreateCookie(
     val price: Long,
     val authorUserId: Long,
     val ownedUserId: Long,
-    val tokenAddress: String,
+    val txHash: String,
     val categoryId: Long,
 )
 

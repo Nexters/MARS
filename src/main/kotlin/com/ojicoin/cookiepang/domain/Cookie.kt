@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.domain.AbstractAggregateRoot
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.math.BigInteger
 import java.time.Instant
 import javax.validation.constraints.Size
 
@@ -20,7 +21,9 @@ data class Cookie(
     @Column("owned_user_id") var ownedUserId: Long,
     @Column("created_at") val createdAt: Instant,
     @Column("status") var status: CookieStatus,
-    @Column("tokenAddress") val tokenAddress: String,
+    @Column("tx_hash") val txHash: String,
+    @Column("nft_token_id") val nftTokenId: BigInteger,
+    @Column("from_block_address") val fromBlockAddress: BigInteger,
     @Column("categoryId") val categoryId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
     fun addEvent(event: ApplicationEvent) {

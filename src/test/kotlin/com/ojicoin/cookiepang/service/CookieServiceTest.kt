@@ -2,11 +2,13 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.config.CacheTemplate
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.TransferInfo
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import net.jqwik.api.Arbitraries
@@ -15,15 +17,19 @@ import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 class CookieServiceTest(
     @Autowired val sut: CookieService,
     @Autowired val cookieRepository: CookieRepository,
+    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferInfo>,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
     fun create() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
+        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        cacheTemplate[createCookie.txHash] = transferInfo
 
         val created = sut.create(createCookie)
 
@@ -32,15 +38,19 @@ class CookieServiceTest(
         then(created.price).isEqualTo(createCookie.price)
         then(created.ownedUserId).isEqualTo(createCookie.ownedUserId)
         then(created.authorUserId).isEqualTo(createCookie.authorUserId)
-        then(created.tokenAddress).isEqualTo(createCookie.tokenAddress)
+        then(created.txHash).isEqualTo(createCookie.txHash)
+        then(created.nftTokenId).isEqualTo(transferInfo.nftTokenId)
+        then(created.fromBlockAddress).isEqualTo(transferInfo.blockNumber)
         then(created.categoryId).isEqualTo(createCookie.categoryId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
     fun createDuplicateTokenAddressThrows() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
+        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        cacheTemplate[createCookie.txHash] = transferInfo
         val createCookieWithSameTokenAddress = fixture.giveMeBuilder(CreateCookie::class.java)
-            .set("tokenAddress", createCookie.tokenAddress)
+            .set("txHash", createCookie.txHash)
             .sample()
         sut.create(createCookie)
 

@@ -37,7 +37,7 @@ class ViewAssembler(
             collectorName = owner.nickname,
             creatorName = creator.nickname,
             contractAddress = contractProperties.address,
-            tokenAddress = cookie.tokenAddress,
+            nftTokenId = cookie.nftTokenId,
             viewCount = viewCount,
             price = cookie.price,
             histories = listOf(
