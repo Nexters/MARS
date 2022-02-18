@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.config
+package com.ojicoin.cookiepang.contract.config
 
 import com.klaytn.caver.Caver
 import com.klaytn.caver.contract.Contract

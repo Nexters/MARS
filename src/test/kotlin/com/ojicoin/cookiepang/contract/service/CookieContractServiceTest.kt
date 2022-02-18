@@ -1,9 +1,9 @@
-package com.ojicoin.cookiepang.service
+package com.ojicoin.cookiepang.contract.service
 
 import com.ojicoin.cookiepang.SpringContextFixture
-import com.ojicoin.cookiepang.dto.CookieEvent
-import com.ojicoin.cookiepang.dto.CookieInfo
-import com.ojicoin.cookiepang.dto.TransferInfo
+import com.ojicoin.cookiepang.contract.dto.CookieInfo
+import com.ojicoin.cookiepang.contract.event.CookieEventLog
+import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.web3j.protocol.core.DefaultBlockParameterNumber
@@ -16,11 +16,9 @@ internal class CookieContractServiceTest(
     @Autowired val sut: CookieContractService
 ) : SpringContextFixture() {
 
-    // FIXME: 테스트 어떻게!?
-
     @Test
     fun getTransferInfoByTxHash() {
-        val transferInfo: TransferInfo = sut.getTransferInfoByTxHash("0x5e1a1d7a0d9c92638369738b1bd8ece38b630cbd26d3dc826c3a9f8257ab1f69")
+        val transferInfo: TransferEventLog = sut.getTransferEventLogByTxHash("0xb8b8119de7005a15606e35769290960ff8025916d034e3c8c65b7dd2b9f4094c")
         println(transferInfo)
     }
 
@@ -113,13 +111,13 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieEventsByCookieId() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(BigInteger.ONE)
+        val result: List<CookieEventLog> = sut.getCookieEventLogByNftTokenId(BigInteger.ONE)
         println(result)
     }
 
     @Test
     fun getCookieEventsByCookieIdWithBlockNum() {
-        val result: List<CookieEvent> = sut.getCookieEventsByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
+        val result: List<CookieEventLog> = sut.getCookieEventLogByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
         println(result)
     }
 }

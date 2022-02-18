@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.service
+package com.ojicoin.cookiepang.contract.service
 
 import com.ojicoin.cookiepang.SpringContextFixture
 import org.junit.jupiter.api.Test

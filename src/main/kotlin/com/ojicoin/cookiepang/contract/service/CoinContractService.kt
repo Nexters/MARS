@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.service
+package com.ojicoin.cookiepang.contract.service
 
 import com.klaytn.caver.abi.datatypes.Type
 import com.klaytn.caver.contract.Contract
