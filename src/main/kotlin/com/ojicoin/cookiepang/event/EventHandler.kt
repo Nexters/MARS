@@ -6,7 +6,9 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
 @Component
-class EventHandler(private val viewCountRepository: ViewCountRepository) {
+class EventHandler(
+    private val viewCountRepository: ViewCountRepository,
+) {
     @EventListener
     fun handleViewCookieEvent(viewCookieEvent: ViewCookieEvent) {
         viewCountRepository.save(

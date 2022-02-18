@@ -4,6 +4,7 @@ import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
 import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.Notification
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateAsk
 import com.ojicoin.cookiepang.dto.CreateCookie
@@ -15,6 +16,7 @@ import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.AskService
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
+import com.ojicoin.cookiepang.service.NotificationService
 import com.ojicoin.cookiepang.service.StorageService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import com.ojicoin.cookiepang.service.UserService
@@ -52,6 +54,7 @@ class ApiController(
     private val cookieService: CookieService,
     private val categoryService: CategoryService,
     private val storageService: StorageService,
+    private val notificationService: NotificationService,
 ) {
 
     @Bean
@@ -269,6 +272,40 @@ class ApiController(
                     )
                 ]
             )
+        ),
+        RouterOperation(
+            path = "/notifications/users/{userId}",
+            operation = Operation(
+                operationId = "getNotifications",
+                parameters = [
+                    Parameter(
+                        name = "userId",
+                        content = [Content(schema = Schema(implementation = Long::class))],
+                        `in` = ParameterIn.PATH
+                    ),
+                    Parameter(
+                        name = "page",
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
+                        `in` = ParameterIn.QUERY
+                    ),
+                    Parameter(
+                        name = "size",
+                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "5"))],
+                        `in` = ParameterIn.QUERY
+                    ),
+                ],
+                responses = [
+                    ApiResponse(
+                        responseCode = "200",
+                        content = [
+                            Content(
+                                mediaType = "application/json",
+                                array = ArraySchema(schema = Schema(implementation = Notification::class))
+                            )
+                        ]
+                    )
+                ]
+            )
         )
     )
     fun view() = route(GET("/categories")) {
@@ -298,6 +335,13 @@ class ApiController(
         val userId = it.pathVariable("userId").toLong()
 
         ok().body(userService.getById(id = userId))
+    }.andRoute(GET("/notifications/users/{userId})")) {
+        val receiverUserId = it.pathVariable("userId").toLong()
+
+        val page = it.param("page").map { page -> page.toInt() }.orElse(0)
+        val size = it.param("size").map { size -> size.toInt() }.orElse(5)
+
+        ok().body(notificationService.get(receiverUserId = receiverUserId, page = page, size = size))
     }
 
     @Bean

@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
+import com.ojicoin.cookiepang.domain.Notification
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.domain.ViewCount
@@ -46,4 +47,8 @@ interface ViewCountRepository : CrudRepository<ViewCount, Long> {
 
 interface UserCategoryRepository : CrudRepository<UserCategory, Long> {
     fun findAllByUserId(userId: Long): List<UserCategory>
+}
+
+interface NotificationRepository : PagingAndSortingRepository<Notification, Long> {
+    fun findAllByReceiverUserId(receiverUserId: Long, pageable: Pageable): List<Notification>
 }

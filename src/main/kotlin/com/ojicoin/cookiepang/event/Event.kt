@@ -2,9 +2,8 @@ package com.ojicoin.cookiepang.event
 
 import org.springframework.context.ApplicationEvent
 
-class Event {
-    // ktlint 에러 해결용
-}
+// For prevent ktlint error
+class Event
 
 data class ViewCookieEvent(
     private val source: Any,
