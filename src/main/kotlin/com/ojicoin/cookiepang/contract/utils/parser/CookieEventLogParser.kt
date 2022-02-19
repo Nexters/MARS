@@ -21,9 +21,7 @@ import java.util.TimeZone
 class CookieEventLogParser(private val caver: Caver) : LogParser<CookieEventLog> {
     override fun parse(logs: List<KlayLogs.Log>): List<CookieEventLog> {
         return logs
-            .map { log: KlayLogs.Log ->
-                parseCookieEventLog(log)
-            }
+            .map { parseCookieEventLog(it) }
             .toList()
     }
 
