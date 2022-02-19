@@ -3,3 +3,9 @@ storage:
 
 contract:
   address: 123456
+
+cloud:
+  aws:
+    s3:
+      bucket: test
+      directory: pictures

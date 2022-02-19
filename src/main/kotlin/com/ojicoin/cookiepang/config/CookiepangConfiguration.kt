@@ -4,5 +4,5 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@EnableConfigurationProperties(value = [StorageProperties::class, ContractProperties::class])
+@EnableConfigurationProperties(value = [LocalStorageProperties::class, ContractProperties::class, S3Properties::class])
 class CookiepangConfiguration

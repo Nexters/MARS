@@ -34,7 +34,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springdoc.core.annotations.RouterOperation
 import org.springdoc.core.annotations.RouterOperations
 import org.springframework.context.annotation.Bean
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.util.MultiValueMap
 import org.springframework.web.servlet.function.RequestPredicates.DELETE
@@ -59,29 +58,6 @@ class ApiController(
     private val storageService: StorageService,
     private val notificationService: NotificationService,
 ) {
-
-    @Bean
-    @RouterOperations(
-        RouterOperation(
-            path = "/users/{userId}/pictures/{pictureName}",
-            operation = Operation(
-                operationId = "getUserProfilePicture",
-                parameters = [
-                    Parameter(name = "userId", `in` = ParameterIn.PATH),
-                    Parameter(name = "pictureName", `in` = ParameterIn.PATH),
-                ],
-                responses = [ApiResponse(responseCode = "200")]
-            )
-        )
-    )
-    fun get() = route(GET("/users/{userId}/pictures/{pictureName}")) {
-        val userId = it.pathVariable("userId").toLong()
-        val pictureName = it.pathVariable("pictureName")
-
-        val pictureAsByteArray = storageService.getProfilePicture(userId = userId, pictureName = pictureName)
-        ok().header("Accept", MediaType.APPLICATION_OCTET_STREAM_VALUE)
-            .body(pictureAsByteArray)
-    }
 
     @Bean
     @RouterOperations(
@@ -517,8 +493,8 @@ class ApiController(
             return null
         }
 
-        val profilePicture = multipartData["profilePicture"]!![0]
-        return storageService.saveProfilePicture(userId, profilePicture.submittedFileName, profilePicture.inputStream)
+        val picture = multipartData[pictureKey]!![0]
+        return storageService.saveProfilePicture(userId, picture.submittedFileName, picture.inputStream)
     }
 }
 
