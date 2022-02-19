@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.DefaultBlockParameterNumber
 import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 
@@ -28,13 +29,16 @@ class CookieContractService(
     private val cookieContract: Contract,
     private val cookieEventLogParser: CookieEventLogParser,
     private val transferEventLogParser: TransferEventLogParser,
+    private val transactionService: TransactionService,
     @Value("\${contract.admin-address}") val adminAddress: String,
 ) {
 
     // FIXME: 커스텀 익셉션 추가
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
         return try {
-            val transferLogs = getLogsByEventName(CookieContractEvent.TRANSFER.eventName)
+            val blockNumber: BigInteger = transactionService.getBlockNumberByTxHash(txHash)!!
+            val transferLogs: List<LogResult<*>> = getLogsByEventName(DefaultBlockParameterNumber(blockNumber), DefaultBlockParameterNumber(blockNumber), CookieContractEvent.TRANSFER.eventName)!!
+
             val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
             transferEventLogParser.parse(txHashLogs).last()
         } catch (e: java.lang.Exception) {
@@ -204,6 +208,10 @@ class CookieContractService(
     }
 
     private fun getLogsByEventName(fromBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
+        return getLogsByEventName(fromBlock, DefaultBlockParameterName.LATEST, eventName)
+    }
+
+    private fun getLogsByEventName(fromBlock: DefaultBlockParameter, toBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
         val filter = KlayLogFilter(fromBlock, DefaultBlockParameterName.LATEST, cookieContract.contractAddress, null)
         val klayLogs = cookieContract.getPastEvent(eventName, filter)
         val logs = klayLogs.logs
@@ -211,10 +219,6 @@ class CookieContractService(
             throw RuntimeException()
         }
         return logs
-    }
-
-    private fun getLogsByEventName(eventName: String): List<LogResult<*>> {
-        return getLogsByEventName(DefaultBlockParameterName.EARLIEST, eventName)
     }
 }
 
