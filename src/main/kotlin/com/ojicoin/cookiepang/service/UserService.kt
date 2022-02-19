@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.service
 
+import com.ojicoin.cookiepang.controller.UserExistException
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
@@ -37,5 +38,12 @@ class UserService(val userRepository: UserRepository) {
         user.apply(profileUrl = profilePictureUrl, backgroundUrl = backgroundPictureUrl, dto = dto)
 
         return userRepository.save(user)
+    }
+
+    fun checkDuplicateUser(walletAddress: String) {
+        val user = userRepository.findByWalletAddress(walletAddress = walletAddress)
+        if (user.isPresent) {
+            throw UserExistException("There is user that have this wallerAddress. wallerAddress=$walletAddress")
+        }
     }
 }
