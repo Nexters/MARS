@@ -57,6 +57,7 @@ interface AskRepository : CrudRepository<Ask, Long> {
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long> {
     fun findByNickname(nickname: String): Optional<User>
+    fun findByWalletAddress(walletAddress: String): Optional<User>
 }
 
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {

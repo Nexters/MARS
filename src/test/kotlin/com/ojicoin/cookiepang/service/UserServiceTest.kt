@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.controller.UserExistException
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
@@ -96,6 +97,18 @@ class UserServiceTest(
 
         thenThrownBy { sut.modify(userId, null, null, UpdateUser(null)) }
             .isExactlyInstanceOf(NoSuchElementException::class.java)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun checkDuplicateUser() {
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+
+        val savedUser = userRepository.save(user)
+
+        thenThrownBy { sut.checkDuplicateUser(savedUser.walletAddress) }
+            .isExactlyInstanceOf(UserExistException::class.java)
     }
 
     @AfterEach
