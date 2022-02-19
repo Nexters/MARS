@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.service
+package com.ojicoin.cookiepang.contract.service
 
 import com.klaytn.caver.abi.datatypes.Type
 import com.klaytn.caver.abi.datatypes.generated.Uint256
@@ -8,19 +8,17 @@ import com.klaytn.caver.methods.request.CallObject
 import com.klaytn.caver.methods.request.KlayLogFilter
 import com.klaytn.caver.methods.response.KlayLogs
 import com.klaytn.caver.methods.response.KlayLogs.LogResult
-import com.ojicoin.cookiepang.dto.CookieEvent
-import com.ojicoin.cookiepang.dto.CookieEventStatus
-import com.ojicoin.cookiepang.dto.CookieInfo
-import com.ojicoin.cookiepang.dto.TransferInfo
+import com.ojicoin.cookiepang.contract.dto.CookieInfo
+import com.ojicoin.cookiepang.contract.event.CookieEventLog
+import com.ojicoin.cookiepang.contract.event.TransferEventLog
+import com.ojicoin.cookiepang.contract.utils.parser.CookieEventLogParser
+import com.ojicoin.cookiepang.contract.utils.parser.TransferEventLogParser
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
-import java.time.Instant
-import java.time.LocalDateTime
-import java.util.TimeZone
 
 /**
  * @author seongchan.kang
@@ -28,28 +26,17 @@ import java.util.TimeZone
 @Service
 class CookieContractService(
     private val cookieContract: Contract,
+    private val cookieEventLogParser: CookieEventLogParser,
+    private val transferEventLogParser: TransferEventLogParser,
     @Value("\${contract.admin-address}") val adminAddress: String,
 ) {
 
-    private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
-    private val TRANSACTION_ZERONUM_DIGIT_LENGTH = 24
-    private val TRANSACTION_ADDRESS_DIGIT_LENGTH = 66
-
-    // FIXME: Event Log의 인덱스 값들에 대한 관리를 어떻게하면 좋을지 고민 필요..
-    private val COOKIE_TRANSFER_ADDRESS_INDEX = 2
-    private val COOKIE_EVENT_COOKIE_ID_INDEX = 2
-
     // FIXME: 커스텀 익셉션 추가
-    fun getTransferInfoByTxHash(txHash: String): TransferInfo {
+    fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
         return try {
             val transferLogs = getLogsByEventName(CookieContractEvent.TRANSFER.eventName)
-            val txHashLog = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.filter(indexedLogDataNotZeroAddressPredicate(COOKIE_TRANSFER_ADDRESS_INDEX)).first()
-            val fromAddress = txHashLog.topics[1]
-            val toAddress = txHashLog.topics[2]
-            val nftTokenIdHexStr = txHashLog.topics[3]
-            val blockNumber = txHashLog.blockNumber
-
-            TransferInfo(fixAddressDigits(fromAddress)!!, fixAddressDigits(toAddress)!!, getBigIntegerFromHexStr(nftTokenIdHexStr)!!, blockNumber)
+            val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
+            transferEventLogParser.parse(txHashLogs).last()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
@@ -186,19 +173,16 @@ class CookieContractService(
         return tokenInfos.map { cookieInfo: CookieInfo -> mintCookieByAdmin(cookieInfo!!) }.toList()
     }
 
-    fun getCookieEventsByNftTokenId(nftTokenId: BigInteger): List<CookieEvent> {
-        return getCookieEventsByNftTokenId(DefaultBlockParameterName.EARLIEST, nftTokenId)
+    fun getCookieEventLogByNftTokenId(nftTokenId: BigInteger): List<CookieEventLog> {
+        return getCookieEventLogByNftTokenId(DefaultBlockParameterName.EARLIEST, nftTokenId)
     }
 
-    fun getCookieEventsByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: BigInteger): List<CookieEvent> {
+    fun getCookieEventLogByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: BigInteger): List<CookieEventLog> {
         return try {
             val logs = getLogsByEventName(fromBlock, CookieContractEvent.COOKIE_EVENTED.eventName)
-            val filteredLogs = logs
                 .map { obj: LogResult<*> -> obj as KlayLogs.Log }
-                .filter(indexedLogDataPredicateByBigInteger(COOKIE_EVENT_COOKIE_ID_INDEX, nftTokenId))
                 .toList()
-
-            getCookieEvents(filteredLogs)
+            cookieEventLogParser.parse(logs).filter { log: CookieEventLog -> log.nftTokenId == nftTokenId }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
@@ -211,36 +195,12 @@ class CookieContractService(
             val functionParams: List<Any> = listOf(cookieInfo.creatorAddress, cookieInfo.title, cookieInfo.content, cookieInfo.imageUrl, cookieInfo.tag, cookieInfo.hammerPrice)
             val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName).send(functionParams, sendOptions)
 
-            val log = receiptData.logs[0]
-            val ntfTokenId = log.topics[3]
-
-            // 0x prefix 제거를 위해 substring
-            getBigIntegerFromHexStr(ntfTokenId)
+            val transferEventLogs: TransferEventLog = transferEventLogParser.parse(receiptData.logs).first()
+            transferEventLogs.nftTokenId
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
         }
-    }
-
-    private fun getCookieEvents(logs: List<KlayLogs.Log>): List<CookieEvent> {
-        return logs
-            .map { log: KlayLogs.Log ->
-                val indexedDatas = log.topics
-                val normalDatas: String = log.data.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH)
-                val splitLength = normalDatas.length / 2
-                val hammerPriceHexStr = normalDatas.substring(0, splitLength)
-                val createdAtHexStr = normalDatas.substring(splitLength)
-                val createdAtTimestamp = getBigIntegerFromHexStr(createdAtHexStr)!!.toLong() * 1000
-
-                val hammerPrice = getBigIntegerFromHexStr(hammerPriceHexStr)
-                val createdAt = LocalDateTime.ofInstant(Instant.ofEpochMilli(createdAtTimestamp), TimeZone.getDefault().toZoneId())
-                val cookieStatus: CookieEventStatus = CookieEventStatus.findByNum(getBigIntegerFromHexStr(indexedDatas[1])!!.toInt())
-                val nftTokenId = getBigIntegerFromHexStr(indexedDatas[2])
-                val fromAddress = fixAddressDigits(indexedDatas[3])
-
-                CookieEvent(cookieStatus, nftTokenId, fromAddress, hammerPrice, createdAt, log.blockNumber)
-            }
-            .toList()
     }
 
     private fun getLogsByEventName(fromBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
@@ -255,31 +215,6 @@ class CookieContractService(
 
     private fun getLogsByEventName(eventName: String): List<LogResult<*>> {
         return getLogsByEventName(DefaultBlockParameterName.EARLIEST, eventName)
-    }
-
-    private fun getBigIntegerFromHexStr(nftTokenIdHexStr: String): BigInteger? {
-        return BigInteger(nftTokenIdHexStr.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
-    }
-
-    private fun fixAddressDigits(address: String): String? {
-        require(address.length == TRANSACTION_ADDRESS_DIGIT_LENGTH)
-        return address.substring(0, TRANSACTION_HEX_PREFIX_DIGIT_LENGTH) + address.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH + TRANSACTION_ZERONUM_DIGIT_LENGTH, TRANSACTION_ADDRESS_DIGIT_LENGTH)
-    }
-
-    private fun indexedLogDataNotZeroAddressPredicate(index: Int): (KlayLogs.Log) -> Boolean {
-        return { log: KlayLogs.Log ->
-            val fromAddress = log.topics[index]
-            val result = getBigIntegerFromHexStr(fromAddress)
-            result != BigInteger.ZERO
-        }
-    }
-
-    private fun indexedLogDataPredicateByBigInteger(index: Int, expectedValue: BigInteger): (KlayLogs.Log) -> Boolean {
-        return { log: KlayLogs.Log ->
-            val nftTokenIdHexStr = log.topics[index]
-            val value = getBigIntegerFromHexStr(nftTokenIdHexStr)
-            expectedValue == value
-        }
     }
 }
 

@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.config
+package com.ojicoin.cookiepang.contract.config
 
 /**
  * @author user

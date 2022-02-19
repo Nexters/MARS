@@ -3,12 +3,12 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.config.CacheTemplate
+import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.dto.CreateCookie
-import com.ojicoin.cookiepang.dto.TransferInfo
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieRepository
 import net.jqwik.api.Arbitraries
@@ -22,13 +22,13 @@ import org.springframework.beans.factory.annotation.Qualifier
 class CookieServiceTest(
     @Autowired val sut: CookieService,
     @Autowired val cookieRepository: CookieRepository,
-    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferInfo>,
+    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferEventLog>,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
     fun create() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
-        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
         cacheTemplate[createCookie.txHash] = transferInfo
 
         val created = sut.create(createCookie)
@@ -47,7 +47,7 @@ class CookieServiceTest(
     @RepeatedTest(REPEAT_COUNT)
     fun createDuplicateTokenAddressThrows() {
         val createCookie = fixture.giveMeOne(CreateCookie::class.java)
-        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
         cacheTemplate[createCookie.txHash] = transferInfo
         val createCookieWithSameTokenAddress = fixture.giveMeBuilder(CreateCookie::class.java)
             .set("txHash", createCookie.txHash)

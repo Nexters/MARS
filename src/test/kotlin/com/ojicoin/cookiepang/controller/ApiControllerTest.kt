@@ -3,8 +3,8 @@ package com.ojicoin.cookiepang.controller
 import com.navercorp.fixturemonkey.kotlin.giveMeOne
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.config.CacheTemplate
+import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.dto.CreateCookie
-import com.ojicoin.cookiepang.dto.TransferInfo
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Qualifier
 
 class ApiControllerTest(
-    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferInfo>,
+    @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferEventLog>,
 ) : SpringContextFixture() {
     @Test
     fun createCookie() {
         val createCookie = fixture.giveMeOne<CreateCookie>()
-        val transferInfo = fixture.giveMeOne(TransferInfo::class.java)
+        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
         cacheTemplate[createCookie.txHash] = transferInfo
 
         Given {

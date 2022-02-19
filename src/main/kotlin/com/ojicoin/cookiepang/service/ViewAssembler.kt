@@ -1,6 +1,6 @@
 package com.ojicoin.cookiepang.service
 
-import com.ojicoin.cookiepang.config.ContractProperties
+import com.ojicoin.cookiepang.contract.config.ContractProperties
 import com.ojicoin.cookiepang.controller.Action
 import com.ojicoin.cookiepang.controller.CookieHistory
 import com.ojicoin.cookiepang.controller.CookieView
