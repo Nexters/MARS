@@ -18,8 +18,8 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getTransferInfoByTxHash() {
-        val transferInfo: TransferEventLog = sut.getTransferEventLogByTxHash("0xb8b8119de7005a15606e35769290960ff8025916d034e3c8c65b7dd2b9f4094c")
-        println(transferInfo)
+        val transferEventLog: TransferEventLog = sut.getTransferEventLogByTxHash("0x3ebf627bc8736dc6d0c81ba4a8afc0d6ffdc5d6647f511adbedcdd5645981b51")
+        println(transferEventLog)
     }
 
     @Test
