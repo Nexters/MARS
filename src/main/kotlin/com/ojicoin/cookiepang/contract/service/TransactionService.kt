@@ -18,7 +18,7 @@ class TransactionService(
 ) {
     private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
 
-    @Retryable(NullPointerException::class, maxAttempts = 10, backoff = Backoff(delay = 1000))
+    @Retryable(Exception::class, maxAttempts = 10, backoff = Backoff(delay = 1000))
     fun getBlockNumberByTxHash(txHash: String): BigInteger {
         return try {
             val receipt: Response<TransactionReceiptData> = caver.rpc.klay.getTransactionReceipt(txHash).send()
