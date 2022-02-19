@@ -2,6 +2,8 @@ package com.ojicoin.cookiepang.contract.service
 
 import com.klaytn.caver.Caver
 import com.klaytn.caver.methods.response.TransactionReceipt.TransactionReceiptData
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.web3j.protocol.core.Response
 import java.io.IOException
@@ -16,6 +18,7 @@ class TransactionService(
 ) {
     private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
 
+    @Retryable(NullPointerException::class, maxAttempts = 10, backoff = Backoff(delay = 1000))
     fun getBlockNumberByTxHash(txHash: String): BigInteger {
         return try {
             val receipt: Response<TransactionReceiptData> = caver.rpc.klay.getTransactionReceipt(txHash).send()
