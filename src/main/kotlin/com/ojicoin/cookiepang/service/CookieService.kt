@@ -1,25 +1,30 @@
 package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.config.CacheTemplate
+import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.contract.service.CookieContractService
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateCookie
+import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.web3j.protocol.core.DefaultBlockParameter
 import java.time.Instant
 
 @Service
 class CookieService(
     private val cookieRepository: CookieRepository,
     private val cookieContractService: CookieContractService,
+    private val cookieHistoryRepository: CookieHistoryRepository,
     @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferEventLog>,
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
@@ -60,6 +65,27 @@ class CookieService(
 
     fun publishEvent(cookie: Cookie) {
         cookieRepository.save(cookie) // TODO: 이벤트만 발행하도록 수정
+    }
+
+    @Transactional
+    fun findCookieHistories(cookieId: Long): List<CookieHistory> {
+        val cookie = cookieRepository.findActiveCookieById(cookieId)!!
+        val cookieHistories = cookieHistoryRepository.findByCookieId(cookieId)
+        if (cookieHistories.isNotEmpty() && cookie.fromBlockAddress == cookieHistories.maxOf { it.blockNumber }) {
+            return cookieHistories
+        }
+
+        val newCookieHistories = cookieContractService.getCookieEventLogByNftTokenId(
+            fromBlock = DefaultBlockParameter.valueOf(cookie.fromBlockAddress),
+            nftTokenId = cookie.nftTokenId
+        ).map { it.toCookieHistory(cookie) }
+        if (newCookieHistories.isNotEmpty()) {
+            cookie.fromBlockAddress = newCookieHistories.last().blockNumber
+            cookieRepository.save(cookie)
+            cookieHistoryRepository.saveAll(newCookieHistories)
+        }
+
+        return cookieHistories + newCookieHistories
     }
 
     @Transactional
@@ -125,3 +151,13 @@ class CookieService(
         )
     }
 }
+
+fun CookieEventLog.toCookieHistory(cookie: Cookie) =
+    CookieHistory(
+        action = this.cookieEventStatus.toAction(),
+        cookieId = cookie.id!!,
+        hammerPrice = this.hammerPrice,
+        nftTokenId = this.nftTokenId!!,
+        blockNumber = this.blockNumber,
+        createdAt = this.createdAt.toInstant()
+    )

@@ -66,13 +66,26 @@ CREATE TABLE IF NOT EXISTS "user_categories"
 
 CREATE TABLE IF NOT EXISTS "notifications"
 (
-    "notification_id"   bigserial,
-    "type"              varchar(20),
-    "content"           varchar(300),
-    "receiver_user_id"  bigint,
-    "sender_user_id"    bigint,
-    "created_at"        timestamp,
-    "ask_id"            bigint,
-    "cookie_id"         bigint,
+    "notification_id"  bigserial,
+    "type"             varchar(20),
+    "content"          varchar(300),
+    "receiver_user_id" bigint,
+    "sender_user_id"   bigint,
+    "created_at"       timestamp,
+    "ask_id"           bigint,
+    "cookie_id"        bigint,
     PRIMARY KEY ("notification_id")
 );
+
+
+CREATE TABLE IF NOT EXISTS "cookie_histories"
+(
+    "cookie_history_id" bigserial,
+    "action"            varchar(20),
+    "cookie_id"         bigint,
+    "hammer_price"      bigint,
+    "nft_token_id"      bigint,
+    "block_number"      bigint,
+    "created_at"        timestamp,
+    PRIMARY KEY ("cookie_history_id")
+)

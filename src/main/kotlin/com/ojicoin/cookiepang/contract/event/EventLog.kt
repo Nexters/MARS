@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.contract.event
 
+import com.ojicoin.cookiepang.domain.Action
 import java.math.BigInteger
 import java.time.LocalDateTime
 
@@ -8,14 +9,14 @@ import java.time.LocalDateTime
  */
 
 abstract class Event(
-    open val blockNumber: BigInteger
+    open val blockNumber: BigInteger,
 )
 
 data class TransferEventLog(
     val fromAddrees: String,
     val toAddress: String,
     val nftTokenId: BigInteger,
-    override val blockNumber: BigInteger
+    override val blockNumber: BigInteger,
 ) : Event(blockNumber)
 
 data class CookieEventLog(
@@ -24,7 +25,7 @@ data class CookieEventLog(
     val fromAddress: String?,
     val hammerPrice: BigInteger?,
     val createdAt: LocalDateTime,
-    override val blockNumber: BigInteger
+    override val blockNumber: BigInteger,
 ) : Event(blockNumber)
 
 enum class CookieEventStatus(private val num: Int) {
@@ -34,5 +35,11 @@ enum class CookieEventStatus(private val num: Int) {
         fun findByNum(num: Int): CookieEventStatus {
             return values().filter { it.num == num }.first()
         }
+    }
+
+    fun toAction() = when (this) {
+        CREATE -> Action.CREATE
+        MODIFY -> Action.MODIFY
+        BUY -> Action.BUY
     }
 }

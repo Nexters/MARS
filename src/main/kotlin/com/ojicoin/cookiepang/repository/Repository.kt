@@ -4,6 +4,7 @@ import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
@@ -34,7 +35,7 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByStatusIsNotAndOwnedUserId(
         status: CookieStatus = DELETED,
         ownedUserId: Long,
-        pageable: Pageable
+        pageable: Pageable,
     ): List<Cookie>
 
     fun findByStatusAndOwnedUserId(status: CookieStatus = ACTIVE, ownedUserId: Long, pageable: Pageable): List<Cookie>
@@ -42,7 +43,7 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByStatusIsNotAndAuthorUserId(
         status: CookieStatus = DELETED,
         authorUserId: Long,
-        pageable: Pageable
+        pageable: Pageable,
     ): List<Cookie>
 
     fun findByStatusAndAuthorUserId(status: CookieStatus = ACTIVE, authorUserId: Long, pageable: Pageable): List<Cookie>
@@ -69,4 +70,8 @@ interface UserCategoryRepository : CrudRepository<UserCategory, Long> {
 
 interface NotificationRepository : PagingAndSortingRepository<Notification, Long> {
     fun findAllByReceiverUserId(receiverUserId: Long, pageable: Pageable): List<Notification>
+}
+
+interface CookieHistoryRepository : CrudRepository<CookieHistory, Long> {
+    fun findByCookieId(cookieId: Long): List<CookieHistory>
 }
