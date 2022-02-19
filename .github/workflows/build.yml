@@ -19,4 +19,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
+        env:
+          CONTRACT_KAS_ACCESS_KEY_ID: ${{ secrets.CONTRACT_KAS_ACCESS_KEY_ID }}
+          CONTRACT_KAS_SECRET_ACCESS_KEY: ${{ secrets.CONTRACT_KAS_SECRET_ACCESS_KEY }}
+          CONTRACT_ADMIN_PRIVE_KEY: ${{ secrets.CONTRACT_ADMIN_PRIVE_KEY }}
         run: ./gradlew build
