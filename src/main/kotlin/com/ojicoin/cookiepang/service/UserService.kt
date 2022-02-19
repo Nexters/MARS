@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service
 class UserService(val userRepository: UserRepository) {
 
     fun create(dto: CreateUser): User {
-        val findByNickname = userRepository.findByNickname(dto.nickname)
-        if (findByNickname.isPresent) {
-            throw IllegalArgumentException("There is same nickname user.")
-        }
+        // Prevent duplicate user nickname
+        userRepository.findByNickname(dto.nickname)
+            ?.let { throw IllegalArgumentException("There is same nickname user.") }
 
         // TODO set default profile, background url
         val user = User(
@@ -41,9 +40,7 @@ class UserService(val userRepository: UserRepository) {
     }
 
     fun checkDuplicateUser(walletAddress: String) {
-        val user = userRepository.findByWalletAddress(walletAddress = walletAddress)
-        if (user.isPresent) {
-            throw UserExistException("There is user that have this wallerAddress. wallerAddress=$walletAddress")
-        }
+        userRepository.findByWalletAddress(walletAddress = walletAddress)
+            ?.let { throw UserExistException("There is user that have this wallerAddress. wallerAddress=$walletAddress") }
     }
 }
