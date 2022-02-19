@@ -23,7 +23,7 @@ data class Cookie(
     @Column("status") var status: CookieStatus,
     @Column("tx_hash") val txHash: String,
     @Column("nft_token_id") val nftTokenId: BigInteger,
-    @Column("from_block_address") val fromBlockAddress: BigInteger,
+    @Column("from_block_address") var fromBlockAddress: BigInteger,
     @Column("categoryId") val categoryId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
     fun addEvent(event: ApplicationEvent) {

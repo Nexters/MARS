@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.service.ViewAssembler
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -54,17 +55,12 @@ data class CookieView(
     val nftTokenId: BigInteger,
     val viewCount: Long,
     val price: Long,
-    val histories: List<CookieHistory>,
+    val histories: List<CookieHistoryView>,
+    val myCookie: Boolean,
 )
 
-data class CookieHistory(
+data class CookieHistoryView(
     val action: Action,
     val content: String,
     val createdAt: Instant,
 )
-
-enum class Action {
-    MODIFY,
-    BUY,
-    CREATE
-}
