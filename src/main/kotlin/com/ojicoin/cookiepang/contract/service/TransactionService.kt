@@ -2,11 +2,11 @@ package com.ojicoin.cookiepang.contract.service
 
 import com.klaytn.caver.Caver
 import com.klaytn.caver.methods.response.TransactionReceipt.TransactionReceiptData
+import com.ojicoin.cookiepang.service.RetryService
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.web3j.protocol.core.Response
-import java.io.IOException
 import java.math.BigInteger
 
 /**
@@ -14,23 +14,20 @@ import java.math.BigInteger
  */
 @Service
 class TransactionService(
-    private val caver: Caver
+	private val caver: Caver,
+	private val retryService: RetryService
 ) {
-    private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
+	private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
 
-    @Retryable(Exception::class, maxAttempts = 10, backoff = Backoff(delay = 1000))
-    fun getBlockNumberByTxHash(txHash: String): BigInteger {
-        return try {
-            val receipt: Response<TransactionReceiptData> = caver.rpc.klay.getTransactionReceipt(txHash).send()
-            val blockNumber: String = receipt.result.blockNumber!!
-            getBigIntegerFromHexStr(blockNumber)!!
-        } catch (e: IOException) {
-            e.printStackTrace()
-            throw RuntimeException()
-        }
-    }
+	fun getBlockNumberByTxHash(txHash: String): BigInteger {
+		return retryService.run(action = {
+			val receipt: Response<TransactionReceiptData> = caver.rpc.klay.getTransactionReceipt(txHash).send()
+			val blockNumber: String = receipt.result.blockNumber!!
+			getBigIntegerFromHexStr(blockNumber)!!
+		})
+	}
 
-    private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
-        return BigInteger(cookieIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
-    }
+	private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
+		return BigInteger(cookieIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
+	}
 }
