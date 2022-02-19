@@ -13,12 +13,11 @@ import org.web3j.protocol.http.HttpService
 @Configuration
 class CaverConfiguration(
     @Value("\${contract.kas.node-api-url}") val nodeApiUrl: String,
+    @Value("#{systemEnvironment['CONTRACT_KAS_ACCESS_KEY_ID']}") val accessKeyId: String,
+    @Value("#{systemEnvironment['CONTRACT_KAS_SECRET_ACCESS_KEY']}") val secretAccessKey: String,
+    @Value("#{systemEnvironment['CONTRACT_ADMIN_PRIVE_KEY']}") val adminPrivateKey: String,
     @Value("\${contract.kas.chain-id}") val chainId: String,
 ) {
-    val accessKeyId: String = System.getenv("CONTRACT_KAS_ACCESS_KEY_ID")
-    val secretAccessKey: String = System.getenv("CONTRACT_KAS_SECRET_ACCESS_KEY")
-    val adminPrivateKey: String = System.getenv("CONTRACT_ADMIN_PRIVE_KEY")
-
     @Bean
     fun caver(): Caver {
         val httpService = HttpService(nodeApiUrl)
