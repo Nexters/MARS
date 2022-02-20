@@ -11,4 +11,6 @@ class CategoryService(
     fun getAll() = categoryRepository.findAll().map {
         ViewCategory(categoryId = it.id!!, name = it.name, color = it.color.name)
     }
+
+    fun getById(id: Long) = categoryRepository.findById(id).orElseThrow()
 }

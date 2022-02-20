@@ -2,9 +2,11 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.contract.config.ContractProperties
 import com.ojicoin.cookiepang.domain.Action
+import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
 import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
@@ -22,6 +24,7 @@ class ViewAssembler(
     @Autowired val cookieService: CookieService,
     @Autowired val userService: UserService,
     @Autowired val viewCountService: ViewCountService,
+    @Autowired val categoryService: CategoryService,
     @Autowired val contractProperties: ContractProperties,
 ) {
 
@@ -37,8 +40,8 @@ class ViewAssembler(
         cookieService.publishEvent(cookie)
 
         val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
-
         val cookieHistories = cookieService.findCookieHistories(cookieId).map { toCookieHistory(it, owner, cookie) }
+        val category = categoryService.getById(cookie.categoryId)
 
         return CookieView(
             question = cookie.title,
@@ -52,7 +55,8 @@ class ViewAssembler(
             viewCount = viewCount,
             price = cookie.price,
             histories = cookieHistories,
-            myCookie = myCookie
+            myCookie = myCookie,
+            category = category.toCategoryView()
         )
     }
 
@@ -121,3 +125,9 @@ fun String.abbreviate(
 )
 
 fun LocalDateTime.toInstant(): Instant = this.toInstant(OffsetDateTime.now().offset)
+
+fun Category.toCategoryView() = CategoryView(
+    id = this.id!!,
+    name = this.name,
+    color = this.color.name
+)
