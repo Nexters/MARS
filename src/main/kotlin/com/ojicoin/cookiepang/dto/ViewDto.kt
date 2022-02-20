@@ -46,3 +46,12 @@ data class CategoryView(
     val name: String,
     val color: String,
 )
+
+enum class GetUserCookieTarget {
+    COLLECTED,
+    COOKIES,
+}
+
+data class CreateUserCategory(
+    val categoryIdList: List<Long>,
+)

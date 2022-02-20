@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.dto.CreateUserCategory
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.UserCategoryService
 import org.springframework.http.HttpStatus
@@ -25,12 +26,3 @@ class CategoryController(
     @ResponseStatus(HttpStatus.OK)
     fun getCategories() = categoryService.getAll()
 }
-
-enum class GetUserCookieTarget {
-    COLLECTED,
-    COOKIES,
-}
-
-data class CreateUserCategory(
-    val categoryIdList: List<Long>,
-)

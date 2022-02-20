@@ -1,9 +1,10 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.controller.GetUserCookieTarget.COLLECTED
-import com.ojicoin.cookiepang.controller.GetUserCookieTarget.COOKIES
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COLLECTED
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COOKIES
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.service.CookieService
 import org.springframework.http.HttpStatus
