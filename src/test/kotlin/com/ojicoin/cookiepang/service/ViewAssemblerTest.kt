@@ -13,7 +13,6 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -71,7 +70,7 @@ class ViewAssemblerTest(
         then(actual.category.color).isEqualTo(category.color.name)
     }
 
-    @RepeatedTest(30)
+    @Test
     fun cookieViewNotOwner() {
         val category = fixture.giveMeBuilder<Category>()
             .setNull("id")
