@@ -1,10 +1,10 @@
-package com.ojicoin.cookiepang.controller
+package com.ojicoin.cookiepang.contract.controller
 
+import com.ojicoin.cookiepang.contract.dto.Amount
+import com.ojicoin.cookiepang.contract.dto.Answer
+import com.ojicoin.cookiepang.contract.dto.Price
+import com.ojicoin.cookiepang.contract.dto.TokenAddress
 import com.ojicoin.cookiepang.contract.service.CookieContractService
-import com.ojicoin.cookiepang.dto.Amount
-import com.ojicoin.cookiepang.dto.Answer
-import com.ojicoin.cookiepang.dto.Price
-import com.ojicoin.cookiepang.dto.TokenAddress
 import com.ojicoin.cookiepang.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,42 +19,42 @@ class ContractController(
 
     // TODO getCookieInfos api (this is not implemented yet)
 
-    @GetMapping("/prices/hammer")
+    @GetMapping("/contract/prices/hammer")
     fun getMintingPriceForHammer(): Price {
         return Price(
             price = cookieContractService.mintingPriceForHammer,
         )
     }
 
-    @GetMapping("/prices/klaytn")
+    @GetMapping("/contract/prices/klaytn")
     fun getMintingPriceForKlaytn(): Price {
         return Price(
             price = cookieContractService.mintingPriceForKlaytn,
         )
     }
 
-    @GetMapping("/cookies/is/hide")
+    @GetMapping("/contract/cookies/is/hide")
     fun isHide(@RequestParam nftTokenId: String): Answer {
         return Answer(
             answer = cookieContractService.isHide(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/cookies/is/sale")
+    @GetMapping("/contract/cookies/is/sale")
     fun isSale(@RequestParam nftTokenId: String): Answer {
         return Answer(
             answer = cookieContractService.isSale(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/cookies/prices")
+    @GetMapping("/contract/cookies/prices")
     fun getCookieHammerPrices(@RequestParam nftTokenId: String): Price {
         return Price(
             price = cookieContractService.getHammerPrice(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/users/{userId}/nfttokenid")
+    @GetMapping("/contract/users/{userId}/nfttokenid")
     fun getNftTokenIdByCookieIndex(@PathVariable userId: String, @RequestParam index: String): TokenAddress {
         val user = userService.getById(userId.toLong())
 
@@ -66,7 +66,7 @@ class ContractController(
         )
     }
 
-    @GetMapping("/cookies/supply")
+    @GetMapping("/contract/cookies/supply")
     fun getCookiesTotalSupply(): Amount {
         return Amount(
             amount = cookieContractService.totalSupply,

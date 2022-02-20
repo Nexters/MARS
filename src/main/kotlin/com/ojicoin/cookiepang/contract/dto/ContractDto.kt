@@ -1,4 +1,4 @@
-package com.ojicoin.cookiepang.dto
+package com.ojicoin.cookiepang.contract.dto
 
 import java.math.BigInteger
 
