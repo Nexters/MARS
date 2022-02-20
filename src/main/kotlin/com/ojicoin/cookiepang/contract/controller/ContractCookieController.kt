@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/contract")
+@RequestMapping("/contract/cookies")
 class ContractCookieController(
     private val cookieContractService: CookieContractService,
     private val userService: UserService,
@@ -22,47 +22,47 @@ class ContractCookieController(
 
     // TODO getCookieInfos api (this is not implemented yet)
 
-    @GetMapping("/cookies/contractAddress")
+    @GetMapping("/contractAddress")
     fun getCookiesContractAddress(): ContractAddress = ContractAddress(
         address = cookieContractService.getCookieContractAddress()
     )
 
-    @GetMapping("/cookies/prices/hammer")
+    @GetMapping("/prices/hammer")
     fun getMintingPriceForHammer(): Price {
         return Price(
             price = cookieContractService.mintingPriceForHammer,
         )
     }
 
-    @GetMapping("/cookies/prices/klaytn")
+    @GetMapping("/prices/klaytn")
     fun getMintingPriceForKlaytn(): Price {
         return Price(
             price = cookieContractService.mintingPriceForKlaytn,
         )
     }
 
-    @GetMapping("/cookies/{id}/hide")
+    @GetMapping("/{id}/hide")
     fun isHide(@PathVariable id: String): Answer {
         return Answer(
             answer = cookieContractService.isHide(nftTokenId = id.toBigInteger()),
         )
     }
 
-    @GetMapping("/cookies/{id}/sale")
+    @GetMapping("/{id}/sale")
     fun isSale(@PathVariable id: String): Answer {
         return Answer(
             answer = cookieContractService.isSale(nftTokenId = id.toBigInteger()),
         )
     }
 
-    @GetMapping("/cookies/{id}/price")
+    @GetMapping("/{id}/price")
     fun getCookieHammerPrices(@RequestParam nftTokenId: String): Price {
         return Price(
             price = cookieContractService.getHammerPrice(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/users/{userId}/cookies/id")
+    @GetMapping("/users/{userId}/index")
     fun getNftTokenIdByCookieIndex(@PathVariable userId: String, @RequestParam index: String): TokenAddress {
         val user = userService.getById(userId.toLong())
 
@@ -74,7 +74,7 @@ class ContractCookieController(
         )
     }
 
-    @GetMapping("/users/{userId}/cookies/count")
+    @GetMapping("/users/{userId}/count")
     fun getUserCookieCount(@PathVariable userId: String, @RequestParam index: String): Amount {
         val user = userService.getById(userId.toLong())
 

@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/contract")
+@RequestMapping("/contract/hammers")
 class ContractHammerController(
     private val hammerContractService: HammerContractService,
     private val userService: UserService,
 ) {
 
-    @GetMapping("/hammers/contractAddress")
+    @GetMapping("/contractAddress")
     fun getCookiesContractAddress(): ContractAddress = ContractAddress(
         address = hammerContractService.getHammerContractAddress()
     )
 
-    @GetMapping("/users/{userId}/hammers/approve")
+    @GetMapping("/users/{userId}/approve")
     fun isMaxApprovedAddress(@PathVariable userId: String): Answer {
         val user = userService.getById(userId.toLong())
 
@@ -31,7 +31,7 @@ class ContractHammerController(
         )
     }
 
-    @GetMapping("/users/{userId}/hammers/count")
+    @GetMapping("/users/{userId}/count")
     fun getUserHammerCount(@PathVariable userId: String): Amount {
         val user = userService.getById(userId.toLong())
 
@@ -39,5 +39,4 @@ class ContractHammerController(
             amount = hammerContractService.balanceOf(user.walletAddress)
         )
     }
-
 }
