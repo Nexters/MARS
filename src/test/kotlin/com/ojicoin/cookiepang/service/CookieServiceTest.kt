@@ -1,16 +1,21 @@
 package com.ojicoin.cookiepang.service
 
+import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.config.CacheTemplate
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
+import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.UpdateCookie
+import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
+import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -18,10 +23,13 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import java.math.BigInteger
 
 class CookieServiceTest(
     @Autowired val sut: CookieService,
     @Autowired val cookieRepository: CookieRepository,
+    @Autowired val cookieHistoryRepository: CookieHistoryRepository,
+    @Autowired val userRepository: UserRepository,
     @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferEventLog>,
 ) : SpringContextFixture() {
 
@@ -222,6 +230,42 @@ class CookieServiceTest(
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
         then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun findCookieHistories() {
+        val blockNumber = BigInteger.ONE // for not request to blockchain
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("status", ACTIVE)
+            .set("fromBlockAddress", blockNumber)
+            .sample()
+        val cookieId = cookieRepository.save(cookie).id!!
+        val creator = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val creatorId = userRepository.save(creator).id!!
+        val cookieHistory = fixture.giveMeBuilder<CookieHistory>()
+            .setNull("id")
+            .set("cookieId", cookieId)
+            .set("creatorId", creatorId)
+            .set("blockNumber", blockNumber)
+            .sample()
+        cookieHistoryRepository.save(cookieHistory)
+
+        val actual = sut.findCookieHistories(cookieId)
+
+        then(actual).hasSize(1)
+        with(actual[0]) {
+            then(action).isEqualTo(cookieHistory.action)
+            then(cookieId).isEqualTo(cookieHistory.cookieId)
+            then(creatorName).isEqualTo(cookieHistory.creatorName)
+            then(title).isEqualTo(cookieHistory.title)
+            then(hammerPrice).isEqualTo(cookieHistory.hammerPrice)
+            then(nftTokenId).isEqualTo(cookieHistory.nftTokenId)
+            then(blockNumber).isEqualTo(cookieHistory.blockNumber)
+            then(createdAt).isEqualTo(cookieHistory.createdAt)
+        }
     }
 
     @AfterEach

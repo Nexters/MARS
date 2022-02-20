@@ -31,6 +31,8 @@ class UserService(val userRepository: UserRepository) {
 
     fun getById(id: Long): User = userRepository.findById(id).orElseThrow()
 
+    fun getByWalletAddress(walletAddress: String): User = userRepository.findByWalletAddress(walletAddress)!!
+
     fun modify(userId: Long, profilePictureUrl: String?, backgroundPictureUrl: String?, dto: UpdateUser): User {
         val user = userRepository.findById(userId).orElseThrow()
 
