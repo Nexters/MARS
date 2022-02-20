@@ -194,7 +194,7 @@ class CookieContractService(
             cookieEventLogParser.parse(logs).filter { log: CookieEventLog -> log.nftTokenId == nftTokenId }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            listOf()
+            throw RuntimeException()
         }
     }
 
