@@ -22,7 +22,7 @@ class ContractCookieController(
 
     // TODO getCookieInfos api (this is not implemented yet)
 
-    @GetMapping("/contractAddress")
+    @GetMapping("/address")
     fun getCookiesContractAddress(): ContractAddress = ContractAddress(
         address = cookieContractService.getCookieContractAddress()
     )

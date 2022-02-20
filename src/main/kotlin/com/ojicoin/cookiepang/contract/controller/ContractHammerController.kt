@@ -17,7 +17,7 @@ class ContractHammerController(
     private val userService: UserService,
 ) {
 
-    @GetMapping("/contractAddress")
+    @GetMapping("/address")
     fun getCookiesContractAddress(): ContractAddress = ContractAddress(
         address = hammerContractService.getHammerContractAddress()
     )
