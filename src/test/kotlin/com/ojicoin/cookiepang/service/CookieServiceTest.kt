@@ -271,5 +271,6 @@ class CookieServiceTest(
     @AfterEach
     internal fun tearDown() {
         cookieRepository.deleteAll()
+        cookieHistoryRepository.deleteAll()
     }
 }
