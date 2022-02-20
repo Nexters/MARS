@@ -15,12 +15,6 @@ data class CreateCookie(
     val categoryId: Long,
 )
 
-data class ViewCategory(
-    val categoryId: Long,
-    val name: String,
-    val color: String,
-)
-
 data class UpdateCookie(
     val price: Long?,
     val status: CookieStatus?,
@@ -44,7 +38,7 @@ data class CreateUser(
 )
 
 data class UpdateUser(
-    val introduction: String?
+    val introduction: String?,
 )
 
 data class UpdateAsk(
