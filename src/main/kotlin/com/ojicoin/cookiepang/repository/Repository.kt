@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
-import java.util.Optional
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByTxHash(txHash: String): Cookie?
