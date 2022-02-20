@@ -1,11 +1,19 @@
 storage:
   domain: "127.0.0.1:${server.port}"
 
-contract:
-  address: 123456
-
 cloud:
   aws:
     s3:
       bucket: test
       directory: pictures
+
+contract:
+  admin-address: "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa"
+  kas:
+    chain-id: "1001"
+    node-api-url: "https://node-api.klaytnapi.com/v1/klaytn"
+  addr:
+    cookie: "0xCF962190E2D7c0EEe4a75e01Ce138eef9252c745"
+    hammer: "0xeaBA4EEaa87d9395A6554CC0B526a4510196aAf7"
+  address: 123456
+
