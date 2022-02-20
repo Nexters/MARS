@@ -1,10 +1,10 @@
 package com.ojicoin.cookiepang.service
 
-import com.ojicoin.cookiepang.controller.UserExistException
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
 

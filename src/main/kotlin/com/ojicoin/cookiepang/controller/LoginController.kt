@@ -1,9 +1,8 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.dto.ViewCategory
+import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.service.UserService
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -33,12 +32,6 @@ class LoginController(
                     ApiResponse(
                         responseCode = "200",
                         description = "There is not duplicate user.",
-                        content = [
-                            Content(
-                                mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = ViewCategory::class))
-                            )
-                        ]
                     ),
                     ApiResponse(
                         responseCode = "409",

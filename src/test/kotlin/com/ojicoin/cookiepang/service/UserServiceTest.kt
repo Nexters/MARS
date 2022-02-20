@@ -2,11 +2,11 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
-import com.ojicoin.cookiepang.controller.UserExistException
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
