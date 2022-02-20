@@ -17,3 +17,7 @@ data class TokenAddress(
 data class Amount(
     val amount: BigInteger
 )
+
+data class ContractAddress(
+    val address: String
+)

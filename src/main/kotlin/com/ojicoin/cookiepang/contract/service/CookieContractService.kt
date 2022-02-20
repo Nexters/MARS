@@ -31,7 +31,10 @@ class CookieContractService(
     private val transferEventLogParser: TransferEventLogParser,
     private val transactionService: TransactionService,
     @Value("\${contract.admin-address}") val adminAddress: String,
+    @Value("\${contract.addr.cookie}") private val cookieContractAddress: String,
 ) {
+
+    fun getCookieContractAddress(): String = cookieContractAddress
 
     // FIXME: 커스텀 익셉션 추가
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
