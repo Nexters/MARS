@@ -7,8 +7,10 @@ import java.time.Instant
 data class CookieView(
     val question: String,
     val answer: String?,
+    val collectorId: Long,
     val collectorName: String,
     val collectorProfileUrl: String?,
+    val creatorId: Long,
     val creatorName: String,
     val creatorProfileUrl: String?,
     val contractAddress: String,
@@ -28,8 +30,9 @@ data class CookieHistoryView(
 
 data class TimelineCookieView(
     val cookieId: Long,
-    val collectorProfileUrl: String?,
-    val collectorName: String,
+    val creatorId: Long,
+    val creatorProfileUrl: String?,
+    val creatorName: String,
     val question: String,
     val answer: String?,
     val contractAddress: String,

@@ -44,8 +44,10 @@ class ViewAssembler(
         return CookieView(
             question = cookie.title,
             answer = answer,
+            collectorId = owner.id!!,
             collectorName = owner.nickname,
             collectorProfileUrl = owner.profileUrl,
+            creatorId = creator.id!!,
             creatorName = creator.nickname,
             creatorProfileUrl = creator.profileUrl,
             contractAddress = contractProperties.address,
@@ -67,15 +69,16 @@ class ViewAssembler(
         }
 
         return cookies.map { cookie ->
-            val owner = userService.getById(cookie.ownedUserId)
-            val myCookie = viewer.id == owner.id
+            val creator = userService.getById(cookie.authorUserId)
+            val myCookie = viewer.id == creator.id
             val answer = cookie.open(viewerId)
             val viewCount = viewCountService.getAllViewCountsByCookieId(cookie.id!!)
 
             TimelineCookieView(
                 cookieId = cookie.id!!,
-                collectorProfileUrl = owner.profileUrl,
-                collectorName = owner.nickname,
+                creatorId = creator.id!!,
+                creatorProfileUrl = creator.profileUrl,
+                creatorName = creator.nickname,
                 question = cookie.title,
                 answer = answer,
                 contractAddress = contractProperties.address,
