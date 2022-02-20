@@ -33,9 +33,11 @@ class ViewAssemblerTest(
         val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "a")
             .sample()
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "b")
             .sample()
         val authorUserId = userRepository.save(creator).id!!
         val ownedUserId = userRepository.save(collector).id!!
@@ -74,9 +76,11 @@ class ViewAssemblerTest(
         val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "a")
             .sample()
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "b")
             .sample()
         val viewer = fixture.giveMeBuilder<User>()
             .setNull("id")
@@ -142,5 +146,6 @@ class ViewAssemblerTest(
     internal fun tearDown() {
         cookieRepository.deleteAll()
         categoryRepository.deleteAll()
+        userRepository.deleteAll()
     }
 }
