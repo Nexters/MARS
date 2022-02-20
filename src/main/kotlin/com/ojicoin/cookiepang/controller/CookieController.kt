@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class CookieController(private val cookieService: CookieService) {
     @PostMapping("/cookies")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCookie(createCookie: CreateCookie): Cookie = cookieService.create(createCookie)
+    fun createCookie(@RequestBody createCookie: CreateCookie): Cookie = cookieService.create(createCookie)
 
     @GetMapping("/users/{userId}/cookies")
     @ResponseStatus(HttpStatus.OK)
