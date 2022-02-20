@@ -163,8 +163,9 @@ fun CookieEventLog.toCookieHistory(cookie: Cookie, creator: User) =
         action = this.cookieEventStatus.toAction(),
         cookieId = cookie.id!!,
         hammerPrice = this.hammerPrice,
-        nftTokenId = this.nftTokenId!!,
-        creatorId = creator.id!!,
+        nftTokenId = this.nftTokenId,
+        title = cookie.title,
+        creatorName = creator.nickname,
         blockNumber = this.blockNumber,
         createdAt = this.createdAt.toInstant()
     )

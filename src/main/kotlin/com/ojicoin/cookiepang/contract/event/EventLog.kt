@@ -21,9 +21,9 @@ data class TransferEventLog(
 
 data class CookieEventLog(
     val cookieEventStatus: CookieEventStatus,
-    val nftTokenId: BigInteger?,
-    val fromAddress: String?,
-    val hammerPrice: BigInteger?,
+    val nftTokenId: BigInteger,
+    val fromAddress: String,
+    val hammerPrice: BigInteger,
     val createdAt: LocalDateTime,
     override val blockNumber: BigInteger,
 ) : Event(blockNumber)

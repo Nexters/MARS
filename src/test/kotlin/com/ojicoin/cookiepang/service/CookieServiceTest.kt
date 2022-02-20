@@ -259,7 +259,8 @@ class CookieServiceTest(
         with(actual[0]) {
             then(action).isEqualTo(cookieHistory.action)
             then(cookieId).isEqualTo(cookieHistory.cookieId)
-            then(creatorId).isEqualTo(cookieHistory.creatorId)
+            then(creatorName).isEqualTo(cookieHistory.creatorName)
+            then(title).isEqualTo(cookieHistory.title)
             then(hammerPrice).isEqualTo(cookieHistory.hammerPrice)
             then(nftTokenId).isEqualTo(cookieHistory.nftTokenId)
             then(blockNumber).isEqualTo(cookieHistory.blockNumber)

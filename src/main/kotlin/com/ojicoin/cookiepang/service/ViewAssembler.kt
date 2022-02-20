@@ -3,19 +3,17 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.contract.config.ContractProperties
 import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.Category
-import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
-import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
 import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
-import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import org.apache.commons.lang3.StringUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 const val ABBREVIATE_LENGTH_LIMIT = 15
 
@@ -90,29 +88,6 @@ class ViewAssembler(
             )
         }
     }
-
-    private fun toCookieHistory(
-        cookieHistory: CookieHistory,
-        owner: User,
-        cookie: Cookie,
-    ): CookieHistoryView =
-        when (cookieHistory.action) {
-            Action.CREATE -> CookieHistoryView(
-                action = cookieHistory.action,
-                content = "${owner.nickname}님이 '${cookie.title.abbreviate()}'를 망치 ${cookie.price}톤으로 만들었습니다.",
-                createdAt = cookieHistory.createdAt
-            )
-            Action.MODIFY -> CookieHistoryView(
-                action = cookieHistory.action,
-                content = "${owner.nickname}님이 '${cookie.title.abbreviate()}'를 망치 ${cookieHistory.hammerPrice}톤으로 수정했습니다.",
-                createdAt = cookieHistory.createdAt
-            )
-            Action.BUY -> CookieHistoryView(
-                action = cookieHistory.action,
-                content = "${owner.nickname}님이 '${cookie.title.abbreviate()}'를 망치 ${cookie.price}톤으로 깠습니다.",
-                createdAt = cookieHistory.createdAt
-            )
-        }
 }
 
 fun String.abbreviate(
@@ -125,6 +100,25 @@ fun String.abbreviate(
 )
 
 fun LocalDateTime.toInstant(): Instant = this.toInstant(OffsetDateTime.now().offset)
+
+fun CookieHistory.toCookieHistoryView(): CookieHistoryView =
+    when (this.action) {
+        Action.CREATE -> CookieHistoryView(
+            action = this.action,
+            content = "${this.creatorName}님이 '${this.title.abbreviate()}'를 망치 ${this.hammerPrice}톤으로 만들었습니다.",
+            createdAt = this.createdAt
+        )
+        Action.MODIFY -> CookieHistoryView(
+            action = this.action,
+            content = "${this.creatorName}님이 '${this.title.abbreviate()}'를 망치 ${this.hammerPrice}톤으로 수정했습니다.",
+            createdAt = this.createdAt
+        )
+        Action.BUY -> CookieHistoryView(
+            action = this.action,
+            content = "${this.creatorName}님이 '${this.title.abbreviate()}'를 망치 ${this.hammerPrice}톤으로 깠습니다.",
+            createdAt = this.createdAt
+        )
+    }
 
 fun Category.toCategoryView() = CategoryView(
     id = this.id!!,
