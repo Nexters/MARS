@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import java.math.BigInteger
 
 class ViewAssemblerTest(
     @Autowired val sut: ViewAssembler,
@@ -47,6 +48,7 @@ class ViewAssemblerTest(
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
             .set("categoryId", categoryId)
+            .set("nftTokenId", BigInteger.valueOf(-1))
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
