@@ -8,6 +8,7 @@ import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.Notification
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CreateAsk
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateUser
@@ -15,7 +16,6 @@ import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.dto.UpdateUser
-import com.ojicoin.cookiepang.dto.ViewCategory
 import com.ojicoin.cookiepang.service.AskService
 import com.ojicoin.cookiepang.service.CategoryService
 import com.ojicoin.cookiepang.service.CookieService
@@ -166,7 +166,7 @@ class ApiController(
                         content = [
                             Content(
                                 mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = ViewCategory::class))
+                                array = ArraySchema(schema = Schema(implementation = CategoryView::class))
                             )
                         ]
                     )

@@ -17,6 +17,7 @@ data class CookieView(
     val price: Long,
     val histories: List<CookieHistoryView>,
     val myCookie: Boolean,
+    val category: CategoryView,
 )
 
 data class CookieHistoryView(
@@ -38,4 +39,10 @@ data class TimelineCookieView(
     val price: Long,
     val myCookie: Boolean,
     val createdAt: Instant,
+)
+
+data class CategoryView(
+    val id: Long,
+    val name: String,
+    val color: String,
 )

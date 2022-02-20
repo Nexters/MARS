@@ -2,10 +2,12 @@ package com.ojicoin.cookiepang.service
 
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
@@ -18,12 +20,17 @@ import org.springframework.beans.factory.annotation.Value
 class ViewAssemblerTest(
     @Autowired val sut: ViewAssembler,
     @Autowired val cookieRepository: CookieRepository,
+    @Autowired val categoryRepository: CategoryRepository,
     @Autowired val userRepository: UserRepository,
     @Value("\${contract.address}") val contractAddress: String,
 ) : SpringContextFixture() {
 
     @Test
     fun cookieView() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
@@ -37,6 +44,7 @@ class ViewAssemblerTest(
             .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
+            .set("categoryId", categoryId)
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
@@ -53,10 +61,17 @@ class ViewAssemblerTest(
         then(actual.collectorProfileUrl).isEqualTo(collector.profileUrl)
         then(actual.nftTokenId).isEqualTo(cookie.nftTokenId)
         then(actual.viewCount).isEqualTo(0L)
+        then(actual.category.id).isEqualTo(category.id)
+        then(actual.category.name).isEqualTo(category.name)
+        then(actual.category.color).isEqualTo(category.color.name)
     }
 
     @Test
     fun cookieViewNotOwner() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
@@ -74,6 +89,7 @@ class ViewAssemblerTest(
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
             .set("status", CookieStatus.ACTIVE)
+            .set("categoryId", categoryId)
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
@@ -125,5 +141,6 @@ class ViewAssemblerTest(
     @AfterEach
     internal fun tearDown() {
         cookieRepository.deleteAll()
+        categoryRepository.deleteAll()
     }
 }
