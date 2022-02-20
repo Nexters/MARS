@@ -174,65 +174,6 @@ class ApiController(
             )
         ),
         RouterOperation(
-            path = "/categories/all/cookies",
-            operation = Operation(
-                operationId = "getCookiesByAllCategory",
-                parameters = [
-                    Parameter(
-                        name = "page",
-                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
-                        `in` = ParameterIn.QUERY
-                    ),
-                    Parameter(
-                        name = "size",
-                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "3"))],
-                        `in` = ParameterIn.QUERY
-                    ),
-                ],
-                responses = [
-                    ApiResponse(
-                        responseCode = "200",
-                        content = [
-                            Content(
-                                mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = Cookie::class))
-                            )
-                        ]
-                    )
-                ]
-            )
-        ),
-        RouterOperation(
-            path = "/categories/{categoryId}/cookies",
-            operation = Operation(
-                operationId = "getCookiesByCategory",
-                parameters = [
-                    Parameter(name = "categoryId", `in` = ParameterIn.PATH),
-                    Parameter(
-                        name = "page",
-                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "0"))],
-                        `in` = ParameterIn.QUERY
-                    ),
-                    Parameter(
-                        name = "size",
-                        content = [Content(schema = Schema(implementation = Int::class, defaultValue = "3"))],
-                        `in` = ParameterIn.QUERY
-                    ),
-                ],
-                responses = [
-                    ApiResponse(
-                        responseCode = "200",
-                        content = [
-                            Content(
-                                mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = Cookie::class))
-                            )
-                        ]
-                    )
-                ]
-            )
-        ),
-        RouterOperation(
             path = "/users/{userId}",
             operation = Operation(
                 operationId = "getUser",
@@ -326,15 +267,6 @@ class ApiController(
     )
     fun view() = route(GET("/categories")) {
         ok().body(categoryService.getAll())
-    }.andRoute(GET("/categories/all/cookies")) {
-        val page = it.param("page").map { page -> page.toInt() }.orElse(0)
-        val size = it.param("size").map { size -> size.toInt() }.orElse(3)
-        ok().body(cookieService.getCookies(page = page, size = size))
-    }.andRoute(GET("/categories/{categoryId}/cookies")) {
-        val categoryId = it.pathVariable("categoryId").toLong()
-        val page = it.param("page").map { page -> page.toInt() }.orElse(0)
-        val size = it.param("size").map { size -> size.toInt() }.orElse(3)
-        ok().body(cookieService.getCookiesByCategoryId(categoryId = categoryId, page = page, size = size))
     }.andRoute(GET("/asks/users/{userId}")) {
         val userId = it.pathVariable("userId").toLong()
         // target: sender, receiver
