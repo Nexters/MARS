@@ -82,7 +82,7 @@ class CookieService(
             fromBlock = DefaultBlockParameter.valueOf(cookie.fromBlockAddress),
             nftTokenId = cookie.nftTokenId
         ).map {
-            val creator = userRepository.findByWalletAddress(it.fromAddress!!)!!
+            val creator = userRepository.findByWalletAddress(it.fromAddress)!!
             it.toCookieHistory(cookie, creator)
         }
         if (newCookieHistories.isNotEmpty()) {

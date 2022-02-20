@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import java.math.BigInteger
 
 class ViewAssemblerTest(
     @Autowired val sut: ViewAssembler,
@@ -33,9 +34,11 @@ class ViewAssemblerTest(
         val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "a")
             .sample()
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "b")
             .sample()
         val authorUserId = userRepository.save(creator).id!!
         val ownedUserId = userRepository.save(collector).id!!
@@ -45,6 +48,7 @@ class ViewAssemblerTest(
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
             .set("categoryId", categoryId)
+            .set("nftTokenId", BigInteger.valueOf(-1))
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
@@ -74,9 +78,11 @@ class ViewAssemblerTest(
         val categoryId = categoryRepository.save(category).id!!
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "a")
             .sample()
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "b")
             .sample()
         val viewer = fixture.giveMeBuilder<User>()
             .setNull("id")
@@ -142,5 +148,6 @@ class ViewAssemblerTest(
     internal fun tearDown() {
         cookieRepository.deleteAll()
         categoryRepository.deleteAll()
+        userRepository.deleteAll()
     }
 }

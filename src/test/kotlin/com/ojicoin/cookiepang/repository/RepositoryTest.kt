@@ -9,6 +9,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.ViewCount
 import org.assertj.core.api.BDDAssertions.thenNoException
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -49,5 +50,14 @@ class RepositoryTest(
             userRepository.save(user)
             viewCountRepository.save(viewCount)
         }
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        cookieRepository.deleteAll()
+        askRepository.deleteAll()
+        categoryRepository.deleteAll()
+        userRepository.deleteAll()
+        viewCountRepository.deleteAll()
     }
 }
