@@ -62,7 +62,7 @@ class ContractCookieController(
         )
     }
 
-    @GetMapping("/users/{userId}/index")
+    @GetMapping("/users/{userId}/nftTokenId")
     fun getNftTokenIdByCookieIndex(@PathVariable userId: String, @RequestParam index: String): TokenAddress {
         val user = userService.getById(userId.toLong())
 
