@@ -8,12 +8,12 @@ import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
 import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 const val ABBREVIATE_LENGTH_LIMIT = 15
 
@@ -38,7 +38,7 @@ class ViewAssembler(
         cookieService.publishEvent(cookie)
 
         val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
-        val cookieHistories = cookieService.findCookieHistories(cookieId).map { toCookieHistory(it, owner, cookie) }
+        val cookieHistories = cookieService.findCookieHistories(cookieId).map { it.toCookieHistoryView() }
         val category = categoryService.getById(cookie.categoryId)
 
         return CookieView(
