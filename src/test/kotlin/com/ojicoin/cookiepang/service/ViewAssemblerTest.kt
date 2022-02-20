@@ -13,6 +13,7 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -70,7 +71,7 @@ class ViewAssemblerTest(
         then(actual.category.color).isEqualTo(category.color.name)
     }
 
-    @Test
+    @RepeatedTest(30)
     fun cookieViewNotOwner() {
         val category = fixture.giveMeBuilder<Category>()
             .setNull("id")
@@ -96,6 +97,7 @@ class ViewAssemblerTest(
             .set("ownedUserId", ownedUserId)
             .set("status", CookieStatus.ACTIVE)
             .set("categoryId", categoryId)
+            .set("nftTokenId", BigInteger.valueOf(-1))
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
