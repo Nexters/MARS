@@ -1,7 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CookieView
+import com.ojicoin.cookiepang.dto.TimelineCookieView
 import com.ojicoin.cookiepang.service.ViewAssembler
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -61,7 +61,7 @@ class ViewController(private val viewAssembler: ViewAssembler) {
                         content = [
                             Content(
                                 mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = Cookie::class))
+                                array = ArraySchema(schema = Schema(implementation = TimelineCookieView::class))
                             )
                         ]
                     )
@@ -92,7 +92,7 @@ class ViewController(private val viewAssembler: ViewAssembler) {
                         content = [
                             Content(
                                 mediaType = "application/json",
-                                array = ArraySchema(schema = Schema(implementation = Cookie::class))
+                                array = ArraySchema(schema = Schema(implementation = TimelineCookieView::class))
                             )
                         ]
                     )
