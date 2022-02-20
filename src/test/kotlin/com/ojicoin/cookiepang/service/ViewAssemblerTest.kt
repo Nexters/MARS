@@ -82,6 +82,44 @@ class ViewAssemblerTest(
         then(actual.viewCount).isEqualTo(1L)
     }
 
+    @Test
+    fun timelineView() {
+        val collector = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val ownedUserId = userRepository.save(collector).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("status", CookieStatus.ACTIVE)
+            .set("ownedUserId", ownedUserId)
+            .sample()
+        cookieRepository.save(cookie).id!!
+
+        // when
+        val actual = sut.timelineView(viewerId = ownedUserId, categoryId = cookie.categoryId)
+
+        then(actual).hasSize(1)
+    }
+
+    @Test
+    fun timelineViewAllCategories() {
+        val collector = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val ownedUserId = userRepository.save(collector).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("status", CookieStatus.ACTIVE)
+            .set("ownedUserId", ownedUserId)
+            .sample()
+        cookieRepository.save(cookie).id!!
+
+        // when
+        val actual = sut.timelineView(viewerId = ownedUserId)
+
+        then(actual).hasSize(1)
+    }
+
     @AfterEach
     internal fun tearDown() {
         cookieRepository.deleteAll()

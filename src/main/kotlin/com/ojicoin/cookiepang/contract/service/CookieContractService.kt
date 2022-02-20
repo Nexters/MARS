@@ -37,9 +37,14 @@ class CookieContractService(
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
         return try {
             val blockNumber: BigInteger = transactionService.getBlockNumberByTxHash(txHash)!!
-            val transferLogs: List<LogResult<*>> = getLogsByEventName(DefaultBlockParameterNumber(blockNumber), DefaultBlockParameterNumber(blockNumber), CookieContractEvent.TRANSFER.eventName)!!
+            val transferLogs: List<LogResult<*>> = getLogsByEventName(
+                DefaultBlockParameterNumber(blockNumber),
+                DefaultBlockParameterNumber(blockNumber),
+                CookieContractEvent.TRANSFER.eventName
+            )!!
 
-            val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }.filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
+            val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }
+                .filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
             transferEventLogParser.parse(txHashLogs).last()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -196,8 +201,16 @@ class CookieContractService(
     private fun mintCookieByAdmin(cookieInfo: CookieInfo): BigInteger? {
         return try {
             val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
-            val functionParams: List<Any> = listOf(cookieInfo.creatorAddress, cookieInfo.title, cookieInfo.content, cookieInfo.imageUrl, cookieInfo.tag, cookieInfo.hammerPrice)
-            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName).send(functionParams, sendOptions)
+            val functionParams: List<Any> = listOf(
+                cookieInfo.creatorAddress,
+                cookieInfo.title,
+                cookieInfo.content,
+                cookieInfo.imageUrl,
+                cookieInfo.tag,
+                cookieInfo.hammerPrice
+            )
+            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName)
+                .send(functionParams, sendOptions)
 
             val transferEventLogs: TransferEventLog = transferEventLogParser.parse(receiptData.logs).first()
             transferEventLogs.nftTokenId
@@ -211,7 +224,11 @@ class CookieContractService(
         return getLogsByEventName(fromBlock, DefaultBlockParameterName.LATEST, eventName)
     }
 
-    private fun getLogsByEventName(fromBlock: DefaultBlockParameter, toBlock: DefaultBlockParameter, eventName: String): List<LogResult<*>> {
+    private fun getLogsByEventName(
+        fromBlock: DefaultBlockParameter,
+        toBlock: DefaultBlockParameter,
+        eventName: String,
+    ): List<LogResult<*>> {
         val filter = KlayLogFilter(fromBlock, DefaultBlockParameterName.LATEST, cookieContract.contractAddress, null)
         val klayLogs = cookieContract.getPastEvent(eventName, filter)
         val logs = klayLogs.logs

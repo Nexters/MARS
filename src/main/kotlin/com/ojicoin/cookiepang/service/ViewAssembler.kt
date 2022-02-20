@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.contract.config.ContractProperties
 import com.ojicoin.cookiepang.controller.CookieHistoryView
 import com.ojicoin.cookiepang.controller.CookieView
+import com.ojicoin.cookiepang.controller.TimelineCookieView
 import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
@@ -57,7 +58,42 @@ class ViewAssembler(
         )
     }
 
-    fun toCookieHistory(
+    fun timelineView(viewerId: Long, categoryId: Long? = null, page: Int = 0, size: Int = 3): List<TimelineCookieView> {
+        val viewer = userService.getById(viewerId)
+        val cookies = if (categoryId != null) {
+            cookieService.getCookiesByCategoryId(categoryId = categoryId, page = page, size = size)
+        } else {
+            cookieService.getCookies(page = page, size = size)
+        }
+
+        return cookies.map { cookie ->
+            val owner = userService.getById(cookie.ownedUserId)
+            val myCookie = viewer.id == owner.id
+            val answer = if (myCookie) {
+                cookie.content
+            } else {
+                null
+            }
+            val viewCount = viewCountService.getAllViewCountsByCookieId(cookie.id!!)
+
+            TimelineCookieView(
+                cookieId = cookie.id!!,
+                collectorProfileUrl = owner.profileUrl,
+                collectorName = owner.nickname,
+                question = cookie.title,
+                answer = answer,
+                contractAddress = contractProperties.address,
+                nftTokenId = cookie.nftTokenId,
+                viewCount = viewCount,
+                cookieImageUrl = cookie.imageUrl,
+                myCookie = myCookie,
+                price = cookie.price,
+                createdAt = cookie.createdAt
+            )
+        }
+    }
+
+    private fun toCookieHistory(
         cookieHistory: CookieHistory,
         owner: User,
         cookie: Cookie,
