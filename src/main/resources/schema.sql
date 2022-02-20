@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "users"
     "introduction"   varchar(255),
     "profile_url"    varchar(255),
     "background_url" varchar(255),
-    "wallet_address" varchar(255),
+    "wallet_address" varchar(255) unique,
     "status"         varchar(10),
     PRIMARY KEY ("user_id")
 );
