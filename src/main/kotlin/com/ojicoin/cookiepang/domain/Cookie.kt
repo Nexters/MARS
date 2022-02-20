@@ -15,7 +15,7 @@ data class Cookie(
     @Id @Column("cookie_id") var id: Long? = null,
     @Column("title") @field:Size(max = 255) val title: String,
     @Column("price") var price: Long,
-    @Column("content") val content: String,
+    @Column("content") private val content: String,
     @Column("image_url") @field:Size(max = 255) val imageUrl: String?,
     @Column("author_user_id") val authorUserId: Long,
     @Column("owned_user_id") var ownedUserId: Long,
@@ -26,8 +26,15 @@ data class Cookie(
     @Column("from_block_address") var fromBlockAddress: BigInteger,
     @Column("categoryId") val categoryId: Long,
 ) : AbstractAggregateRoot<Cookie>() {
+
     fun addEvent(event: ApplicationEvent) {
         registerEvent(event)
+    }
+
+    fun open(userId: Long): String? = if (ownedUserId == userId) {
+        content
+    } else {
+        null
     }
 
     fun apply(updateCookie: UpdateCookie) {
