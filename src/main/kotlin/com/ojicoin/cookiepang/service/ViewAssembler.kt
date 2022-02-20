@@ -1,13 +1,13 @@
 package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.contract.config.ContractProperties
-import com.ojicoin.cookiepang.controller.CookieHistoryView
-import com.ojicoin.cookiepang.controller.CookieView
-import com.ojicoin.cookiepang.controller.TimelineCookieView
 import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.dto.CookieHistoryView
+import com.ojicoin.cookiepang.dto.CookieView
+import com.ojicoin.cookiepang.dto.TimelineCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
