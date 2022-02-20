@@ -112,10 +112,15 @@ class ViewAssemblerTest(
             .setNull("id")
             .sample()
         val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
             .sample()
         cookieRepository.save(cookie).id!!
 
@@ -131,10 +136,15 @@ class ViewAssemblerTest(
             .setNull("id")
             .sample()
         val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
             .sample()
         cookieRepository.save(cookie).id!!
 
