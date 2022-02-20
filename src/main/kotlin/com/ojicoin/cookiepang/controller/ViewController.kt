@@ -1,7 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.Cookie
+import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.service.ViewAssembler
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -17,8 +17,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.function.RequestPredicates.GET
 import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerResponse.ok
-import java.math.BigInteger
-import java.time.Instant
 
 @Controller
 class ViewController(private val viewAssembler: ViewAssembler) {
@@ -119,39 +117,3 @@ class ViewController(private val viewAssembler: ViewAssembler) {
         ok().body(viewAssembler.timelineView(viewerId = userId, categoryId = categoryId, page = page, size = size))
     }
 }
-
-data class CookieView(
-    val question: String,
-    val answer: String?,
-    val collectorName: String,
-    val collectorProfileUrl: String?,
-    val creatorName: String,
-    val creatorProfileUrl: String?,
-    val contractAddress: String,
-    val nftTokenId: BigInteger,
-    val viewCount: Long,
-    val price: Long,
-    val histories: List<CookieHistoryView>,
-    val myCookie: Boolean,
-)
-
-data class CookieHistoryView(
-    val action: Action,
-    val content: String,
-    val createdAt: Instant,
-)
-
-data class TimelineCookieView(
-    val cookieId: Long,
-    val collectorProfileUrl: String?,
-    val collectorName: String,
-    val question: String,
-    val answer: String?,
-    val contractAddress: String,
-    val nftTokenId: BigInteger,
-    val viewCount: Long,
-    val cookieImageUrl: String?,
-    val price: Long,
-    val myCookie: Boolean,
-    val createdAt: Instant,
-)
