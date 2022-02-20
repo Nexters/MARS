@@ -1,7 +1,6 @@
 package com.ojicoin.cookiepang.service
 
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
-import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
@@ -12,7 +11,7 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 
@@ -23,7 +22,7 @@ class ViewAssemblerTest(
     @Value("\${contract.address}") val contractAddress: String,
 ) : SpringContextFixture() {
 
-    @RepeatedTest(REPEAT_COUNT)
+    @Test
     fun cookieView() {
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
@@ -54,7 +53,7 @@ class ViewAssemblerTest(
         then(actual.viewCount).isEqualTo(0L)
     }
 
-    @RepeatedTest(REPEAT_COUNT)
+    @Test
     fun cookieViewNotOwner() {
         val creator = fixture.giveMeBuilder<User>()
             .setNull("id")
