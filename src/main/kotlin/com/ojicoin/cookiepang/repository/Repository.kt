@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
-import java.util.Optional
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByTxHash(txHash: String): Cookie?
@@ -57,7 +56,8 @@ interface AskRepository : CrudRepository<Ask, Long> {
 
 interface CategoryRepository : CrudRepository<Category, Long>
 interface UserRepository : CrudRepository<User, Long> {
-    fun findByNickname(nickname: String): Optional<User>
+    fun findByNickname(nickname: String): User?
+    fun findByWalletAddress(walletAddress: String): User?
 }
 
 interface ViewCountRepository : CrudRepository<ViewCount, Long> {

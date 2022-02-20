@@ -6,6 +6,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -96,6 +97,18 @@ class UserServiceTest(
 
         thenThrownBy { sut.modify(userId, null, null, UpdateUser(null)) }
             .isExactlyInstanceOf(NoSuchElementException::class.java)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun checkDuplicateUser() {
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+
+        val savedUser = userRepository.save(user)
+
+        thenThrownBy { sut.checkDuplicateUser(savedUser.walletAddress) }
+            .isExactlyInstanceOf(UserExistException::class.java)
     }
 
     @AfterEach

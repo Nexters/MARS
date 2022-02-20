@@ -4,6 +4,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
 
@@ -11,10 +12,9 @@ import org.springframework.stereotype.Service
 class UserService(val userRepository: UserRepository) {
 
     fun create(dto: CreateUser): User {
-        val findByNickname = userRepository.findByNickname(dto.nickname)
-        if (findByNickname.isPresent) {
-            throw IllegalArgumentException("There is same nickname user.")
-        }
+        // Prevent duplicate user nickname
+        userRepository.findByNickname(dto.nickname)
+            ?.let { throw IllegalArgumentException("There is same nickname user.") }
 
         // TODO set default profile, background url
         val user = User(
@@ -37,5 +37,10 @@ class UserService(val userRepository: UserRepository) {
         user.apply(profileUrl = profilePictureUrl, backgroundUrl = backgroundPictureUrl, dto = dto)
 
         return userRepository.save(user)
+    }
+
+    fun checkDuplicateUser(walletAddress: String) {
+        userRepository.findByWalletAddress(walletAddress = walletAddress)
+            ?.let { throw UserExistException("There is user that have this wallerAddress. wallerAddress=$walletAddress") }
     }
 }
