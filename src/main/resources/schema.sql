@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS "cookie_histories"
     "cookie_history_id" bigserial,
     "action"            varchar(20),
     "cookie_id"         bigint,
+    "creator_id"        bigint,
     "hammer_price"      bigint,
     "nft_token_id"      bigint,
     "block_number"      bigint,

@@ -8,11 +8,13 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
+import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
+import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -25,6 +27,7 @@ class CookieService(
     private val cookieRepository: CookieRepository,
     private val cookieContractService: CookieContractService,
     private val cookieHistoryRepository: CookieHistoryRepository,
+    private val userRepository: UserRepository, // TODO: 구조 리팩토링
     @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferEventLog>,
 ) {
     fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
@@ -78,7 +81,10 @@ class CookieService(
         val newCookieHistories = cookieContractService.getCookieEventLogByNftTokenId(
             fromBlock = DefaultBlockParameter.valueOf(cookie.fromBlockAddress),
             nftTokenId = cookie.nftTokenId
-        ).map { it.toCookieHistory(cookie) }
+        ).map {
+            val creator = userRepository.findByWalletAddress(it.fromAddress!!)!!
+            it.toCookieHistory(cookie, creator)
+        }
         if (newCookieHistories.isNotEmpty()) {
             cookie.fromBlockAddress = newCookieHistories.last().blockNumber
             cookieRepository.save(cookie)
@@ -152,12 +158,13 @@ class CookieService(
     }
 }
 
-fun CookieEventLog.toCookieHistory(cookie: Cookie) =
+fun CookieEventLog.toCookieHistory(cookie: Cookie, creator: User) =
     CookieHistory(
         action = this.cookieEventStatus.toAction(),
         cookieId = cookie.id!!,
         hammerPrice = this.hammerPrice,
         nftTokenId = this.nftTokenId!!,
+        creatorId = creator.id!!,
         blockNumber = this.blockNumber,
         createdAt = this.createdAt.toInstant()
     )
