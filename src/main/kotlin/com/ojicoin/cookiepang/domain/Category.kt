@@ -12,4 +12,4 @@ class Category(
     @Column("color") val color: CategoryColor,
 )
 
-enum class CategoryColor { RED, }
+enum class CategoryColor { BLUE, LIME, PINK, PURPLE }
