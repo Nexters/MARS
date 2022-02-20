@@ -4,6 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.customizer.ArbitraryCustomizer
 import com.navercorp.fixturemonkey.generator.FieldArbitraries
 import com.navercorp.fixturemonkey.kotlin.KFixtureMonkeyBuilder
+import com.ojicoin.cookiepang.contract.service.CookieContractService
 import com.ojicoin.cookiepang.event.ViewCookieEvent
 import com.ojicoin.cookiepang.repository.ViewCountRepository
 import io.restassured.RestAssured
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.ApplicationEvent
 
@@ -28,6 +30,9 @@ abstract class SpringContextFixture {
     protected var port = 0
 
     protected val fixture: FixtureMonkey = com.ojicoin.cookiepang.fixture
+
+    @MockBean
+    lateinit var cookieContractService: CookieContractService
 
     @Autowired
     private lateinit var viewCountRepository: ViewCountRepository
