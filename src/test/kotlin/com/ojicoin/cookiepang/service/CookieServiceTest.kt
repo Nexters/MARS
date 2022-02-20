@@ -34,7 +34,7 @@ class CookieServiceTest(
         val created = sut.create(createCookie)
 
         then(created.title).isEqualTo(createCookie.question)
-        then(created.content).isEqualTo(createCookie.answer)
+        then(created.open(createCookie.ownedUserId)).isEqualTo(createCookie.answer)
         then(created.price).isEqualTo(createCookie.price)
         then(created.ownedUserId).isEqualTo(createCookie.ownedUserId)
         then(created.authorUserId).isEqualTo(createCookie.authorUserId)
@@ -146,7 +146,6 @@ class CookieServiceTest(
 
         val foundCookie = getCookiesResponse.cookies[0]
         then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.content).isEqualTo(foundCookie.content)
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
@@ -173,7 +172,6 @@ class CookieServiceTest(
 
         val foundCookie = getCookiesResponse.cookies[0]
         then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.content).isEqualTo(foundCookie.content)
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
@@ -194,7 +192,6 @@ class CookieServiceTest(
 
         val foundCookie = getCookiesResponse.cookies[0]
         then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.content).isEqualTo(foundCookie.content)
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
@@ -221,7 +218,6 @@ class CookieServiceTest(
 
         val foundCookie = getCookiesResponse.cookies[0]
         then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.content).isEqualTo(foundCookie.content)
         then(savedCookie.price).isEqualTo(foundCookie.price)
         then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
         then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)

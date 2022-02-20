@@ -31,11 +31,7 @@ class ViewAssembler(
         val owner = userService.getById(cookie.ownedUserId)
         val viewer = userService.getById(viewerId)
         val myCookie = viewerId == owner.id
-        val answer: String? = if (myCookie) {
-            cookie.content
-        } else {
-            null
-        }
+        val answer: String? = cookie.open(viewerId)
 
         viewer.view(cookie)
         cookieService.publishEvent(cookie)
@@ -71,11 +67,7 @@ class ViewAssembler(
         return cookies.map { cookie ->
             val owner = userService.getById(cookie.ownedUserId)
             val myCookie = viewer.id == owner.id
-            val answer = if (myCookie) {
-                cookie.content
-            } else {
-                null
-            }
+            val answer = cookie.open(viewerId)
             val viewCount = viewCountService.getAllViewCountsByCookieId(cookie.id!!)
 
             TimelineCookieView(
