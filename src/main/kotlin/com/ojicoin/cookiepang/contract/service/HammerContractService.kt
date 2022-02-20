@@ -15,8 +15,11 @@ import java.util.Arrays
 @Service
 class HammerContractService(
     private val coinContract: Contract,
-    @Value("\${contract.admin-address}") val adminAddress: String,
+    @Value("\${contract.admin-address}") private val adminAddress: String,
+    @Value("\${contract.addr.hammer}") private val hammerContractAddress: String,
 ) {
+
+    fun getHammerContractAddress(): String = hammerContractAddress
 
     enum class CoinContractMethod(val methodName: String) {
         IS_MAX_APPROVED_ADDRESS("maxApprovedAddress"),
@@ -27,7 +30,8 @@ class HammerContractService(
     // FIXME: 커스텀 익셉션 추가
     fun isMaxApprovedAddress(address: String): Boolean {
         return try {
-            val callResult: List<Type<*>> = coinContract.call(CoinContractMethod.IS_MAX_APPROVED_ADDRESS.methodName, address)
+            val callResult: List<Type<*>> =
+                coinContract.call(CoinContractMethod.IS_MAX_APPROVED_ADDRESS.methodName, address)
             val result: Type<Boolean> = callResult[0] as Type<Boolean>
             result.value
         } catch (e: Exception) {
