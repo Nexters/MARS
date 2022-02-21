@@ -41,6 +41,7 @@ data class TimelineCookieView(
     val cookieImageUrl: String?,
     val price: Long,
     val myCookie: Boolean,
+    val category: CategoryView?,
     val createdAt: Instant,
 )
 

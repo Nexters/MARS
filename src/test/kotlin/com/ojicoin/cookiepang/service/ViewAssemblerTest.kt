@@ -109,6 +109,10 @@ class ViewAssemblerTest(
 
     @Test
     fun timelineView() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
@@ -122,17 +126,22 @@ class ViewAssemblerTest(
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
             .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
             .sample()
         cookieRepository.save(cookie).id!!
 
         // when
-        val actual = sut.timelineView(viewerId = ownedUserId, categoryId = cookie.categoryId)
+        val actual = sut.timelineView(viewerId = ownedUserId, viewCategoryId = cookie.categoryId)
 
         then(actual).hasSize(1)
     }
 
     @Test
     fun timelineViewAllCategories() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
@@ -146,6 +155,7 @@ class ViewAssemblerTest(
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
             .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
             .sample()
         cookieRepository.save(cookie).id!!
 
