@@ -6,7 +6,7 @@ server:
   port: 8080
 
 springdoc:
-  packages-to-scan: com.ojicoin.cookiepang.controller
+  packages-to-scan: com.ojicoin.cookiepang.controller, com.ojicoin.cookiepang.contract.controller
   paths-to-match: /**
 
 
