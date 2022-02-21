@@ -65,3 +65,7 @@ data class ProblemResponse(
     val status: Int,
     val detail: String,
 )
+
+data class LoginRequest(val walletAddress: String)
+
+data class LoginResponse(val userId: Long)

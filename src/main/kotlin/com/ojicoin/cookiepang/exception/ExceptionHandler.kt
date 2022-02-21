@@ -47,6 +47,16 @@ class ExceptionHandler : ProblemHandling {
         return create(exception, problem, request)
     }
 
+    @ExceptionHandler(LoginFailedException::class)
+    fun loginFailedException(exception: LoginFailedException, request: NativeWebRequest): ResponseEntity<Problem> {
+        val problemBuilder: ProblemBuilder = Problem.builder()
+            .withTitle(Status.FORBIDDEN.reasonPhrase)
+            .withStatus(Status.FORBIDDEN)
+            .withDetail(exception.message)
+        applyAttribute(problemBuilder, exception)
+        return create(exception, problemBuilder.build(), request)
+    }
+
     private fun applyAttribute(builder: ProblemBuilder, e: ParameterizedException) {
         e.parameters.forEach { (key: String?, value: Any?) -> builder.with(key, value) }
     }
