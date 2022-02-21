@@ -35,7 +35,7 @@ class UserController(
             ApiResponse(description = "생성 성공", responseCode = "200"),
             ApiResponse(
                 description = "중복",
-                responseCode = "407",
+                responseCode = "409",
                 content = [Content(schema = Schema(implementation = ProblemResponse::class))]
             )
         ]
