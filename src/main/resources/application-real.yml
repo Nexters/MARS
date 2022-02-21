@@ -15,7 +15,7 @@ cloud:
       directory: pictures
 
 contract:
-  admin-address: "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa"
+  admin-address: "0xe3F744017BB487F88B1CE9587FfD672E9F306769"
   kas:
     chain-id: "8217"
     node-api-url: "https://node-api.klaytnapi.com/v1/klaytn"
