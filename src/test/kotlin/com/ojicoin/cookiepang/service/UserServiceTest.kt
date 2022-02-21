@@ -6,7 +6,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
-import com.ojicoin.cookiepang.exception.UserExistException
+import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -49,7 +49,7 @@ class UserServiceTest(
             )
         )
 
-        thenThrownBy { sut.create(createUserDto) }.isExactlyInstanceOf(IllegalArgumentException::class.java)
+        thenThrownBy { sut.create(createUserDto) }.isExactlyInstanceOf(DuplicateDomainException::class.java)
             .hasMessageContaining("There is same nickname user.")
     }
 
@@ -108,7 +108,7 @@ class UserServiceTest(
         val savedUser = userRepository.save(user)
 
         thenThrownBy { sut.checkDuplicateUser(savedUser.walletAddress) }
-            .isExactlyInstanceOf(UserExistException::class.java)
+            .isExactlyInstanceOf(DuplicateDomainException::class.java)
     }
 
     @AfterEach
