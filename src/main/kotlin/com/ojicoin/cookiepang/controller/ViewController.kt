@@ -30,5 +30,5 @@ class ViewController(private val viewAssembler: ViewAssembler) {
         @PathVariable categoryId: Long,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "3") size: Int,
-    ) = viewAssembler.timelineView(viewerId = userId, categoryId = categoryId, page = page, size = size)
+    ) = viewAssembler.timelineView(viewerId = userId, viewCategoryId = categoryId, page = page, size = size)
 }

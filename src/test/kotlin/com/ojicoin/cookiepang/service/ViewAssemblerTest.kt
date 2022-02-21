@@ -96,6 +96,7 @@ class ViewAssemblerTest(
             .set("ownedUserId", ownedUserId)
             .set("status", CookieStatus.ACTIVE)
             .set("categoryId", categoryId)
+            .set("nftTokenId", BigInteger.valueOf(-1))
             .sample()
         val cookieId = cookieRepository.save(cookie).id!!
 
@@ -108,33 +109,53 @@ class ViewAssemblerTest(
 
     @Test
     fun timelineView() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
         val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
             .sample()
         cookieRepository.save(cookie).id!!
 
         // when
-        val actual = sut.timelineView(viewerId = ownedUserId, categoryId = cookie.categoryId)
+        val actual = sut.timelineView(viewerId = ownedUserId, viewCategoryId = cookie.categoryId)
 
         then(actual).hasSize(1)
     }
 
     @Test
     fun timelineViewAllCategories() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
         val collector = fixture.giveMeBuilder<User>()
             .setNull("id")
             .sample()
         val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
             .set("status", CookieStatus.ACTIVE)
             .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
             .sample()
         cookieRepository.save(cookie).id!!
 
