@@ -1,12 +1,25 @@
 storage:
   domain: "api.cookiepang.site"
 
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://cooiepang-db.ctsd0extrjqk.ap-northeast-2.rds.amazonaws.com:5432/cookiepang
+    username: cookiepang
+    password: cookiepang123
+
+cloud:
+  aws:
+    s3:
+      bucket: cookiepang
+      directory: pictures
+
 contract:
-  admin-address: "0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa"
+  admin-address: "0xe3F744017BB487F88B1CE9587FfD672E9F306769"
   kas:
     chain-id: "8217"
     node-api-url: "https://node-api.klaytnapi.com/v1/klaytn"
   addr:
-    cookie: "0x80C8be670A3b138b49d21323Fde06d1E48916f4C"
-    hammer: "0x515649e1006c747a552d82676F4f7A451447B385"
+    cookie: "0xC0b8FC7fE268Ae1e874e009F86D74010C3385D59"
+    hammer: "0xD6E679cf1c9980203604a57603e79e0660757C8a"
   address: 123456

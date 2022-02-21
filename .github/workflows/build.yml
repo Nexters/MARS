@@ -23,4 +23,6 @@ jobs:
           CONTRACT_KAS_ACCESS_KEY_ID: ${{ secrets.CONTRACT_KAS_ACCESS_KEY_ID }}
           CONTRACT_KAS_SECRET_ACCESS_KEY: ${{ secrets.CONTRACT_KAS_SECRET_ACCESS_KEY }}
           CONTRACT_ADMIN_PRIVE_KEY: ${{ secrets.CONTRACT_ADMIN_PRIVE_KEY }}
+          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
         run: ./gradlew build -Dspring.profiles.active=dev
