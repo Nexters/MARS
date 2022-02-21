@@ -4,8 +4,10 @@ import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.UserCategory
+import com.ojicoin.cookiepang.dto.CreateUserCategory
 import com.ojicoin.cookiepang.repository.UserCategoryRepository
 import org.assertj.core.api.BDDAssertions.then
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -21,34 +23,53 @@ internal class UserCategoryServiceTest(
             .setNull("id")
             .sample()
 
-        sut.create(userCategory.userId, listOf(userCategory.categoryId))
+        sut.create(userCategory.userId, CreateUserCategory(categoryIdList = listOf(userCategory.categoryId)))
         val expected = userCategoryRepository.findAllByUserId(userCategory.userId)
 
         then(userCategory.userId).isEqualTo(expected[0].userId)
         then(userCategory.categoryId).isEqualTo(expected[0].categoryId)
     }
 
-    // 새로운 user tag를 만드는 경우 기존 등록된 user tag 삭제되는지 확인
+    // 새로운 user category를 만드는 경우 기존 등록된 user category 삭제되는지 확인
     @RepeatedTest(REPEAT_COUNT)
-    fun createDeleteAllExistUserTagForTargetUserId() {
+    fun createDeleteAllExistUserCategoryForTargetUserId() {
         // given
         val userCategory = fixture.giveMeBuilder<UserCategory>()
             .setNull("id")
             .sample()
 
-        // other tag id
-        val newTagId = fixture.giveMeOne(Long::class.java)
+        // other category id
+        val newCategoryId = fixture.giveMeOne(Long::class.java)
 
         userCategoryRepository.save(userCategory)
 
-        sut.create(userCategory.userId, listOf(newTagId))
+        sut.create(userCategory.userId, CreateUserCategory(categoryIdList = listOf(newCategoryId)))
         val expected = userCategoryRepository.findAllByUserId(userCategory.userId)
 
-        expected.forEach { foundUserTag ->
+        expected.forEach { foundUserCategory ->
             // create 이전에 만들어진 tag 정보들은 삭제되어야 함.
             run {
-                then(userCategory.categoryId).isNotEqualTo(foundUserTag.categoryId)
+                then(userCategory.categoryId).isNotEqualTo(foundUserCategory.categoryId)
             }
         }
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun getAllByUserId() {
+        val userCategory = fixture.giveMeBuilder<UserCategory>()
+            .setNull("id")
+            .setNotNull("userId")
+            .sample()
+
+        val createdUserCategory = userCategoryRepository.save(userCategory)
+
+        val userCategories = sut.getAllByUserId(createdUserCategory.userId)
+
+        then(userCategories.size).isEqualTo(1)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        userCategoryRepository.deleteAll()
     }
 }

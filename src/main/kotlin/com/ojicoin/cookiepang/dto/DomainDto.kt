@@ -52,3 +52,7 @@ data class GetCookiesResponse(
     val size: Int,
     val cookies: List<Cookie>,
 )
+
+data class CreateUserCategory(
+    val categoryIdList: List<Long>,
+)

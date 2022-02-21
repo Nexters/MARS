@@ -167,10 +167,16 @@ class CookieServiceTest(
     fun getOwnedCookiesNotSameViewUserId() {
         val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("txHash", "txHash1")
+            .set("nftTokenId", "nftTokenId1")
+            .set("fromBlockAddress", "fromBlockAddress1")
             .set("status", ACTIVE)
             .sample()
         val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("txHash", "txHash2")
+            .set("nftTokenId", "nftTokenId2")
+            .set("fromBlockAddress", "fromBlockAddress2")
             .set("status", HIDDEN)
             .sample()
 
@@ -213,10 +219,16 @@ class CookieServiceTest(
     fun getAuthorCookiesNotSameViewUserId() {
         val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("txHash", "txHash1")
+            .set("nftTokenId", "nftTokenId1")
+            .set("fromBlockAddress", "fromBlockAddress1")
             .set("status", ACTIVE)
             .sample()
         val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("txHash", "txHash2")
+            .set("nftTokenId", "nftTokenId2")
+            .set("fromBlockAddress", "fromBlockAddress2")
             .set("status", HIDDEN)
             .sample()
 
