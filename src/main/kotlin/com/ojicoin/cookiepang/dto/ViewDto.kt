@@ -59,3 +59,9 @@ enum class GetUserCookieTarget {
 data class CreateUserCategory(
     val categoryIdList: List<Long>,
 )
+
+data class ProblemResponse(
+    val title: String,
+    val status: Int,
+    val detail: String,
+)

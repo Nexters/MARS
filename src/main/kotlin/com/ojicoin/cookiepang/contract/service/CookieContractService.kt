@@ -36,23 +36,17 @@ class CookieContractService(
 
     fun getCookieContractAddress(): String = cookieContractAddress
 
-    // FIXME: 커스텀 익셉션 추가
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
-        return try {
-            val blockNumber: BigInteger = transactionService.getBlockNumberByTxHash(txHash)!!
-            val transferLogs: List<LogResult<*>> = getLogsByEventName(
-                DefaultBlockParameterNumber(blockNumber),
-                DefaultBlockParameterNumber(blockNumber),
-                CookieContractEvent.TRANSFER.eventName
-            )!!
+        val blockNumber: BigInteger = transactionService.getBlockNumberByTxHash(txHash)
+        val transferLogs: List<LogResult<*>> = getLogsByEventName(
+            DefaultBlockParameterNumber(blockNumber),
+            DefaultBlockParameterNumber(blockNumber),
+            CookieContractEvent.TRANSFER.eventName
+        )
 
-            val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }
-                .filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
-            transferEventLogParser.parse(txHashLogs).last()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            throw RuntimeException()
-        }
+        val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }
+            .filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
+        return transferEventLogParser.parse(txHashLogs).last()
     }
 
     fun getContent(nftTokenId: BigInteger, senderAddress: String): String {

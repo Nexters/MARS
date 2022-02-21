@@ -8,6 +8,8 @@ import com.ojicoin.cookiepang.domain.AskStatus.DELETED
 import com.ojicoin.cookiepang.domain.AskStatus.IGNORED
 import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.dto.UpdateAsk
+import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
+import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.AskRepository
 import com.ojicoin.cookiepang.repository.NotificationRepository
 import net.jqwik.api.Arbitraries
@@ -108,8 +110,8 @@ internal class AskServiceTest(
                 senderUserId = ask.senderUserId,
                 receiverUserId = ask.senderUserId,
             )
-        }.isExactlyInstanceOf(IllegalArgumentException::class.java)
-            .hasMessageContaining("senderUserId is same as receiverUserId. senderUserId=${ask.senderUserId}, receiverUserId=${ask.senderUserId}")
+        }.isExactlyInstanceOf(InvalidRequestException::class.java)
+            .hasMessageContaining("senderUserId is same as receiverUserId.")
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -144,8 +146,8 @@ internal class AskServiceTest(
             .sample()
 
         thenThrownBy { sut.modify(id = savedAskId, dto = updateAsk) }
-            .isExactlyInstanceOf(IllegalArgumentException::class.java)
-            .hasMessageContaining("cannot update ask. This ask status is already changed or is deleted. status=${ask.status}")
+            .isExactlyInstanceOf(InvalidDomainStatusException::class.java)
+            .hasMessageContaining("cannot update ask. This ask status is already changed or is deleted.")
     }
 
     @AfterEach

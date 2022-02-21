@@ -13,6 +13,9 @@ import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.UpdateCookie
+import com.ojicoin.cookiepang.exception.DuplicateDomainException
+import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
+import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
@@ -63,7 +66,7 @@ class CookieServiceTest(
         sut.create(createCookie)
 
         thenThrownBy { sut.create(createCookieWithSameTokenAddress) }
-            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .isExactlyInstanceOf(DuplicateDomainException::class.java)
             .hasMessageContaining("Attempting duplicate token creation")
     }
 
@@ -100,7 +103,7 @@ class CookieServiceTest(
 
         // when, then
         thenThrownBy { sut.modify(cookieId = saved.id!!, updateCookie = updateCookie) }
-            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .isExactlyInstanceOf(InvalidRequestException::class.java)
             .hasMessageContaining("cannot update cookie status to DELETED, use delete instead")
     }
 
@@ -136,7 +139,7 @@ class CookieServiceTest(
         sut.delete(cookieId = savedCookieId)
 
         thenThrownBy { sut.delete(cookieId = savedCookieId) }
-            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .isExactlyInstanceOf(InvalidDomainStatusException::class.java)
             .hasMessageContaining("already deleted.")
     }
 

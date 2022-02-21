@@ -45,6 +45,7 @@ dependencies {
     implementation("com.klaytn.caver:core:1.6.2")
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.2")
+    implementation("org.zalando:problem-spring-web-starter:0.25.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
