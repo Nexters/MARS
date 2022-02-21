@@ -175,8 +175,8 @@ class CookieContractService(
             }
         }
 
-    fun createDefaultCookies(tokenInfos: List<CookieInfo>): List<BigInteger?> {
-        return tokenInfos.map { cookieInfo: CookieInfo -> mintCookieByAdmin(cookieInfo!!) }.toList()
+    fun createDefaultCookie(tokenInfo: CookieInfo): TransferEventLog? {
+        return mintCookieByAdmin(tokenInfo)
     }
 
     fun getCookieEventLogByNftTokenId(nftTokenId: BigInteger): List<CookieEventLog> {
@@ -195,7 +195,7 @@ class CookieContractService(
         }
     }
 
-    private fun mintCookieByAdmin(cookieInfo: CookieInfo): BigInteger? {
+    private fun mintCookieByAdmin(cookieInfo: CookieInfo): TransferEventLog? {
         return try {
             val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
             val functionParams: List<Any> = listOf(
@@ -209,8 +209,7 @@ class CookieContractService(
             val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName)
                 .send(functionParams, sendOptions)
 
-            val transferEventLogs: TransferEventLog = transferEventLogParser.parse(receiptData.logs).first()
-            transferEventLogs.nftTokenId
+            transferEventLogParser.parse(receiptData.logs).first()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()

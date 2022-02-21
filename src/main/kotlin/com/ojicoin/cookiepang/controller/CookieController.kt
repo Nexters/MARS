@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COLLECTED
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COOKIES
@@ -25,6 +26,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CookieController(private val cookieService: CookieService) {
+
+    @PostMapping("/cookies/default")
+    fun createDefaultCookie(@RequestBody createDefaultCookies: CreateDefaultCookies): List<Cookie> {
+        return cookieService.createDefaultCookies(createDefaultCookies = createDefaultCookies)
+    }
+
     @PostMapping("/cookies")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(

@@ -19,6 +19,8 @@ class UserService(val userRepository: UserRepository) {
                     .with("nickname", dto.nickname)
             }
 
+        // TODO give welcome gift(hammer)
+
         // TODO set default profile, background url
         val user = User(
             walletAddress = dto.walletAddress,
