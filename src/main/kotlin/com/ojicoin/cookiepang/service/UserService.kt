@@ -43,15 +43,4 @@ class UserService(val userRepository: UserRepository) {
 
         return userRepository.save(user)
     }
-
-    fun checkDuplicateUser(walletAddress: String) {
-        userRepository.findByWalletAddress(walletAddress = walletAddress)
-            ?.let {
-                throw DuplicateDomainException(
-                    domainType = "User",
-                    message = "There is duplicate user with this wallerAddress."
-                )
-                    .with("walletAddress", walletAddress)
-            }
-    }
 }

@@ -33,3 +33,5 @@ class DuplicateDomainException(domainType: String, message: String) : InvalidReq
         with("domainType", domainType)
     }
 }
+
+class LoginFailedException(message: String) : ParameterizedException(message)

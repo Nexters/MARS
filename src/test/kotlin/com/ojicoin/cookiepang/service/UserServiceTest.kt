@@ -99,18 +99,6 @@ class UserServiceTest(
             .isExactlyInstanceOf(NoSuchElementException::class.java)
     }
 
-    @RepeatedTest(REPEAT_COUNT)
-    fun checkDuplicateUser() {
-        val user = fixture.giveMeBuilder(User::class.java)
-            .setNull("id")
-            .sample()
-
-        val savedUser = userRepository.save(user)
-
-        thenThrownBy { sut.checkDuplicateUser(savedUser.walletAddress) }
-            .isExactlyInstanceOf(DuplicateDomainException::class.java)
-    }
-
     @AfterEach
     fun tearDown() {
         userRepository.deleteAll()
