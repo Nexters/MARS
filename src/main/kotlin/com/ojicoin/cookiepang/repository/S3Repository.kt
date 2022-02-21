@@ -2,8 +2,7 @@ package com.ojicoin.cookiepang.repository
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.ojicoin.cookiepang.config.S3Properties
@@ -19,7 +18,8 @@ class S3Repository(
     @Value("#{systemEnvironment['AWS_S3_ACCESS_KEY']}") val s3AccessKey: String,
     @Value("#{systemEnvironment['AWS_S3_SECRET_KEY']}") val s3SecretKey: String,
 ) : StorageRepository {
-    private val amazonS3: AmazonS3 = AmazonS3ClientBuilder.standard()
+    private val amazonS3 = AmazonS3Client.builder()
+        .withRegion("ap-northeast-2")
         .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(s3AccessKey, s3SecretKey)))
         .build()
 
