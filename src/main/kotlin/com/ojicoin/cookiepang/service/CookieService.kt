@@ -12,7 +12,6 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateCookie
-import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
@@ -45,10 +44,6 @@ class CookieService(
         )
 
     fun create(dto: CreateCookie): Cookie {
-        if (cookieRepository.findByTxHash(dto.txHash) != null) {
-            throw DuplicateDomainException(domainType = "Cookie", message = "Attempting duplicate token creation.")
-                .with("txHash", dto.txHash)
-        }
         val transferInfo = transferInfoByTxHashCacheTemplate[dto.txHash]
             ?: cookieContractService.getTransferEventLogByTxHash(dto.txHash)
 
@@ -59,7 +54,6 @@ class CookieService(
                 price = dto.price,
                 authorUserId = dto.authorUserId,
                 ownedUserId = dto.ownedUserId,
-                txHash = dto.txHash,
                 categoryId = dto.categoryId,
                 imageUrl = null,
                 status = ACTIVE,

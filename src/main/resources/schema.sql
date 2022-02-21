@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS "cookies"
     "author_user_id"     bigint,
     "created_at"         timestamp,
     "status"             varchar(10),
-    "tx_hash"            varchar(255) unique,
     "nft_token_id"       bigint unique,
     "from_block_address" bigint unique,
     "categoryId"         bigint,

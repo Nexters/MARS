@@ -13,7 +13,6 @@ import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.UpdateCookie
-import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
@@ -49,25 +48,9 @@ class CookieServiceTest(
         then(created.price).isEqualTo(createCookie.price)
         then(created.ownedUserId).isEqualTo(createCookie.ownedUserId)
         then(created.authorUserId).isEqualTo(createCookie.authorUserId)
-        then(created.txHash).isEqualTo(createCookie.txHash)
         then(created.nftTokenId).isEqualTo(transferInfo.nftTokenId)
         then(created.fromBlockAddress).isEqualTo(transferInfo.blockNumber)
         then(created.categoryId).isEqualTo(createCookie.categoryId)
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun createDuplicateTokenAddressThrows() {
-        val createCookie = fixture.giveMeOne(CreateCookie::class.java)
-        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
-        cacheTemplate[createCookie.txHash] = transferInfo
-        val createCookieWithSameTokenAddress = fixture.giveMeBuilder(CreateCookie::class.java)
-            .set("txHash", createCookie.txHash)
-            .sample()
-        sut.create(createCookie)
-
-        thenThrownBy { sut.create(createCookieWithSameTokenAddress) }
-            .isExactlyInstanceOf(DuplicateDomainException::class.java)
-            .hasMessageContaining("Attempting duplicate token creation")
     }
 
     @RepeatedTest(REPEAT_COUNT)

@@ -18,8 +18,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
-    fun findByTxHash(txHash: String): Cookie?
-
     fun findByStatusIsNotAndCategoryId(
         status: CookieStatus = DELETED,
         categoryId: Long,
