@@ -1,6 +1,5 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.exception.UserExistException
 import com.ojicoin.cookiepang.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -17,12 +16,7 @@ class LoginController(
             return ResponseEntity.badRequest().body("empty walletAddress in parameters")
         }
 
-        try {
-            userService.checkDuplicateUser(walletAddress = walletAddress)
-        } catch (e: UserExistException) {
-            return ResponseEntity.status(409)
-                .body(e.message)
-        }
+        userService.checkDuplicateUser(walletAddress = walletAddress)
         return ResponseEntity.ok().build()
     }
 }
