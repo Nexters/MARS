@@ -49,7 +49,6 @@ class CookieServiceTest(
         then(created.price).isEqualTo(createCookie.price)
         then(created.ownedUserId).isEqualTo(createCookie.ownedUserId)
         then(created.authorUserId).isEqualTo(createCookie.authorUserId)
-        then(created.txHash).isEqualTo(createCookie.txHash)
         then(created.nftTokenId).isEqualTo(transferInfo.nftTokenId)
         then(created.fromBlockAddress).isEqualTo(transferInfo.blockNumber)
         then(created.categoryId).isEqualTo(createCookie.categoryId)

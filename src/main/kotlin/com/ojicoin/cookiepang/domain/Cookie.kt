@@ -21,7 +21,6 @@ data class Cookie(
     @Column("owned_user_id") var ownedUserId: Long,
     @Column("created_at") val createdAt: Instant,
     @Column("status") var status: CookieStatus,
-    @Column("tx_hash") val txHash: String,
     @Column("nft_token_id") val nftTokenId: BigInteger,
     @Column("from_block_address") var fromBlockAddress: BigInteger,
     @Column("categoryId") val categoryId: Long,

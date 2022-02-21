@@ -59,7 +59,6 @@ class CookieService(
                 price = dto.price,
                 authorUserId = dto.authorUserId,
                 ownedUserId = dto.ownedUserId,
-                txHash = dto.txHash,
                 categoryId = dto.categoryId,
                 imageUrl = null,
                 status = ACTIVE,
