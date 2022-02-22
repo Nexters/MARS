@@ -108,8 +108,10 @@ class ViewAssembler(
         }
     }
 
-    private fun lastPage(allCookieSize: Long, size: Int, page: Int) =
-        ceil(allCookieSize.div(size.toDouble())).toLong() - page - 1 <= 0L
+    // 올림(쿠키 총 개수 / 사이즈) => 전체 페이지 개수
+    // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
+    private fun lastPage(allCookieSize: Long, size: Int, pageIndex: Int) =
+        ceil(allCookieSize.div(size.toDouble())).toLong() <= pageIndex + 1
 }
 
 fun String.abbreviate(
