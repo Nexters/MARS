@@ -22,4 +22,7 @@ class Notification(
     @Column("cookie_id") val cookieId: Long? = null,
 )
 
-enum class NotificationType { Ask, Transaction }
+enum class NotificationType(val title: String) {
+    Ask("요청"),
+    Transaction("판매"),
+}
