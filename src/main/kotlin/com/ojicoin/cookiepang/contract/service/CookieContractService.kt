@@ -9,6 +9,7 @@ import com.klaytn.caver.methods.request.KlayLogFilter
 import com.klaytn.caver.methods.response.KlayLogs
 import com.klaytn.caver.methods.response.KlayLogs.LogResult
 import com.ojicoin.cookiepang.contract.dto.CookieInfo
+import com.ojicoin.cookiepang.contract.dto.TransactionInfo
 import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.contract.utils.parser.CookieEventLogParser
@@ -37,10 +38,10 @@ class CookieContractService(
     fun getCookieContractAddress(): String = cookieContractAddress
 
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
-        val blockNumber: BigInteger = transactionService.getBlockNumberByTxHash(txHash)
+        val transactionInfo: TransactionInfo = transactionService.getTransactionInfoByTxHash(txHash)
         val transferLogs: List<LogResult<*>> = getLogsByEventName(
-            DefaultBlockParameterNumber(blockNumber),
-            DefaultBlockParameterNumber(blockNumber),
+            DefaultBlockParameterNumber(transactionInfo.blockNumber),
+            DefaultBlockParameterNumber(transactionInfo.blockNumber),
             CookieContractEvent.TRANSFER.eventName
         )
 

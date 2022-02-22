@@ -5,6 +5,7 @@ import com.navercorp.fixturemonkey.customizer.ArbitraryCustomizer
 import com.navercorp.fixturemonkey.generator.FieldArbitraries
 import com.navercorp.fixturemonkey.kotlin.KFixtureMonkeyBuilder
 import com.ojicoin.cookiepang.contract.service.CookieContractService
+import com.ojicoin.cookiepang.contract.service.HammerContractService
 import com.ojicoin.cookiepang.event.ViewCookieEvent
 import com.ojicoin.cookiepang.repository.ViewCountRepository
 import io.restassured.RestAssured
@@ -33,6 +34,9 @@ abstract class SpringContextFixture {
 
     @MockBean
     lateinit var cookieContractService: CookieContractService
+
+    @MockBean
+    lateinit var hammerContractService: HammerContractService
 
     @Autowired
     private lateinit var viewCountRepository: ViewCountRepository

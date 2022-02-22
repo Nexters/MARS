@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.contract.service
 
 import com.klaytn.caver.Caver
 import com.klaytn.caver.methods.response.TransactionReceipt.TransactionReceiptData
+import com.ojicoin.cookiepang.contract.dto.TransactionInfo
 import com.ojicoin.cookiepang.exception.BlockNotFoundException
 import com.ojicoin.cookiepang.exception.InvalidBlockChainRequestException
 import com.ojicoin.cookiepang.service.RetryService
@@ -21,7 +22,7 @@ class TransactionService(
 ) {
     private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
 
-    fun getBlockNumberByTxHash(txHash: String): BigInteger {
+    fun getTransactionInfoByTxHash(txHash: String): TransactionInfo {
         return retryService.run(
             action = {
                 val receipt: Response<TransactionReceiptData> = caver.rpc.klay.getTransactionReceipt(txHash).send()
@@ -33,8 +34,12 @@ class TransactionService(
                     throw BlockNotFoundException("Given txHash has no block")
                         .with("txHash", txHash)
                 }
-                val blockNumber: String = receipt.result.blockNumber
-                getBigIntegerFromHexStr(blockNumber)!!
+                TransactionInfo(
+                    receipt.result.blockHash,
+                    getBigIntegerFromHexStr(receipt.result.blockNumber)!!,
+                    receipt.result.from, receipt.result.senderTxHash,
+                    receipt.result.transactionHash
+                )
             }, exceptions = listOf(BlockNotFoundException::class.java)
             )
         }
