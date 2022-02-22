@@ -55,8 +55,11 @@ class CookieService(
 
     fun createDefaultCookies(createDefaultCookies: CreateDefaultCookies): List<Cookie> {
         val user = userRepository.findById(createDefaultCookies.creatorId).orElseThrow()
+        if (user.finishOnboard) {
+            throw InvalidRequestException("Already onboard finished user.")
+        }
         val category = categoryRepository.findByName(DEFAULT_COOKIE_CATEGORY_NAME)
-            ?: throw throw IllegalArgumentException("There is not default cookie category name.")
+            ?: throw IllegalArgumentException("There is not default cookie category name.")
 
         val defaultCookies = createDefaultCookies.defaultCookies.map { createDefaultCookie ->
             val transferEventLog = cookieContractService.createDefaultCookie(

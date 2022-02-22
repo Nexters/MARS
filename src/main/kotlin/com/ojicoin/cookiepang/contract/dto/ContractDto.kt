@@ -21,3 +21,11 @@ data class Amount(
 data class ContractAddress(
     val address: String
 )
+
+data class TransactionInfo(
+    val blockHash: String,
+    val blockNumber: BigInteger,
+    val fromAddress: String,
+    val senderTxHash: String,
+    val txHash: String
+)
