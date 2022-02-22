@@ -10,10 +10,12 @@ import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlin.math.ceil
 
 const val ABBREVIATE_LENGTH_LIMIT = 15
 
@@ -60,12 +62,23 @@ class ViewAssembler(
         )
     }
 
-    fun timelineView(viewerId: Long, viewCategoryId: Long? = null, page: Int = 0, size: Int = 3): List<TimelineCookieView> {
+    fun timelineView(
+        viewerId: Long,
+        viewCategoryId: Long? = null,
+        page: Int = 0,
+        size: Int = 3
+    ): List<TimelineCookieView> {
         val viewer = userService.getById(viewerId)
-        val cookies = if (viewCategoryId != null) {
-            cookieService.getCookiesByCategoryId(categoryId = viewCategoryId, page = page, size = size)
+        val pageable = PageRequest.of(page, size)
+        val allCookieSize = if (viewCategoryId != null) {
+            cookieService.countCookiesByCategoryId(categoryId = viewCategoryId)
         } else {
-            cookieService.getCookies(page = page, size = size)
+            cookieService.countCookies()
+        }
+        val cookies = if (viewCategoryId != null) {
+            cookieService.getCookiesByCategoryId(categoryId = viewCategoryId, pageable = pageable)
+        } else {
+            cookieService.getCookies(pageable = pageable)
         }
 
         return cookies.map { cookie ->
@@ -89,10 +102,14 @@ class ViewAssembler(
                 category = category.toCategoryView(),
                 myCookie = myCookie,
                 price = cookie.price,
-                createdAt = cookie.createdAt
+                createdAt = cookie.createdAt,
+                isLastPage = lastPage(allCookieSize, size, page)
             )
         }
     }
+
+    private fun lastPage(allCookieSize: Long, size: Int, page: Int) =
+        ceil(allCookieSize.div(size.toDouble())).toLong() - page - 1 <= 0L
 }
 
 fun String.abbreviate(

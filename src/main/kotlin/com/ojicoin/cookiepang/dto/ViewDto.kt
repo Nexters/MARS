@@ -43,6 +43,7 @@ data class TimelineCookieView(
     val myCookie: Boolean,
     val category: CategoryView?,
     val createdAt: Instant,
+    val isLastPage: Boolean,
 )
 
 data class CategoryView(

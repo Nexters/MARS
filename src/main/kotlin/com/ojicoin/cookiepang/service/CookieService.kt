@@ -22,6 +22,7 @@ import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.web3j.protocol.core.DefaultBlockParameter
@@ -44,14 +45,19 @@ class CookieService(
 
     fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
 
-    fun getCookies(page: Int, size: Int): List<Cookie> =
-        cookieRepository.findByStatusIsNot(pageable = PageRequest.of(page, size))
+    fun getCookies(pageable: Pageable): List<Cookie> =
+        cookieRepository.findByStatusIsNot(pageable = pageable)
 
-    fun getCookiesByCategoryId(categoryId: Long, page: Int, size: Int): List<Cookie> =
+    fun countCookies(): Long = cookieRepository.countByStatusIsNot()
+
+    fun getCookiesByCategoryId(categoryId: Long, pageable: Pageable): List<Cookie> =
         cookieRepository.findByStatusIsNotAndCategoryId(
             categoryId = categoryId,
-            pageable = PageRequest.of(page, size)
+            pageable = pageable
         )
+
+    fun countCookiesByCategoryId(categoryId: Long): Long =
+        cookieRepository.countByStatusIsNotAndCategoryId(categoryId = categoryId)
 
     fun createDefaultCookies(createDefaultCookies: CreateDefaultCookies): List<Cookie> {
         val user = userRepository.findById(createDefaultCookies.creatorId).orElseThrow()
