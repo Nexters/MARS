@@ -189,7 +189,7 @@ class ViewAssembler(
             totalPageIndex = totalPageSize - 1,
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
-            contents = askService.viewAboutSender(userId, PageRequest.of(page, size))
+            contents = askService.getBySenderId(userId, PageRequest.of(page, size))
         )
     }
 
@@ -206,7 +206,7 @@ class ViewAssembler(
             totalPageIndex = totalPageSize - 1,
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
-            contents = askService.viewAboutReceiver(userId, PageRequest.of(page, size))
+            contents = askService.getByReceiverId(userId, PageRequest.of(page, size))
         )
     }
 

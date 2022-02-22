@@ -17,7 +17,7 @@ class AskService(
     private val eventPublisher: ApplicationEventPublisher,
 ) {
 
-    fun viewAboutSender(userId: Long, pageable: Pageable): List<Ask> {
+    fun getBySenderId(userId: Long, pageable: Pageable): List<Ask> {
         return askRepository.findBySenderId(senderId = userId, pageable)
     }
 
@@ -25,7 +25,7 @@ class AskService(
         return askRepository.countBySenderId(senderId = senderId)
     }
 
-    fun viewAboutReceiver(userId: Long, pageable: Pageable): List<Ask> {
+    fun getByReceiverId(userId: Long, pageable: Pageable): List<Ask> {
         return askRepository.findByReceiverIdAndStatus(receiverId = userId, status = PENDING, pageable)
     }
 

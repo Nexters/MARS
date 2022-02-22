@@ -34,7 +34,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromSender = sut.viewAboutSender(ask.senderId, Pageable.unpaged())
+        val asksFromSender = sut.getBySenderId(ask.senderId, Pageable.unpaged())
 
         val foundAsk = asksFromSender[0]
         then(ask.title).isEqualTo(foundAsk.title)
@@ -51,7 +51,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverId, Pageable.unpaged())
+        val asksFromReceiver = sut.getByReceiverId(ask.receiverId, Pageable.unpaged())
 
         then(asksFromReceiver.size).isEqualTo(1)
 
@@ -70,7 +70,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverId, Pageable.unpaged())
+        val asksFromReceiver = sut.getByReceiverId(ask.receiverId, Pageable.unpaged())
         then(asksFromReceiver.size).isEqualTo(0)
     }
 
