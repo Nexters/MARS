@@ -258,6 +258,7 @@ class ViewAssemblerTest(
 
     @AfterEach
     internal fun tearDown() {
+        askRepository.deleteAll()
         cookieRepository.deleteAll()
         categoryRepository.deleteAll()
         userRepository.deleteAll()
