@@ -10,6 +10,7 @@ import com.ojicoin.cookiepang.exception.LoginFailedException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -39,5 +40,10 @@ class AuthServiceTest(
 
         thenThrownBy { sut.login(loginRequest) }
             .isExactlyInstanceOf(LoginFailedException::class.java)
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        userRepository.deleteAll()
     }
 }

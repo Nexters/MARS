@@ -1,6 +1,11 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.AUTHOR
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.OWNED
+import com.ojicoin.cookiepang.dto.PageableView
 import com.ojicoin.cookiepang.dto.ProblemResponse
+import com.ojicoin.cookiepang.dto.UserCookieView
 import com.ojicoin.cookiepang.service.ViewAssembler
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -66,4 +71,25 @@ class ViewController(private val viewAssembler: ViewAssembler) {
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "3") size: Int,
     ) = viewAssembler.timelineView(viewerId = userId, viewCategoryId = categoryId, page = page, size = size)
+
+    @GetMapping("/users/{userId}/cookies")
+    @ResponseStatus(HttpStatus.OK)
+    fun getUserCookies(
+        @PathVariable userId: Long,
+        @RequestParam("target") target: GetUserCookieTarget,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "3") size: Int,
+    ): PageableView<UserCookieView> = when (target) {
+        OWNED -> viewAssembler.ownedCookiesView(
+            userId = userId,
+            page = page,
+            size = size
+        )
+
+        AUTHOR -> viewAssembler.authorCookiesView(
+            userId = userId,
+            page = page,
+            size = size
+        )
+    }
 }

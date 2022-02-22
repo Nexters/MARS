@@ -6,7 +6,6 @@ import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
-import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.Notification
 import com.ojicoin.cookiepang.domain.User
@@ -42,7 +41,10 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
         pageable: Pageable,
     ): List<Cookie>
 
-    fun findByStatusAndOwnedUserId(status: CookieStatus = ACTIVE, ownedUserId: Long, pageable: Pageable): List<Cookie>
+    fun countByStatusIsNotAndOwnedUserId(
+        status: CookieStatus = DELETED,
+        ownedUserId: Long,
+    ): Long
 
     fun findByStatusIsNotAndAuthorUserId(
         status: CookieStatus = DELETED,
@@ -50,7 +52,10 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
         pageable: Pageable,
     ): List<Cookie>
 
-    fun findByStatusAndAuthorUserId(status: CookieStatus = ACTIVE, authorUserId: Long, pageable: Pageable): List<Cookie>
+    fun countByStatusIsNotAndAuthorUserId(
+        status: CookieStatus = DELETED,
+        authorUserId: Long,
+    ): Long
 }
 
 interface AskRepository : CrudRepository<Ask, Long> {

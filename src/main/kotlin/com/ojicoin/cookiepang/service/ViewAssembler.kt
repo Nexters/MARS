@@ -5,10 +5,11 @@ import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.dto.CategoryView
+import com.ojicoin.cookiepang.dto.CookieDetailView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
-import com.ojicoin.cookiepang.dto.CookieView
 import com.ojicoin.cookiepang.dto.PageableView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
+import com.ojicoin.cookiepang.dto.UserCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
@@ -29,7 +30,7 @@ class ViewAssembler(
     @Autowired val contractProperties: ContractProperties,
 ) {
 
-    fun cookieView(viewerId: Long, cookieId: Long): CookieView {
+    fun cookieView(viewerId: Long, cookieId: Long): CookieDetailView {
         val cookie = cookieService.get(cookieId)
         val creator = userService.getById(cookie.authorUserId)
         val owner = userService.getById(cookie.ownedUserId)
@@ -44,7 +45,7 @@ class ViewAssembler(
         val cookieHistories = cookieService.findCookieHistories(cookieId).map { it.toCookieHistoryView() }
         val category = categoryService.getById(cookie.categoryId)
 
-        return CookieView(
+        return CookieDetailView(
             question = cookie.title,
             answer = answer,
             collectorId = owner.id!!,
@@ -82,7 +83,7 @@ class ViewAssembler(
             cookieService.getCookies(pageable = pageable)
         }
 
-        val totalPageSize = ceil(allCookieSize.div(size.toDouble())).toInt()
+        val totalPageSize = getTotalPageSize(allCookieSize, size)
         val cookieViews = cookies.map { cookie ->
             val creator = userService.getById(cookie.authorUserId)
             val myCookie = viewer.id == creator.id
@@ -117,10 +118,68 @@ class ViewAssembler(
         )
     }
 
+    fun ownedCookiesView(userId: Long, page: Int = 0, size: Int = 3): PageableView<UserCookieView> {
+        val cookies = cookieService.getAllOwnedCookies(
+            ownedUserId = userId,
+            pageable = PageRequest.of(page, size)
+        )
+
+        val totalCookiesCount = cookieService.countAllOwnedCookies(ownedUserId = userId)
+
+        val userCookieViews = cookies.map {
+            val category = categoryService.getById(it.categoryId)
+            UserCookieView(
+                cookieId = it.id!!,
+                nftTokenId = it.nftTokenId,
+                cookieImageUrl = it.imageUrl,
+                category = category.toCategoryView()
+            )
+        }
+
+        val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
+        return PageableView(
+            totalCount = totalCookiesCount,
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
+            contents = userCookieViews
+        )
+    }
+
+    fun authorCookiesView(userId: Long, page: Int = 0, size: Int = 3): PageableView<UserCookieView> {
+        val cookies = cookieService.getAllAuthorCookies(
+            authorUserId = userId,
+            pageable = PageRequest.of(page, size)
+        )
+
+        val totalCookiesCount = cookieService.countAllAuthorCookies(authorUserId = userId)
+
+        val userCookieViews = cookies.map {
+            val category = categoryService.getById(it.categoryId)
+            UserCookieView(
+                cookieId = it.id!!,
+                nftTokenId = it.nftTokenId,
+                cookieImageUrl = it.imageUrl,
+                category = category.toCategoryView()
+            )
+        }
+
+        val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
+        return PageableView(
+            totalCount = totalCookiesCount,
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
+            contents = userCookieViews
+        )
+    }
+
     // 올림(쿠키 총 개수 / 사이즈) => 전체 페이지 개수
     // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
     private fun lastPage(totalPageSize: Int, pageIndex: Int) =
         totalPageSize <= pageIndex + 1
+
+    private fun getTotalPageSize(totalSize: Long, size: Int) = ceil(totalSize.div(size.toDouble())).toInt()
 }
 
 fun String.abbreviate(

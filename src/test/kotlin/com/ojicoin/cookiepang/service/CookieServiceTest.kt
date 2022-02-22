@@ -25,6 +25,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.domain.Pageable
 import java.math.BigInteger
 
 class CookieServiceTest(
@@ -127,7 +128,20 @@ class CookieServiceTest(
     }
 
     @RepeatedTest(REPEAT_COUNT)
-    fun getOwnedCookiesSameViewUserId() {
+    fun getOwnedCookies() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", Arbitraries.of(ACTIVE, HIDDEN))
+            .sample()
+        val savedCookie = cookieRepository.save(cookie)
+
+        val actual = sut.getAllOwnedCookies(savedCookie.ownedUserId, pageable = Pageable.unpaged())[0]
+
+        then(savedCookie.ownedUserId).isEqualTo(actual.ownedUserId)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun getAuthorCookies() {
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
             .set("status", Arbitraries.of(ACTIVE, HIDDEN))
@@ -135,95 +149,9 @@ class CookieServiceTest(
 
         val savedCookie = cookieRepository.save(cookie)
 
-        val getCookiesResponse = sut.getOwnedCookies(savedCookie.ownedUserId, savedCookie.ownedUserId, 0, 100)
-        then(getCookiesResponse.totalCount).isEqualTo(1)
+        val actual = sut.getAllAuthorCookies(savedCookie.authorUserId, pageable = Pageable.unpaged())[0]
 
-        val foundCookie = getCookiesResponse.cookies[0]
-        then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.price).isEqualTo(foundCookie.price)
-        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
-        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun getOwnedCookiesNotSameViewUserId() {
-        val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
-            .setNull("id")
-            .set("nftTokenId", BigInteger.valueOf(1))
-            .set("fromBlockAddress", BigInteger.valueOf(1))
-            .set("status", ACTIVE)
-            .sample()
-        val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
-            .setNull("id")
-            .set("nftTokenId", BigInteger.valueOf(2))
-            .set("fromBlockAddress", BigInteger.valueOf(2))
-            .set("status", HIDDEN)
-            .sample()
-
-        cookieRepository.save(hiddenCookie)
-
-        val savedCookie = cookieRepository.save(activeCookie)
-
-        val getCookiesResponse = sut.getOwnedCookies(savedCookie.ownedUserId, savedCookie.authorUserId, 0, 100)
-        then(getCookiesResponse.totalCount).isEqualTo(1)
-
-        val foundCookie = getCookiesResponse.cookies[0]
-        then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.price).isEqualTo(foundCookie.price)
-        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
-        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun getAuthorCookiesSameViewUserId() {
-        val cookie = fixture.giveMeBuilder(Cookie::class.java)
-            .setNull("id")
-            .set("status", Arbitraries.of(ACTIVE, HIDDEN))
-            .sample()
-
-        val savedCookie = cookieRepository.save(cookie)
-
-        val getCookiesResponse = sut.getAuthorCookies(savedCookie.authorUserId, savedCookie.authorUserId, 0, 100)
-        then(getCookiesResponse.totalCount).isEqualTo(1)
-
-        val foundCookie = getCookiesResponse.cookies[0]
-        then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.price).isEqualTo(foundCookie.price)
-        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
-        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun getAuthorCookiesNotSameViewUserId() {
-        val activeCookie = fixture.giveMeBuilder(Cookie::class.java)
-            .setNull("id")
-            .set("nftTokenId", BigInteger.valueOf(1))
-            .set("fromBlockAddress", BigInteger.valueOf(1))
-            .set("status", ACTIVE)
-            .sample()
-        val hiddenCookie = fixture.giveMeBuilder(Cookie::class.java)
-            .setNull("id")
-            .set("nftTokenId", BigInteger.valueOf(2))
-            .set("fromBlockAddress", BigInteger.valueOf(2))
-            .set("status", HIDDEN)
-            .sample()
-
-        cookieRepository.save(hiddenCookie)
-
-        val savedCookie = cookieRepository.save(activeCookie)
-
-        val getCookiesResponse = sut.getAuthorCookies(savedCookie.authorUserId, savedCookie.ownedUserId, 0, 100)
-        then(getCookiesResponse.totalCount).isEqualTo(1)
-
-        val foundCookie = getCookiesResponse.cookies[0]
-        then(savedCookie.title).isEqualTo(foundCookie.title)
-        then(savedCookie.price).isEqualTo(foundCookie.price)
-        then(savedCookie.ownedUserId).isEqualTo(foundCookie.ownedUserId)
-        then(savedCookie.authorUserId).isEqualTo(foundCookie.authorUserId)
-        then(savedCookie.categoryId).isEqualTo(foundCookie.categoryId)
+        then(savedCookie.authorUserId).isEqualTo(actual.authorUserId)
     }
 
     @RepeatedTest(REPEAT_COUNT)

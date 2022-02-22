@@ -4,7 +4,7 @@ import com.ojicoin.cookiepang.domain.Action
 import java.math.BigInteger
 import java.time.Instant
 
-data class CookieView(
+data class CookieDetailView(
     val question: String,
     val answer: String?,
     val collectorId: Long,
@@ -64,8 +64,8 @@ data class FinishOnboardView(
 )
 
 enum class GetUserCookieTarget {
-    COLLECTED,
-    COOKIES,
+    OWNED,
+    AUTHOR,
 }
 
 data class ProblemResponse(
@@ -77,3 +77,10 @@ data class ProblemResponse(
 data class LoginRequest(val walletAddress: String)
 
 data class LoginResponse(val userId: Long)
+
+data class UserCookieView(
+    val cookieId: Long,
+    val nftTokenId: BigInteger,
+    val cookieImageUrl: String?,
+    val category: CategoryView,
+)
