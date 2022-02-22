@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS "users"
     "background_url" varchar(255),
     "wallet_address" varchar(255) unique,
     "status"         varchar(10),
-    "finish_signup"  boolean default false,
+    "finish_onboard"  boolean default false,
     PRIMARY KEY ("user_id")
 );
 
