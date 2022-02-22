@@ -51,7 +51,7 @@ data class CategoryView(
     val color: String,
 )
 
-data class FinishSignupView(
+data class FinishOnboardView(
     val isFinish: Boolean,
 )
 

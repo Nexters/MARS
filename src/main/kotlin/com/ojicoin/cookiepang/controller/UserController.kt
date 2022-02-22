@@ -56,7 +56,7 @@ class UserController(
     )
     fun getUser(@PathVariable("userId") userId: Long) = userService.getById(id = userId)
 
-    @GetMapping("/users/{userId}/signup")
+    @GetMapping("/users/{userId}/onbaord")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(
         value = [
@@ -68,7 +68,7 @@ class UserController(
             )
         ]
     )
-    fun getUserSignup(@PathVariable("userId") userId: Long) = userService.isFinishSignupById(userId)
+    fun getUserSignup(@PathVariable("userId") userId: Long) = userService.isFinishOnboard(userId)
 
     @PutMapping("/users/{userId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateUser(
