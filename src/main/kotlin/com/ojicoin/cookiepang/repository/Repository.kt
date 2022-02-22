@@ -52,7 +52,10 @@ interface AskRepository : CrudRepository<Ask, Long> {
     fun findByReceiverUserIdAndStatus(receiverUserId: Long, status: AskStatus): List<Ask>
 }
 
-interface CategoryRepository : CrudRepository<Category, Long>
+interface CategoryRepository : CrudRepository<Category, Long> {
+    fun findByName(name: String): Category?
+}
+
 interface UserRepository : CrudRepository<User, Long> {
     fun findByNickname(nickname: String): User?
     fun findByWalletAddress(walletAddress: String): User?

@@ -83,28 +83,18 @@ internal class CookieContractServiceTest(
     }
 
     @Test
-    fun createDefaultCookies() {
+    fun createDefaultCookie() {
 
-        val createdDefaultCookies: List<BigInteger> = sut.createDefaultCookies(
-            listOf(
-                CookieInfo(
-                    "0xe3F744017BB487F88B1CE9587FfD672E9F306769",
-                    "test",
-                    "test",
-                    "test",
-                    "test",
-                    BigInteger.valueOf(10)
-                ),
-                CookieInfo(
-                    "0xe3F744017BB487F88B1CE9587FfD672E9F306769",
-                    "test2",
-                    "test2",
-                    "test2",
-                    "tes2",
-                    BigInteger.valueOf(20)
-                )
+        val createdDefaultCookies: TransferEventLog? = sut.createDefaultCookie(
+            CookieInfo(
+                "0xe3F744017BB487F88B1CE9587FfD672E9F306769",
+                "test",
+                "test",
+                "test",
+                "test",
+                BigInteger.valueOf(10)
             )
-        ) as List<BigInteger>
+        )
 
         println(createdDefaultCookies)
     }

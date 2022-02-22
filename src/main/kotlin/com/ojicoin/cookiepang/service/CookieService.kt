@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.config.CacheTemplate
+import com.ojicoin.cookiepang.contract.dto.CookieInfo
 import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.contract.service.CookieContractService
@@ -10,10 +11,12 @@ import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
+import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
@@ -22,16 +25,23 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.web3j.protocol.core.DefaultBlockParameter
+import java.math.BigInteger
 import java.time.Instant
 
 @Service
 class CookieService(
     private val cookieRepository: CookieRepository,
+    private val categoryRepository: CategoryRepository,
     private val cookieContractService: CookieContractService,
     private val cookieHistoryRepository: CookieHistoryRepository,
     private val userRepository: UserRepository, // TODO: 구조 리팩토링
     @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferEventLog>,
 ) {
+
+    private val DEFAULT_COOKIE_IMAGE = "https://cdn.cookiepang.site/metadata/cookie_meta03.json"
+    private val DEFAULT_COOKIE_CATEGORY_NAME = "자유"
+    private val DEFAULT_COOKIE_PRICE = BigInteger.ZERO
+
     fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
 
     fun getCookies(page: Int, size: Int): List<Cookie> =
@@ -42,6 +52,43 @@ class CookieService(
             categoryId = categoryId,
             pageable = PageRequest.of(page, size)
         )
+
+    fun createDefaultCookies(createDefaultCookies: CreateDefaultCookies): List<Cookie> {
+        val user = userRepository.findById(createDefaultCookies.creatorId).orElseThrow()
+        val category = categoryRepository.findByName(DEFAULT_COOKIE_CATEGORY_NAME)
+            ?: throw throw IllegalArgumentException("There is not default cookie category name.")
+
+        val defaultCookies = createDefaultCookies.defaultCookies.map { createDefaultCookie ->
+            val transferEventLog = cookieContractService.createDefaultCookie(
+                CookieInfo(
+                    user.walletAddress,
+                    createDefaultCookie.question,
+                    createDefaultCookie.answer,
+                    DEFAULT_COOKIE_IMAGE,
+                    DEFAULT_COOKIE_CATEGORY_NAME,
+                    DEFAULT_COOKIE_PRICE
+                )
+            )
+
+            Cookie(
+                title = createDefaultCookie.question,
+                content = createDefaultCookie.answer,
+                price = DEFAULT_COOKIE_PRICE.toLong(),
+                authorUserId = user.id!!,
+                ownedUserId = user.id!!,
+                categoryId = category.id!!,
+                imageUrl = DEFAULT_COOKIE_IMAGE,
+                status = ACTIVE,
+                nftTokenId = transferEventLog!!.nftTokenId,
+                fromBlockAddress = transferEventLog.blockNumber,
+                createdAt = Instant.now(),
+            )
+        }.toList()
+
+        cookieRepository.saveAll(defaultCookies)
+
+        return defaultCookies
+    }
 
     fun create(dto: CreateCookie): Cookie {
         val transferInfo = transferInfoByTxHashCacheTemplate[dto.txHash]
