@@ -56,6 +56,20 @@ class UserController(
     )
     fun getUser(@PathVariable("userId") userId: Long) = userService.getById(id = userId)
 
+    @GetMapping("/users/{userId}/onbaord")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(
+        value = [
+            ApiResponse(description = "조회 성공", responseCode = "200"),
+            ApiResponse(
+                description = "디비에 존재하지 않음",
+                responseCode = "400",
+                content = [Content(schema = Schema(implementation = ProblemResponse::class))]
+            )
+        ]
+    )
+    fun getUserSignup(@PathVariable("userId") userId: Long) = userService.isFinishOnboard(userId)
+
     @PutMapping("/users/{userId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateUser(
         @PathVariable userId: Long,

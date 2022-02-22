@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
+import com.ojicoin.cookiepang.dto.FinishOnboardView
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
@@ -28,13 +29,16 @@ class UserService(val userRepository: UserRepository) {
             introduction = dto.introduction,
             profileUrl = dto.profileUrl,
             backgroundUrl = dto.backgroundUrl,
-            status = ACTIVE
+            status = ACTIVE,
+            finishOnboard = false
         )
 
         return userRepository.save(user)
     }
 
     fun getById(id: Long): User = userRepository.findById(id).orElseThrow()
+
+    fun isFinishOnboard(id: Long): FinishOnboardView = FinishOnboardView(getById(id).finishOnboard)
 
     fun getByWalletAddress(walletAddress: String): User = userRepository.findByWalletAddress(walletAddress)!!
 

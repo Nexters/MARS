@@ -17,6 +17,7 @@ class User(
     @Column("profile_url") @field:Size(max = 255) var profileUrl: String?,
     @Column("background_url") @field:Size(max = 255) var backgroundUrl: String?,
     @Column("status") var status: UserStatus,
+    @Column("finish_onboard") var finishOnboard: Boolean
 ) {
     fun view(cookie: Cookie) {
         if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {

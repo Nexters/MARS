@@ -45,7 +45,8 @@ class UserServiceTest(
                 introduction = "",
                 profileUrl = "",
                 backgroundUrl = "",
-                status = UserStatus.ACTIVE
+                status = UserStatus.ACTIVE,
+                finishOnboard = false
             )
         )
 
