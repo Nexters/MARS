@@ -19,8 +19,8 @@ internal class KlayController(
 ) {
 
     @GetMapping("/users/{userId}/balance")
-    fun getBalance(@PathVariable userId: String): Balance {
-        val user = userService.getById(userId.toLong())
+    fun getBalance(@PathVariable userId: Long): Balance {
+        val user = userService.getById(userId)
         return Balance(
             balance = klayService.getBalanceByAddress(user.walletAddress)
         )
