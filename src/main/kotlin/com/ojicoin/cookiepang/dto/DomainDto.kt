@@ -35,6 +35,13 @@ data class CreateAsk(
     val title: String,
     val senderUserId: Long,
     val receiverUserId: Long,
+    val categoryId: Long,
+)
+
+data class UpdateAsk(
+    val title: String?,
+    val status: AskStatus?,
+    val categoryId: Long?,
 )
 
 data class CreateUser(
@@ -49,11 +56,6 @@ data class CreateUser(
 
 data class UpdateUser(
     val introduction: String?,
-)
-
-data class UpdateAsk(
-    val title: String?,
-    val status: AskStatus?,
 )
 
 data class GetCookiesResponse(

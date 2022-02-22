@@ -18,6 +18,7 @@ import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 
 internal class AskServiceTest(
     @Autowired val sut: AskService,
@@ -33,7 +34,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromSender = sut.viewAboutSender(ask.senderUserId)
+        val asksFromSender = sut.viewAboutSender(ask.senderUserId, Pageable.unpaged())
 
         val foundAsk = asksFromSender[0]
         then(ask.title).isEqualTo(foundAsk.title)
@@ -50,7 +51,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId)
+        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId, Pageable.unpaged())
 
         then(asksFromReceiver.size).isEqualTo(1)
 
@@ -69,7 +70,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId)
+        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId, Pageable.unpaged())
         then(asksFromReceiver.size).isEqualTo(0)
     }
 
@@ -85,6 +86,7 @@ internal class AskServiceTest(
             title = ask.title,
             senderUserId = ask.senderUserId,
             receiverUserId = ask.receiverUserId,
+            categoryId = ask.categoryId,
         )
 
         then(ask.title).isEqualTo(create.title)
@@ -109,6 +111,7 @@ internal class AskServiceTest(
                 title = ask.title,
                 senderUserId = ask.senderUserId,
                 receiverUserId = ask.senderUserId,
+                categoryId = ask.categoryId,
             )
         }.isExactlyInstanceOf(InvalidRequestException::class.java)
             .hasMessageContaining("senderUserId is same as receiverUserId.")
@@ -130,6 +133,7 @@ internal class AskServiceTest(
 
         updateAsk.title?.also { then(it).isEqualTo(modifiedAsk.title) }
         updateAsk.status?.also { then(it).isEqualTo(modifiedAsk.status) }
+        updateAsk.categoryId?.also { then(it).isEqualTo(modifiedAsk.categoryId) }
     }
 
     @RepeatedTest(REPEAT_COUNT)

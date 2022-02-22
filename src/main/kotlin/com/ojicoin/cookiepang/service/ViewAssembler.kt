@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.contract.config.ContractProperties
 import com.ojicoin.cookiepang.domain.Action
+import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.dto.CategoryView
@@ -25,6 +26,7 @@ const val ABBREVIATE_LENGTH_LIMIT = 15
 class ViewAssembler(
     @Autowired val cookieService: CookieService,
     @Autowired val userService: UserService,
+    @Autowired val askService: AskService,
     @Autowired val viewCountService: ViewCountService,
     @Autowired val categoryService: CategoryService,
     @Autowired val contractProperties: ContractProperties,
@@ -171,6 +173,40 @@ class ViewAssembler(
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = userCookieViews
+        )
+    }
+
+    fun askViewAboutSender(
+        userId: Long,
+        page: Int = 0,
+        size: Int = 3
+    ): PageableView<Ask> {
+        val allCountAsks = askService.countAsksBySenderUserId(senderUserId = userId)
+        val totalPageSize = getTotalPageSize(allCountAsks, size)
+
+        return PageableView(
+            totalCount = allCountAsks,
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
+            contents = askService.viewAboutSender(userId, PageRequest.of(page, size))
+        )
+    }
+
+    fun askViewAboutReceiver(
+        userId: Long,
+        page: Int = 0,
+        size: Int = 3
+    ): PageableView<Ask> {
+        val allCountAsks = askService.countAsksByReceiverUserId(receiverUserId = userId)
+        val totalPageSize = getTotalPageSize(allCountAsks, size)
+
+        return PageableView(
+            totalCount = allCountAsks,
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
+            contents = askService.viewAboutReceiver(userId, PageRequest.of(page, size))
         )
     }
 

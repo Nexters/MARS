@@ -1,18 +1,23 @@
 package com.ojicoin.cookiepang.service
 
 import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
+import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.domain.Ask
+import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.repository.AskRepository
 import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -20,6 +25,7 @@ import java.math.BigInteger
 
 class ViewAssemblerTest(
     @Autowired val sut: ViewAssembler,
+    @Autowired val askRepository: AskRepository,
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val categoryRepository: CategoryRepository,
     @Autowired val userRepository: UserRepository,
@@ -183,7 +189,6 @@ class ViewAssemblerTest(
         cookieRepository.save(cookie)
 
         val actual = sut.ownedCookiesView(userId = userId)
-
         then(actual.contents).hasSize(1)
     }
 
@@ -208,6 +213,47 @@ class ViewAssemblerTest(
         val actual = sut.authorCookiesView(userId = userId)
 
         then(actual.contents).hasSize(1)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun askViewAboutSender() {
+        val ask = fixture.giveMeBuilder<Ask>()
+            .setNull("id")
+            .sample()
+
+        askRepository.save(ask)
+
+        val actual = sut.askViewAboutSender(userId = ask.senderUserId)
+
+        then(actual.contents).hasSize(1)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun askViewAboutReceiver() {
+        val ask = fixture.giveMeBuilder<Ask>()
+            .setNull("id")
+            .set("status", AskStatus.PENDING)
+            .sample()
+
+        askRepository.save(ask)
+
+        val actual = sut.askViewAboutReceiver(userId = ask.receiverUserId)
+
+        then(actual.contents).hasSize(1)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun askViewAboutReceiverNotStatusPending() {
+        val ask = fixture.giveMeBuilder<Ask>()
+            .setNull("id")
+            .set("status", Arbitraries.of(AskStatus.ACCEPTED, AskStatus.IGNORED, AskStatus.DELETED))
+            .sample()
+
+        askRepository.save(ask)
+
+        val actual = sut.askViewAboutReceiver(userId = ask.receiverUserId)
+
+        then(actual.contents).hasSize(0)
     }
 
     @AfterEach
