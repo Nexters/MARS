@@ -51,6 +51,10 @@ data class CategoryView(
     val color: String,
 )
 
+data class FinishSignupView(
+    val isFinish: Boolean,
+)
+
 enum class GetUserCookieTarget {
     COLLECTED,
     COOKIES,
