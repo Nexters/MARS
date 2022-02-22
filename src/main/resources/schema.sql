@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "cookies"
 (
     "cookie_id"          bigserial,
-    "title"              text,
+    "title"              varchar(255),
     "price"              bigint,
     "content"            text,
     "image_url"          varchar(255),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "users"
 (
     "user_id"        bigserial,
     "nickname"       varchar(100),
-    "introduction"   text,
+    "introduction"   varchar(255),
     "profile_url"    varchar(255),
     "background_url" varchar(255),
     "wallet_address" varchar(255) unique,
