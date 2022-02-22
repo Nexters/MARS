@@ -7,13 +7,16 @@ import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
 import com.ojicoin.cookiepang.dto.CookieView
+import com.ojicoin.cookiepang.dto.PageableView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlin.math.ceil
 
 const val ABBREVIATE_LENGTH_LIMIT = 15
 
@@ -60,15 +63,27 @@ class ViewAssembler(
         )
     }
 
-    fun timelineView(viewerId: Long, viewCategoryId: Long? = null, page: Int = 0, size: Int = 3): List<TimelineCookieView> {
+    fun timelineView(
+        viewerId: Long,
+        viewCategoryId: Long? = null,
+        page: Int = 0,
+        size: Int = 3
+    ): PageableView<TimelineCookieView> {
         val viewer = userService.getById(viewerId)
-        val cookies = if (viewCategoryId != null) {
-            cookieService.getCookiesByCategoryId(categoryId = viewCategoryId, page = page, size = size)
+        val pageable = PageRequest.of(page, size)
+        val allCookieSize = if (viewCategoryId != null) {
+            cookieService.countCookiesByCategoryId(categoryId = viewCategoryId)
         } else {
-            cookieService.getCookies(page = page, size = size)
+            cookieService.countCookies()
+        }
+        val cookies = if (viewCategoryId != null) {
+            cookieService.getCookiesByCategoryId(categoryId = viewCategoryId, pageable = pageable)
+        } else {
+            cookieService.getCookies(pageable = pageable)
         }
 
-        return cookies.map { cookie ->
+        val totalPageSize = ceil(allCookieSize.div(size.toDouble())).toInt()
+        val cookieViews = cookies.map { cookie ->
             val creator = userService.getById(cookie.authorUserId)
             val myCookie = viewer.id == creator.id
             val answer = cookie.open(viewerId)
@@ -89,10 +104,22 @@ class ViewAssembler(
                 category = category.toCategoryView(),
                 myCookie = myCookie,
                 price = cookie.price,
-                createdAt = cookie.createdAt
+                createdAt = cookie.createdAt,
             )
         }
+
+        return PageableView(
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
+            contents = cookieViews
+        )
     }
+
+    // 올림(쿠키 총 개수 / 사이즈) => 전체 페이지 개수
+    // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
+    private fun lastPage(totalPageSize: Int, pageIndex: Int) =
+        totalPageSize <= pageIndex + 1
 }
 
 fun String.abbreviate(

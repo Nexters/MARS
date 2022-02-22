@@ -133,7 +133,7 @@ class ViewAssemblerTest(
         // when
         val actual = sut.timelineView(viewerId = ownedUserId, viewCategoryId = cookie.categoryId)
 
-        then(actual).hasSize(1)
+        then(actual.contents).hasSize(1)
     }
 
     @Test
@@ -162,7 +162,7 @@ class ViewAssemblerTest(
         // when
         val actual = sut.timelineView(viewerId = ownedUserId)
 
-        then(actual).hasSize(1)
+        then(actual.contents).hasSize(1)
     }
 
     @AfterEach
