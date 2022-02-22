@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "users"
 CREATE TABLE IF NOT EXISTS "asks"
 (
     "ask_id"           bigserial,
-    "title"            varchar(255),
+    "title"            text,
     "status"           varchar(20),
     "sender_user_id"   bigint,
     "receiver_user_id" bigint,
