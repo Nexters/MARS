@@ -29,3 +29,7 @@ data class TransactionInfo(
     val senderTxHash: String,
     val txHash: String
 )
+
+data class Balance(
+    val balance: BigInteger
+)

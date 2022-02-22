@@ -23,8 +23,8 @@ class ContractHammerController(
     )
 
     @GetMapping("/users/{userId}/approve")
-    fun isMaxApprovedAddress(@PathVariable userId: String): Answer {
-        val user = userService.getById(userId.toLong())
+    fun isMaxApprovedAddress(@PathVariable userId: Long): Answer {
+        val user = userService.getById(userId)
 
         return Answer(
             answer = hammerContractService.isMaxApprovedAddress(user.walletAddress)
@@ -32,8 +32,8 @@ class ContractHammerController(
     }
 
     @GetMapping("/users/{userId}/count")
-    fun getUserHammerCount(@PathVariable userId: String): Amount {
-        val user = userService.getById(userId.toLong())
+    fun getUserHammerCount(@PathVariable userId: Long): Amount {
+        val user = userService.getById(userId)
 
         return Amount(
             amount = hammerContractService.balanceOf(user.walletAddress)
