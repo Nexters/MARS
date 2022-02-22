@@ -109,6 +109,7 @@ class ViewAssembler(
         }
 
         return PageableView(
+            totalCount = allCookieSize,
             totalPageIndex = totalPageSize - 1,
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
