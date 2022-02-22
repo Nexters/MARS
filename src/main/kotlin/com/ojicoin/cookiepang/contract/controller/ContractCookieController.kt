@@ -41,24 +41,24 @@ class ContractCookieController(
         )
     }
 
-    @GetMapping("/{id}/hide")
-    fun isHide(@PathVariable id: String): Answer {
+    @GetMapping("/{nftTokenId}/hide")
+    fun isHide(@PathVariable nftTokenId: String): Answer {
         return Answer(
-            answer = cookieContractService.isHide(nftTokenId = id.toBigInteger()),
+            answer = cookieContractService.isHide(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/{id}/sale")
-    fun isSale(@PathVariable id: String): Answer {
+    @GetMapping("/{nftTokenId}/sale")
+    fun isSale(@PathVariable nftTokenId: String): Answer {
         return Answer(
-            answer = cookieContractService.isSale(nftTokenId = id.toBigInteger()),
+            answer = cookieContractService.isSale(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/{id}/price")
-    fun getCookieHammerPrices(@PathVariable id: String): Price {
+    @GetMapping("/{nftTokenId}/price")
+    fun getCookieHammerPrices(@PathVariable nftTokenId: String): Price {
         return Price(
-            price = cookieContractService.getHammerPrice(nftTokenId = id.toBigInteger()),
+            price = cookieContractService.getHammerPrice(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
