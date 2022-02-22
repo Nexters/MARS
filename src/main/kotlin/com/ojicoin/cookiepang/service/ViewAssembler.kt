@@ -82,7 +82,7 @@ class ViewAssembler(
             cookieService.getCookies(pageable = pageable)
         }
 
-        val totalPage = ceil(allCookieSize.div(size.toDouble())).toInt()
+        val totalPageSize = ceil(allCookieSize.div(size.toDouble())).toInt()
         val cookieViews = cookies.map { cookie ->
             val creator = userService.getById(cookie.authorUserId)
             val myCookie = viewer.id == creator.id
@@ -109,17 +109,17 @@ class ViewAssembler(
         }
 
         return PageableView(
-            totalPage = totalPage,
-            nowPage = page,
-            isLastPage = lastPage(totalPage = totalPage, pageIndex = page),
+            totalPageIndex = totalPageSize - 1,
+            nowPageIndex = page,
+            isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = cookieViews
         )
     }
 
     // 올림(쿠키 총 개수 / 사이즈) => 전체 페이지 개수
     // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
-    private fun lastPage(totalPage: Int, pageIndex: Int) =
-        totalPage <= pageIndex + 1
+    private fun lastPage(totalPageSize: Int, pageIndex: Int) =
+        totalPageSize <= pageIndex + 1
 }
 
 fun String.abbreviate(

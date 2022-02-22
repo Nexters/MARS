@@ -29,8 +29,8 @@ data class CookieHistoryView(
 )
 
 data class PageableView<T>(
-    val totalPage: Int,
-    val nowPage: Int,
+    val totalPageIndex: Int,
+    val nowPageIndex: Int,
     val isLastPage: Boolean,
     val contents: List<T>
 )
