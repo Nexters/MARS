@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS "notifications"
 (
     "notification_id"  bigserial,
     "type"             varchar(20),
+    "title"            varchar(50),
     "content"          varchar(300),
     "receiver_user_id" bigint,
     "sender_user_id"   bigint,

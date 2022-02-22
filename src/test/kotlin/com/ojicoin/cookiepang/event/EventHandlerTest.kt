@@ -2,8 +2,10 @@ package com.ojicoin.cookiepang.event
 
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
+import com.ojicoin.cookiepang.domain.NotificationType
 import com.ojicoin.cookiepang.repository.NotificationRepository
 import com.ojicoin.cookiepang.repository.ViewCountRepository
+import com.ojicoin.cookiepang.util.NotificationMessageUtils
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
@@ -14,6 +16,7 @@ class EventHandlerTest(
     @Autowired val eventPublisher: ApplicationEventPublisher,
     @Autowired val viewCountRepository: ViewCountRepository,
     @Autowired val notificationRepository: NotificationRepository,
+    @Autowired val notificationMessageUtils: NotificationMessageUtils,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -29,7 +32,7 @@ class EventHandlerTest(
     }
 
     @RepeatedTest(REPEAT_COUNT)
-    fun handleNotificationEvent() {
+    fun handleNotificationEventForAsk() {
         // given
         val notificationEvent = fixture.giveMeBuilder(AskNotificationEvent::class.java)
             .sample()
@@ -37,8 +40,49 @@ class EventHandlerTest(
         // when
         eventPublisher.publishEvent(notificationEvent)
 
+        val notifications = notificationRepository.findAll()
+
         // then
-        then(notificationRepository.findAll()).hasSize(1)
+        then(notifications).hasSize(1)
+        notifications.forEach { it ->
+            then(it.type).isEqualTo(NotificationType.Ask)
+            then(it.title).isEqualTo("요청")
+            then(it.receiverUserId).isEqualTo(notificationEvent.receiverUserId)
+            then(it.senderUserId).isEqualTo(notificationEvent.senderUserId)
+            then(it.createdAt).isEqualTo(notificationEvent.createdAt)
+            then(it.askId).isEqualTo(notificationEvent.askId)
+            then(it.content).isEqualTo(notificationMessageUtils.getAskMessage(notificationEvent.cookieTitle))
+        }
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun handleNotificationEventForTransaction() {
+        // given
+        val notificationEvent = fixture.giveMeBuilder(TransactionNotificationEvent::class.java)
+            .sample()
+
+        // when
+        eventPublisher.publishEvent(notificationEvent)
+
+        val notifications = notificationRepository.findAll()
+
+        // then
+        then(notifications).hasSize(1)
+        notifications.forEach { it ->
+            then(it.type).isEqualTo(NotificationType.Transaction)
+            then(it.title).isEqualTo("판매")
+            then(it.receiverUserId).isEqualTo(notificationEvent.receiverUserId)
+            then(it.senderUserId).isEqualTo(notificationEvent.senderUserId)
+            then(it.createdAt).isEqualTo(notificationEvent.createdAt)
+            then(it.cookieId).isEqualTo(notificationEvent.cookieId)
+            then(it.content).isEqualTo(
+                notificationMessageUtils.getTransactionMessage(
+                    notificationEvent.senderNickname,
+                    notificationEvent.cookieTitle,
+                    notificationEvent.hammerCount
+                )
+            )
+        }
     }
 
     @AfterEach
