@@ -17,6 +17,8 @@ class UserService(
     val userRepository: UserRepository,
     val hammerContractService: HammerContractService
 ) {
+    private val HAMMER_DEFAULT_DIGIT: BigInteger = BigInteger.valueOf(1000000000000000000)
+    private val HAMMER_SEND_AMOUNT: BigInteger = BigInteger.valueOf(10)
 
     @Transactional
     fun create(dto: CreateUser): User {
@@ -41,7 +43,7 @@ class UserService(
         val newUser = userRepository.save(user)
 
         // TODO: 초반에 이벤트성으로 지급하는 해머 (회원가입 완료시 100 해머를 준다 => 해당 해머는 adminAddress로부터 빠져나가고, 트랜잭션 비용 발생함. 즉, 어드민에 충분한 양의 클레이튼 필요함)
-        val hammerAmount: BigInteger = BigInteger.valueOf(1000000000000000000).multiply(BigInteger.valueOf(100))
+        val hammerAmount: BigInteger = HAMMER_SEND_AMOUNT.multiply(HAMMER_DEFAULT_DIGIT)
         hammerContractService.sendHammer(newUser.walletAddress, hammerAmount)
         return newUser
     }
