@@ -32,6 +32,7 @@ class EventHandler(
         val notification = when (notificationEvent) {
             is AskNotificationEvent -> Notification(
                 type = Ask,
+                title = Ask.title,
                 receiverUserId = notificationEvent.receiverUserId,
                 senderUserId = notificationEvent.senderUserId,
                 createdAt = notificationEvent.createdAt,
@@ -42,6 +43,7 @@ class EventHandler(
 
             is TransactionNotificationEvent -> Notification(
                 type = Transaction,
+                title = Transaction.title,
                 receiverUserId = notificationEvent.receiverUserId,
                 senderUserId = notificationEvent.senderUserId,
                 cookieId = notificationEvent.cookieId,
