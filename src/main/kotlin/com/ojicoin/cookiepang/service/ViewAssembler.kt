@@ -111,7 +111,11 @@ class ViewAssembler(
 
         return PageableView(
             totalCount = allCookieSize,
-            totalPageIndex = totalPageSize - 1,
+            totalPageIndex = if (totalPageSize == 0) {
+                0
+            } else {
+                totalPageSize - 1
+            },
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = cookieViews
@@ -139,7 +143,11 @@ class ViewAssembler(
         val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
         return PageableView(
             totalCount = totalCookiesCount,
-            totalPageIndex = totalPageSize - 1,
+            totalPageIndex = if (totalPageSize == 0) {
+                0
+            } else {
+                totalPageSize - 1
+            },
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = userCookieViews
@@ -167,7 +175,11 @@ class ViewAssembler(
         val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
         return PageableView(
             totalCount = totalCookiesCount,
-            totalPageIndex = totalPageSize - 1,
+            totalPageIndex = if (totalPageSize == 0) {
+                0
+            } else {
+                totalPageSize - 1
+            },
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = userCookieViews
