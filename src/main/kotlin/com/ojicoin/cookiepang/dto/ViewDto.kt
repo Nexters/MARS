@@ -28,6 +28,13 @@ data class CookieHistoryView(
     val createdAt: Instant,
 )
 
+data class PageableView<T>(
+    val totalPage: Int,
+    val nowPage: Int,
+    val isLastPage: Boolean,
+    val contents: List<T>
+)
+
 data class TimelineCookieView(
     val cookieId: Long,
     val creatorId: Long,
@@ -43,7 +50,6 @@ data class TimelineCookieView(
     val myCookie: Boolean,
     val category: CategoryView?,
     val createdAt: Instant,
-    val isLastPage: Boolean,
 )
 
 data class CategoryView(

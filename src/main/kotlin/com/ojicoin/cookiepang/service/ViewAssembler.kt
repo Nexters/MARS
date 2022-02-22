@@ -7,6 +7,7 @@ import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.dto.CategoryView
 import com.ojicoin.cookiepang.dto.CookieHistoryView
 import com.ojicoin.cookiepang.dto.CookieView
+import com.ojicoin.cookiepang.dto.PageableView
 import com.ojicoin.cookiepang.dto.TimelineCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -67,7 +68,7 @@ class ViewAssembler(
         viewCategoryId: Long? = null,
         page: Int = 0,
         size: Int = 3
-    ): List<TimelineCookieView> {
+    ): PageableView<TimelineCookieView> {
         val viewer = userService.getById(viewerId)
         val pageable = PageRequest.of(page, size)
         val allCookieSize = if (viewCategoryId != null) {
@@ -81,7 +82,8 @@ class ViewAssembler(
             cookieService.getCookies(pageable = pageable)
         }
 
-        return cookies.map { cookie ->
+        val totalPage = ceil(allCookieSize.div(size.toDouble())).toInt()
+        val cookieViews = cookies.map { cookie ->
             val creator = userService.getById(cookie.authorUserId)
             val myCookie = viewer.id == creator.id
             val answer = cookie.open(viewerId)
@@ -103,15 +105,21 @@ class ViewAssembler(
                 myCookie = myCookie,
                 price = cookie.price,
                 createdAt = cookie.createdAt,
-                isLastPage = lastPage(allCookieSize, size, page)
             )
         }
+
+        return PageableView(
+            totalPage = totalPage,
+            nowPage = page,
+            isLastPage = lastPage(totalPage = totalPage, pageIndex = page),
+            contents = cookieViews
+        )
     }
 
     // 올림(쿠키 총 개수 / 사이즈) => 전체 페이지 개수
     // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
-    private fun lastPage(allCookieSize: Long, size: Int, pageIndex: Int) =
-        ceil(allCookieSize.div(size.toDouble())).toLong() <= pageIndex + 1
+    private fun lastPage(totalPage: Int, pageIndex: Int) =
+        totalPage <= pageIndex + 1
 }
 
 fun String.abbreviate(
