@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.repository
 
 import com.ojicoin.cookiepang.domain.Ask
 import com.ojicoin.cookiepang.domain.AskStatus
+import com.ojicoin.cookiepang.domain.AskStatus.PENDING
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
@@ -58,10 +59,14 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     ): Long
 }
 
-interface AskRepository : CrudRepository<Ask, Long> {
-    fun findBySenderUserId(senderUserId: Long): List<Ask>
+interface AskRepository : PagingAndSortingRepository<Ask, Long> {
+    fun findBySenderId(senderId: Long, pageable: Pageable): List<Ask>
 
-    fun findByReceiverUserIdAndStatus(receiverUserId: Long, status: AskStatus): List<Ask>
+    fun countBySenderId(senderId: Long): Long
+
+    fun findByReceiverIdAndStatus(receiverId: Long, status: AskStatus = PENDING, pageable: Pageable): List<Ask>
+
+    fun countByReceiverIdAndStatus(receiverId: Long, status: AskStatus = PENDING): Long
 }
 
 interface CategoryRepository : CrudRepository<Category, Long> {

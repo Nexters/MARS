@@ -8,6 +8,7 @@ import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.AskRepository
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,15 +17,23 @@ class AskService(
     private val eventPublisher: ApplicationEventPublisher,
 ) {
 
-    fun viewAboutSender(userId: Long): List<Ask> {
-        return askRepository.findBySenderUserId(senderUserId = userId)
+    fun getBySenderId(userId: Long, pageable: Pageable): List<Ask> {
+        return askRepository.findBySenderId(senderId = userId, pageable)
     }
 
-    fun viewAboutReceiver(userId: Long): List<Ask> {
-        return askRepository.findByReceiverUserIdAndStatus(receiverUserId = userId, status = PENDING)
+    fun countAsksBySenderId(senderId: Long): Long {
+        return askRepository.countBySenderId(senderId = senderId)
     }
 
-    fun create(title: String, senderUserId: Long, receiverUserId: Long): Ask {
+    fun getByReceiverId(userId: Long, pageable: Pageable): List<Ask> {
+        return askRepository.findByReceiverIdAndStatus(receiverId = userId, status = PENDING, pageable)
+    }
+
+    fun countAsksByReceiverId(receiverId: Long): Long {
+        return askRepository.countByReceiverIdAndStatus(receiverId = receiverId, status = PENDING)
+    }
+
+    fun create(title: String, senderUserId: Long, receiverUserId: Long, categoryId: Long): Ask {
         if (senderUserId == receiverUserId) {
             throw InvalidRequestException("senderUserId is same as receiverUserId.")
                 .with("senderUserId", senderUserId)
@@ -36,8 +45,9 @@ class AskService(
                 Ask(
                     title = title,
                     status = PENDING,
-                    senderUserId = senderUserId,
-                    receiverUserId = receiverUserId
+                    senderId = senderUserId,
+                    receiverId = receiverUserId,
+                    categoryId = categoryId
                 )
             )
 
@@ -62,8 +72,6 @@ class AskService(
             )
                 .with("status", foundAsk.status)
         }
-
-        // TODO make notification about IGNORED, ACCEPTED to senderUserId
 
         foundAsk.apply(dto)
         return askRepository.save(foundAsk)

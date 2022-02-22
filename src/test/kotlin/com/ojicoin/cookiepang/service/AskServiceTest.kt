@@ -18,6 +18,7 @@ import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 
 internal class AskServiceTest(
     @Autowired val sut: AskService,
@@ -33,12 +34,12 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromSender = sut.viewAboutSender(ask.senderUserId)
+        val asksFromSender = sut.getBySenderId(ask.senderId, Pageable.unpaged())
 
         val foundAsk = asksFromSender[0]
         then(ask.title).isEqualTo(foundAsk.title)
-        then(ask.senderUserId).isEqualTo(foundAsk.senderUserId)
-        then(ask.receiverUserId).isEqualTo(foundAsk.receiverUserId)
+        then(ask.senderId).isEqualTo(foundAsk.senderId)
+        then(ask.receiverId).isEqualTo(foundAsk.receiverId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -50,14 +51,14 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId)
+        val asksFromReceiver = sut.getByReceiverId(ask.receiverId, Pageable.unpaged())
 
         then(asksFromReceiver.size).isEqualTo(1)
 
         val foundAsk = asksFromReceiver[0]
         then(ask.title).isEqualTo(foundAsk.title)
-        then(ask.senderUserId).isEqualTo(foundAsk.senderUserId)
-        then(ask.receiverUserId).isEqualTo(foundAsk.receiverUserId)
+        then(ask.senderId).isEqualTo(foundAsk.senderId)
+        then(ask.receiverId).isEqualTo(foundAsk.receiverId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -69,7 +70,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId)
+        val asksFromReceiver = sut.getByReceiverId(ask.receiverId, Pageable.unpaged())
         then(asksFromReceiver.size).isEqualTo(0)
     }
 
@@ -83,14 +84,15 @@ internal class AskServiceTest(
 
         val create = sut.create(
             title = ask.title,
-            senderUserId = ask.senderUserId,
-            receiverUserId = ask.receiverUserId,
+            senderUserId = ask.senderId,
+            receiverUserId = ask.receiverId,
+            categoryId = ask.categoryId,
         )
 
         then(ask.title).isEqualTo(create.title)
         then(ask.status).isEqualTo(create.status)
-        then(ask.senderUserId).isEqualTo(create.senderUserId)
-        then(ask.receiverUserId).isEqualTo(create.receiverUserId)
+        then(ask.senderId).isEqualTo(create.senderId)
+        then(ask.receiverId).isEqualTo(create.receiverId)
 
         // test about notification
         then(notificationRepository.findAll()).hasSize(1)
@@ -107,8 +109,9 @@ internal class AskServiceTest(
         thenThrownBy {
             sut.create(
                 title = ask.title,
-                senderUserId = ask.senderUserId,
-                receiverUserId = ask.senderUserId,
+                senderUserId = ask.senderId,
+                receiverUserId = ask.senderId,
+                categoryId = ask.categoryId,
             )
         }.isExactlyInstanceOf(InvalidRequestException::class.java)
             .hasMessageContaining("senderUserId is same as receiverUserId.")
@@ -130,6 +133,7 @@ internal class AskServiceTest(
 
         updateAsk.title?.also { then(it).isEqualTo(modifiedAsk.title) }
         updateAsk.status?.also { then(it).isEqualTo(modifiedAsk.status) }
+        updateAsk.categoryId?.also { then(it).isEqualTo(modifiedAsk.categoryId) }
     }
 
     @RepeatedTest(REPEAT_COUNT)

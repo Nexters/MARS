@@ -1,5 +1,7 @@
 package com.ojicoin.cookiepang.controller
 
+import com.ojicoin.cookiepang.controller.GetAskTarget.RECEIVER
+import com.ojicoin.cookiepang.controller.GetAskTarget.SENDER
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget.AUTHOR
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget.OWNED
@@ -92,4 +94,18 @@ class ViewController(private val viewAssembler: ViewAssembler) {
             size = size
         )
     }
+
+    @GetMapping("/users/{userId}/asks")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAsks(
+        @PathVariable userId: Long,
+        @RequestParam("target") target: GetAskTarget,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "3") size: Int,
+    ) = when (target) {
+        SENDER -> viewAssembler.askViewAboutSender(userId = userId, page = page, size = size)
+        RECEIVER -> viewAssembler.askViewAboutReceiver(userId = userId, page = page, size = size)
+    }
 }
+
+enum class GetAskTarget { SENDER, RECEIVER }
