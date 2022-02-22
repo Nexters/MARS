@@ -140,6 +140,7 @@ class ViewAssembler(
 
         val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
         return PageableView(
+            totalCount = totalCookiesCount,
             totalPageIndex = totalPageSize - 1,
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
@@ -167,6 +168,7 @@ class ViewAssembler(
 
         val totalPageSize = getTotalPageSize(totalSize = totalCookiesCount, size = size)
         return PageableView(
+            totalCount = totalCookiesCount,
             totalPageIndex = totalPageSize - 1,
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
