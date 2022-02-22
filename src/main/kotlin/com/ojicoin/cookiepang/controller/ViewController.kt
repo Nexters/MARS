@@ -1,8 +1,8 @@
 package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.dto.GetUserCookieTarget
-import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COLLECTED
-import com.ojicoin.cookiepang.dto.GetUserCookieTarget.COOKIES
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.AUTHOR
+import com.ojicoin.cookiepang.dto.GetUserCookieTarget.OWNED
 import com.ojicoin.cookiepang.dto.PageableView
 import com.ojicoin.cookiepang.dto.ProblemResponse
 import com.ojicoin.cookiepang.dto.UserCookieView
@@ -80,13 +80,13 @@ class ViewController(private val viewAssembler: ViewAssembler) {
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "3") size: Int,
     ): PageableView<UserCookieView> = when (target) {
-        COLLECTED -> viewAssembler.ownedCookiesView(
+        OWNED -> viewAssembler.ownedCookiesView(
             userId = userId,
             page = page,
             size = size
         )
 
-        COOKIES -> viewAssembler.authorCookiesView(
+        AUTHOR -> viewAssembler.authorCookiesView(
             userId = userId,
             page = page,
             size = size

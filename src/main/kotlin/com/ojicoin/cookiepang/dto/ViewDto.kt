@@ -64,8 +64,8 @@ data class FinishOnboardView(
 )
 
 enum class GetUserCookieTarget {
-    COLLECTED,
-    COOKIES,
+    OWNED,
+    AUTHOR,
 }
 
 data class ProblemResponse(
