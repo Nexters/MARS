@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import javax.sql.DataSource
 
-
 @Profile("!local")
 @Configuration
 class SpringJdbcConfiguration {
