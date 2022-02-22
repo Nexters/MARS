@@ -60,13 +60,13 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
 }
 
 interface AskRepository : PagingAndSortingRepository<Ask, Long> {
-    fun findBySenderUserId(senderUserId: Long, pageable: Pageable): List<Ask>
+    fun findBySenderId(senderId: Long, pageable: Pageable): List<Ask>
 
-    fun countBySenderUserId(senderUserId: Long): Long
+    fun countBySenderId(senderId: Long): Long
 
-    fun findByReceiverUserIdAndStatus(receiverUserId: Long, status: AskStatus = PENDING, pageable: Pageable): List<Ask>
+    fun findByReceiverIdAndStatus(receiverId: Long, status: AskStatus = PENDING, pageable: Pageable): List<Ask>
 
-    fun countByReceiverUserIdAndStatus(receiverUserId: Long, status: AskStatus = PENDING): Long
+    fun countByReceiverIdAndStatus(receiverId: Long, status: AskStatus = PENDING): Long
 }
 
 interface CategoryRepository : CrudRepository<Category, Long> {

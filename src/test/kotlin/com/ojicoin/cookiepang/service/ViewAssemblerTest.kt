@@ -223,7 +223,7 @@ class ViewAssemblerTest(
 
         askRepository.save(ask)
 
-        val actual = sut.askViewAboutSender(userId = ask.senderUserId)
+        val actual = sut.askViewAboutSender(userId = ask.senderId)
 
         then(actual.contents).hasSize(1)
     }
@@ -237,7 +237,7 @@ class ViewAssemblerTest(
 
         askRepository.save(ask)
 
-        val actual = sut.askViewAboutReceiver(userId = ask.receiverUserId)
+        val actual = sut.askViewAboutReceiver(userId = ask.receiverId)
 
         then(actual.contents).hasSize(1)
     }
@@ -251,7 +251,7 @@ class ViewAssemblerTest(
 
         askRepository.save(ask)
 
-        val actual = sut.askViewAboutReceiver(userId = ask.receiverUserId)
+        val actual = sut.askViewAboutReceiver(userId = ask.receiverId)
 
         then(actual.contents).hasSize(0)
     }

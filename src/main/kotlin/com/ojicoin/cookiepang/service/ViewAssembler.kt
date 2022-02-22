@@ -181,7 +181,7 @@ class ViewAssembler(
         page: Int = 0,
         size: Int = 3
     ): PageableView<Ask> {
-        val allCountAsks = askService.countAsksBySenderUserId(senderUserId = userId)
+        val allCountAsks = askService.countAsksBySenderId(senderId = userId)
         val totalPageSize = getTotalPageSize(allCountAsks, size)
 
         return PageableView(
@@ -198,7 +198,7 @@ class ViewAssembler(
         page: Int = 0,
         size: Int = 3
     ): PageableView<Ask> {
-        val allCountAsks = askService.countAsksByReceiverUserId(receiverUserId = userId)
+        val allCountAsks = askService.countAsksByReceiverId(receiverId = userId)
         val totalPageSize = getTotalPageSize(allCountAsks, size)
 
         return PageableView(

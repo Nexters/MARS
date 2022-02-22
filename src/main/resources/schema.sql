@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS "asks"
     "title"            varchar(255),
     "status"           varchar(20),
     "category_id"      bigint,
-    "sender_user_id"   bigint,
-    "receiver_user_id" bigint,
+    "sender_id"   bigint,
+    "receiver_id" bigint,
     PRIMARY KEY ("ask_id")
 );
 

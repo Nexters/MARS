@@ -18,19 +18,19 @@ class AskService(
 ) {
 
     fun viewAboutSender(userId: Long, pageable: Pageable): List<Ask> {
-        return askRepository.findBySenderUserId(senderUserId = userId, pageable)
+        return askRepository.findBySenderId(senderId = userId, pageable)
+    }
+
+    fun countAsksBySenderId(senderId: Long): Long {
+        return askRepository.countBySenderId(senderId = senderId)
     }
 
     fun viewAboutReceiver(userId: Long, pageable: Pageable): List<Ask> {
-        return askRepository.findByReceiverUserIdAndStatus(receiverUserId = userId, status = PENDING, pageable)
+        return askRepository.findByReceiverIdAndStatus(receiverId = userId, status = PENDING, pageable)
     }
 
-    fun countAsksBySenderUserId(senderUserId: Long): Long {
-        return askRepository.countBySenderUserId(senderUserId = senderUserId)
-    }
-
-    fun countAsksByReceiverUserId(receiverUserId: Long): Long {
-        return askRepository.countByReceiverUserIdAndStatus(receiverUserId = receiverUserId, status = PENDING)
+    fun countAsksByReceiverId(receiverId: Long): Long {
+        return askRepository.countByReceiverIdAndStatus(receiverId = receiverId, status = PENDING)
     }
 
     fun create(title: String, senderUserId: Long, receiverUserId: Long, categoryId: Long): Ask {
@@ -45,8 +45,8 @@ class AskService(
                 Ask(
                     title = title,
                     status = PENDING,
-                    senderUserId = senderUserId,
-                    receiverUserId = receiverUserId,
+                    senderId = senderUserId,
+                    receiverId = receiverUserId,
                     categoryId = categoryId
                 )
             )

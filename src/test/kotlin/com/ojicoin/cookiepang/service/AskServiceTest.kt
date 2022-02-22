@@ -34,12 +34,12 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromSender = sut.viewAboutSender(ask.senderUserId, Pageable.unpaged())
+        val asksFromSender = sut.viewAboutSender(ask.senderId, Pageable.unpaged())
 
         val foundAsk = asksFromSender[0]
         then(ask.title).isEqualTo(foundAsk.title)
-        then(ask.senderUserId).isEqualTo(foundAsk.senderUserId)
-        then(ask.receiverUserId).isEqualTo(foundAsk.receiverUserId)
+        then(ask.senderId).isEqualTo(foundAsk.senderId)
+        then(ask.receiverId).isEqualTo(foundAsk.receiverId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -51,14 +51,14 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId, Pageable.unpaged())
+        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverId, Pageable.unpaged())
 
         then(asksFromReceiver.size).isEqualTo(1)
 
         val foundAsk = asksFromReceiver[0]
         then(ask.title).isEqualTo(foundAsk.title)
-        then(ask.senderUserId).isEqualTo(foundAsk.senderUserId)
-        then(ask.receiverUserId).isEqualTo(foundAsk.receiverUserId)
+        then(ask.senderId).isEqualTo(foundAsk.senderId)
+        then(ask.receiverId).isEqualTo(foundAsk.receiverId)
     }
 
     @RepeatedTest(REPEAT_COUNT)
@@ -70,7 +70,7 @@ internal class AskServiceTest(
 
         askRepository.save(ask)
 
-        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverUserId, Pageable.unpaged())
+        val asksFromReceiver = sut.viewAboutReceiver(ask.receiverId, Pageable.unpaged())
         then(asksFromReceiver.size).isEqualTo(0)
     }
 
@@ -84,15 +84,15 @@ internal class AskServiceTest(
 
         val create = sut.create(
             title = ask.title,
-            senderUserId = ask.senderUserId,
-            receiverUserId = ask.receiverUserId,
+            senderUserId = ask.senderId,
+            receiverUserId = ask.receiverId,
             categoryId = ask.categoryId,
         )
 
         then(ask.title).isEqualTo(create.title)
         then(ask.status).isEqualTo(create.status)
-        then(ask.senderUserId).isEqualTo(create.senderUserId)
-        then(ask.receiverUserId).isEqualTo(create.receiverUserId)
+        then(ask.senderId).isEqualTo(create.senderId)
+        then(ask.receiverId).isEqualTo(create.receiverId)
 
         // test about notification
         then(notificationRepository.findAll()).hasSize(1)
@@ -109,8 +109,8 @@ internal class AskServiceTest(
         thenThrownBy {
             sut.create(
                 title = ask.title,
-                senderUserId = ask.senderUserId,
-                receiverUserId = ask.senderUserId,
+                senderUserId = ask.senderId,
+                receiverUserId = ask.senderId,
                 categoryId = ask.categoryId,
             )
         }.isExactlyInstanceOf(InvalidRequestException::class.java)
