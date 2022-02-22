@@ -118,8 +118,6 @@ class ViewAssembler(
         )
     }
 
-    private fun getTotalPageSize(totalSize: Long, size: Int) = ceil(totalSize.div(size.toDouble())).toInt()
-
     fun ownedCookiesView(userId: Long, page: Int = 0, size: Int = 3): PageableView<UserCookieView> {
         val cookies = cookieService.getAllOwnedCookies(
             ownedUserId = userId,
@@ -180,6 +178,8 @@ class ViewAssembler(
     // 전체 페이지 개수 == 페이지 인덱스 + 1 인 경우 마지막 페이지를 의미한다.
     private fun lastPage(totalPageSize: Int, pageIndex: Int) =
         totalPageSize <= pageIndex + 1
+
+    private fun getTotalPageSize(totalSize: Long, size: Int) = ceil(totalSize.div(size.toDouble())).toInt()
 }
 
 fun String.abbreviate(
