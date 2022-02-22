@@ -41,22 +41,22 @@ class ContractCookieController(
         )
     }
 
-    @GetMapping("/{id}/hide")
-    fun isHide(@PathVariable id: String): Answer {
+    @GetMapping("/{nftTokenId}/hide")
+    fun isHide(@PathVariable nftTokenId: String): Answer {
         return Answer(
-            answer = cookieContractService.isHide(nftTokenId = id.toBigInteger()),
+            answer = cookieContractService.isHide(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/{id}/sale")
-    fun isSale(@PathVariable id: String): Answer {
+    @GetMapping("/{nftTokenId}/sale")
+    fun isSale(@PathVariable nftTokenId: String): Answer {
         return Answer(
-            answer = cookieContractService.isSale(nftTokenId = id.toBigInteger()),
+            answer = cookieContractService.isSale(nftTokenId = nftTokenId.toBigInteger()),
         )
     }
 
-    @GetMapping("/{id}/price")
-    fun getCookieHammerPrices(@RequestParam nftTokenId: String): Price {
+    @GetMapping("/{nftTokenId}/price")
+    fun getCookieHammerPrices(@PathVariable nftTokenId: String): Price {
         return Price(
             price = cookieContractService.getHammerPrice(nftTokenId = nftTokenId.toBigInteger()),
         )
@@ -75,7 +75,7 @@ class ContractCookieController(
     }
 
     @GetMapping("/users/{userId}/count")
-    fun getUserCookieCount(@PathVariable userId: String, @RequestParam index: String): Amount {
+    fun getUserCookieCount(@PathVariable userId: String): Amount {
         val user = userService.getById(userId.toLong())
 
         return Amount(
