@@ -26,7 +26,7 @@ class UserServiceTest(
 
         val actual = sut.create(createUserDto)
 
-        then(createUserDto.walletAddress).isEqualTo(actual.walletAddress)
+        then(createUserDto.walletAddress.lowercase()).isEqualTo(actual.walletAddress)
         then(createUserDto.nickname).isEqualTo(actual.nickname)
         createUserDto.introduction?.also { then(it).isEqualTo(actual.introduction) }
 

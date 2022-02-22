@@ -31,7 +31,7 @@ class UserService(
 
         // TODO set default profile, background url
         val user = User(
-            walletAddress = dto.walletAddress,
+            walletAddress = dto.walletAddress.lowercase(),
             nickname = dto.nickname,
             introduction = dto.introduction,
             profileUrl = dto.profileUrl,
