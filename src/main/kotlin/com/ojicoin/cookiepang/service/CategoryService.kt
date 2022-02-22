@@ -10,4 +10,6 @@ class CategoryService(
     fun getAll() = categoryRepository.findAll().map { it.toCategoryView() }
 
     fun getById(id: Long) = categoryRepository.findById(id).orElseThrow()
+
+    fun getByName(name: String) = categoryRepository.findByName(name) ?: throw NoSuchElementException()
 }

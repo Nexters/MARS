@@ -12,16 +12,13 @@ import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateDefaultCookies
-import com.ojicoin.cookiepang.dto.GetCookiesResponse
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
-import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,7 +29,7 @@ import java.time.Instant
 @Service
 class CookieService(
     private val cookieRepository: CookieRepository,
-    private val categoryRepository: CategoryRepository,
+    private val categoryService: CategoryService,
     private val cookieContractService: CookieContractService,
     private val cookieHistoryRepository: CookieHistoryRepository,
     private val userRepository: UserRepository, // TODO: 구조 리팩토링
@@ -59,13 +56,24 @@ class CookieService(
     fun countCookiesByCategoryId(categoryId: Long): Long =
         cookieRepository.countByStatusIsNotAndCategoryId(categoryId = categoryId)
 
+    fun getAllOwnedCookies(ownedUserId: Long, pageable: Pageable): List<Cookie> =
+        cookieRepository.findByStatusIsNotAndOwnedUserId(ownedUserId = ownedUserId, pageable = pageable)
+
+    fun countAllOwnedCookies(ownedUserId: Long): Long =
+        cookieRepository.countByStatusIsNotAndOwnedUserId(ownedUserId = ownedUserId)
+
+    fun getAllAuthorCookies(authorUserId: Long, pageable: Pageable): List<Cookie> =
+        cookieRepository.findByStatusIsNotAndAuthorUserId(authorUserId = authorUserId, pageable = pageable)
+
+    fun countAllAuthorCookies(authorUserId: Long): Long =
+        cookieRepository.countByStatusIsNotAndAuthorUserId(authorUserId = authorUserId)
+
     fun createDefaultCookies(createDefaultCookies: CreateDefaultCookies): List<Cookie> {
         val user = userRepository.findById(createDefaultCookies.creatorId).orElseThrow()
         if (user.finishOnboard) {
             throw InvalidRequestException("Already onboard finished user.")
         }
-        val category = categoryRepository.findByName(DEFAULT_COOKIE_CATEGORY_NAME)
-            ?: throw IllegalArgumentException("There is not default cookie category name.")
+        val category = categoryService.getByName(DEFAULT_COOKIE_CATEGORY_NAME)
 
         val defaultCookies = createDefaultCookies.defaultCookies.map { createDefaultCookie ->
             val transferEventLog = cookieContractService.createDefaultCookie(
@@ -177,46 +185,6 @@ class CookieService(
         toDeleteCookie.status = DELETED
         cookieRepository.save(toDeleteCookie)
         return toDeleteCookie
-    }
-
-    fun getOwnedCookies(userId: Long, viewUserId: Long, page: Int, size: Int): GetCookiesResponse {
-        val cookies = if (userId == viewUserId) {
-            // find all user owned cookies not delete status
-            cookieRepository.findByStatusIsNotAndOwnedUserId(
-                ownedUserId = userId,
-                pageable = PageRequest.of(page, size)
-            )
-        } else {
-            // find all user owned cookies only active status
-            cookieRepository.findByStatusAndOwnedUserId(ownedUserId = userId, pageable = PageRequest.of(page, size))
-        }
-
-        return GetCookiesResponse(
-            totalCount = cookies.size,
-            page = page,
-            size = size,
-            cookies = cookies
-        )
-    }
-
-    fun getAuthorCookies(userId: Long, viewUserId: Long, page: Int, size: Int): GetCookiesResponse {
-        val cookies = if (userId == viewUserId) {
-            // find all user author cookies without delete status
-            cookieRepository.findByStatusIsNotAndAuthorUserId(
-                authorUserId = userId,
-                pageable = PageRequest.of(page, size)
-            )
-        } else {
-            // find all user author cookies only active status
-            cookieRepository.findByStatusAndAuthorUserId(authorUserId = userId, pageable = PageRequest.of(page, size))
-        }
-
-        return GetCookiesResponse(
-            totalCount = cookies.size,
-            page = page,
-            size = size,
-            cookies = cookies
-        )
     }
 }
 

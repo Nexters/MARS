@@ -25,7 +25,6 @@ class ViewAssemblerTest(
     @Autowired val userRepository: UserRepository,
     @Value("\${contract.address}") val contractAddress: String,
 ) : SpringContextFixture() {
-
     @Test
     fun cookieView() {
         val category = fixture.giveMeBuilder<Category>()
@@ -161,6 +160,52 @@ class ViewAssemblerTest(
 
         // when
         val actual = sut.timelineView(viewerId = ownedUserId)
+
+        then(actual.contents).hasSize(1)
+    }
+
+    @Test
+    fun ownedCookiesView() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
+        val user = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val userId = userRepository.save(user).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("ownedUserId", userId)
+            .set("categoryId", categoryId)
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
+            .sample()
+        cookieRepository.save(cookie)
+
+        val actual = sut.ownedCookiesView(userId = userId)
+
+        then(actual.contents).hasSize(1)
+    }
+
+    @Test
+    fun authorCookiesView() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
+        val user = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val userId = userRepository.save(user).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("authorUserId", userId)
+            .set("categoryId", categoryId)
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
+            .sample()
+        cookieRepository.save(cookie)
+
+        val actual = sut.authorCookiesView(userId = userId)
 
         then(actual.contents).hasSize(1)
     }
