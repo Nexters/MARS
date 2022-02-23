@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "asks"
     "ask_id"           bigserial,
     "title"            varchar(255),
     "status"           varchar(20),
-    "category_id"      bigint,
+    "category_id"      bigint default 1, -- category_id: 1 (자유)
     "sender_id"   bigint,
     "receiver_id" bigint,
     PRIMARY KEY ("ask_id")
