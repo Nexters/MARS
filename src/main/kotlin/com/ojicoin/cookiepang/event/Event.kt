@@ -34,6 +34,5 @@ data class TransactionNotificationEvent(
     val createdAt: Instant = Instant.now(),
 
     val cookieTitle: String,
-    val senderNickname: String,
-    val hammerCount: Double,
+    val hammerCount: Long,
 ) : NotificationEvent()

@@ -3,7 +3,9 @@ package com.ojicoin.cookiepang.event
 import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.NotificationType
+import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.repository.NotificationRepository
+import com.ojicoin.cookiepang.repository.UserRepository
 import com.ojicoin.cookiepang.repository.ViewCountRepository
 import com.ojicoin.cookiepang.util.NotificationMessageUtils
 import org.assertj.core.api.BDDAssertions.then
@@ -17,6 +19,7 @@ class EventHandlerTest(
     @Autowired val viewCountRepository: ViewCountRepository,
     @Autowired val notificationRepository: NotificationRepository,
     @Autowired val notificationMessageUtils: NotificationMessageUtils,
+    @Autowired val userRepository: UserRepository,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -58,7 +61,14 @@ class EventHandlerTest(
     @RepeatedTest(REPEAT_COUNT)
     fun handleNotificationEventForTransaction() {
         // given
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+
+        val savedSenderUser = userRepository.save(user)
+
         val notificationEvent = fixture.giveMeBuilder(TransactionNotificationEvent::class.java)
+            .set("senderUserId", savedSenderUser.id)
             .sample()
 
         // when
@@ -77,7 +87,7 @@ class EventHandlerTest(
             then(it.cookieId).isEqualTo(notificationEvent.cookieId)
             then(it.content).isEqualTo(
                 notificationMessageUtils.getTransactionMessage(
-                    notificationEvent.senderNickname,
+                    savedSenderUser.nickname,
                     notificationEvent.cookieTitle,
                     notificationEvent.hammerCount
                 )

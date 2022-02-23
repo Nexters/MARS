@@ -13,12 +13,14 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.UpdateCookie
+import com.ojicoin.cookiepang.event.TransactionNotificationEvent
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,6 +35,7 @@ class CookieService(
     private val cookieContractService: CookieContractService,
     private val cookieHistoryRepository: CookieHistoryRepository,
     private val userRepository: UserRepository, // TODO: 구조 리팩토링
+    private val eventPublisher: ApplicationEventPublisher,
     @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferEventLog>,
 ) {
 
@@ -166,8 +169,25 @@ class CookieService(
                 .with("cookieId", cookie.id!!)
         }
 
+        val previousOwnedUser = cookie.ownedUserId
+        val newOwnedUser = updateCookie.purchaserUserId
+
         cookie.apply(updateCookie)
-        return cookieRepository.save(cookie)
+        val savedCookie = cookieRepository.save(cookie)
+
+        if (updateCookie.purchaserUserId != null) {
+            eventPublisher.publishEvent(
+                TransactionNotificationEvent(
+                    receiverUserId = previousOwnedUser,
+                    senderUserId = newOwnedUser!!,
+                    cookieId = cookie.id!!,
+                    cookieTitle = cookie.title,
+                    hammerCount = cookie.price
+                )
+            )
+        }
+
+        return savedCookie
     }
 
     @Transactional

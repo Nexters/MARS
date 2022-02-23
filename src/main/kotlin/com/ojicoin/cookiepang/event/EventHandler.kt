@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.domain.NotificationType.Ask
 import com.ojicoin.cookiepang.domain.NotificationType.Transaction
 import com.ojicoin.cookiepang.domain.ViewCount
 import com.ojicoin.cookiepang.repository.NotificationRepository
+import com.ojicoin.cookiepang.repository.UserRepository
 import com.ojicoin.cookiepang.repository.ViewCountRepository
 import com.ojicoin.cookiepang.util.NotificationMessageUtils
 import org.springframework.context.event.EventListener
@@ -15,6 +16,7 @@ class EventHandler(
     private val viewCountRepository: ViewCountRepository,
     private val notificationRepository: NotificationRepository,
     private val notificationMessageUtils: NotificationMessageUtils,
+    private val userRepository: UserRepository,
 ) {
     @EventListener
     fun handleViewCookieEvent(viewCookieEvent: ViewCookieEvent) {
@@ -41,20 +43,24 @@ class EventHandler(
                 content = notificationMessageUtils.getAskMessage(notificationEvent.cookieTitle),
             )
 
-            is TransactionNotificationEvent -> Notification(
-                type = Transaction,
-                title = Transaction.title,
-                receiverUserId = notificationEvent.receiverUserId,
-                senderUserId = notificationEvent.senderUserId,
-                cookieId = notificationEvent.cookieId,
-                createdAt = notificationEvent.createdAt,
+            is TransactionNotificationEvent -> {
+                val senderNickname = userRepository.findById(notificationEvent.senderUserId).get().nickname
 
-                content = notificationMessageUtils.getTransactionMessage(
-                    notificationEvent.senderNickname,
-                    notificationEvent.cookieTitle,
-                    notificationEvent.hammerCount
-                ),
-            )
+                Notification(
+                    type = Transaction,
+                    title = Transaction.title,
+                    receiverUserId = notificationEvent.receiverUserId,
+                    senderUserId = notificationEvent.senderUserId,
+                    cookieId = notificationEvent.cookieId,
+                    createdAt = notificationEvent.createdAt,
+
+                    content = notificationMessageUtils.getTransactionMessage(
+                        senderNickname,
+                        notificationEvent.cookieTitle,
+                        notificationEvent.hammerCount
+                    )
+                )
+            }
         }
 
         notificationRepository.save(notification)
