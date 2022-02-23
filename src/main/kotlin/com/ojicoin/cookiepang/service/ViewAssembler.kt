@@ -201,7 +201,11 @@ class ViewAssembler(
 
         return PageableView(
             totalCount = allCountAsks,
-            totalPageIndex = totalPageSize - 1,
+            totalPageIndex = if (totalPageSize == 0) {
+                0
+            } else {
+                totalPageSize - 1
+            },
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = askService.getBySenderId(userId, PageRequest.of(page, size))
@@ -218,7 +222,11 @@ class ViewAssembler(
 
         return PageableView(
             totalCount = allCountAsks,
-            totalPageIndex = totalPageSize - 1,
+            totalPageIndex = if (totalPageSize == 0) {
+                0
+            } else {
+                totalPageSize - 1
+            },
             nowPageIndex = page,
             isLastPage = lastPage(totalPageSize = totalPageSize, pageIndex = page),
             contents = askService.getByReceiverId(userId, PageRequest.of(page, size))
