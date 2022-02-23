@@ -8,6 +8,7 @@ import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
+import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.exception.ForbiddenRequestException
@@ -101,7 +102,7 @@ class ViewAssemblerTest(
             .setNull("id")
             .set("authorUserId", authorUserId)
             .set("ownedUserId", ownedUserId)
-            .set("status", CookieStatus.ACTIVE)
+            .set("status", ACTIVE)
             .set("categoryId", categoryId)
             .set("nftTokenId", BigInteger.valueOf(-1))
             .sample()
@@ -165,7 +166,7 @@ class ViewAssemblerTest(
         val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
-            .set("status", CookieStatus.ACTIVE)
+            .set("status", ACTIVE)
             .set("ownedUserId", ownedUserId)
             .set("authorUserId", authorUserId)
             .set("categoryId", categoryId)
@@ -176,6 +177,35 @@ class ViewAssemblerTest(
         val actual = sut.timelineView(viewerId = ownedUserId, viewCategoryId = cookie.categoryId)
 
         then(actual.contents).hasSize(1)
+    }
+
+    @Test
+    fun timelineViewNotActiveThenNotShown() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
+        val collector = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != ACTIVE })
+            .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
+            .sample()
+        cookieRepository.save(cookie).id!!
+
+        // when
+        val actual = sut.timelineView(viewerId = ownedUserId, viewCategoryId = cookie.categoryId)
+
+        then(actual.contents).hasSize(0)
     }
 
     @Test
@@ -194,7 +224,7 @@ class ViewAssemblerTest(
         val authorUserId = userRepository.save(author).id!!
         val cookie = fixture.giveMeBuilder<Cookie>()
             .setNull("id")
-            .set("status", CookieStatus.ACTIVE)
+            .set("status", ACTIVE)
             .set("ownedUserId", ownedUserId)
             .set("authorUserId", authorUserId)
             .set("categoryId", categoryId)
@@ -205,6 +235,35 @@ class ViewAssemblerTest(
         val actual = sut.timelineView(viewerId = ownedUserId)
 
         then(actual.contents).hasSize(1)
+    }
+
+    @Test
+    fun timelineViewAllCategoriesNotActiveThenNotShown() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
+        val collector = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val ownedUserId = userRepository.save(collector).id!!
+        val author = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(author).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != ACTIVE })
+            .set("ownedUserId", ownedUserId)
+            .set("authorUserId", authorUserId)
+            .set("categoryId", categoryId)
+            .sample()
+        cookieRepository.save(cookie).id!!
+
+        // when
+        val actual = sut.timelineView(viewerId = ownedUserId)
+
+        then(actual.contents).hasSize(0)
     }
 
     @Test

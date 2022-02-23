@@ -76,14 +76,14 @@ class ViewAssembler(
         val viewer = userService.getById(viewerId)
         val pageable = PageRequest.of(page, size)
         val allCookieSize = if (viewCategoryId != null) {
-            cookieService.countCookiesByCategoryId(categoryId = viewCategoryId)
+            cookieService.countActiveCookiesByCategoryId(categoryId = viewCategoryId)
         } else {
-            cookieService.countCookies()
+            cookieService.countActiveCookies()
         }
         val cookies = if (viewCategoryId != null) {
-            cookieService.getCookiesByCategoryId(categoryId = viewCategoryId, pageable = pageable)
+            cookieService.getActiveCookiesByCategoryId(categoryId = viewCategoryId, pageable = pageable)
         } else {
-            cookieService.getCookies(pageable = pageable)
+            cookieService.getActiveCookies(pageable = pageable)
         }
 
         val totalPageSize = getTotalPageSize(allCookieSize, size)

@@ -42,19 +42,19 @@ class CookieService(
 
     fun get(cookieId: Long): Cookie = cookieRepository.findCookieById(cookieId)!!
 
-    fun getCookies(pageable: Pageable): List<Cookie> =
-        cookieRepository.findByStatusIsNot(pageable = pageable)
+    fun getActiveCookies(pageable: Pageable): List<Cookie> =
+        cookieRepository.findByStatusIs(pageable = pageable)
 
-    fun countCookies(): Long = cookieRepository.countByStatusIsNot()
+    fun countActiveCookies(): Long = cookieRepository.countByStatusIs()
 
-    fun getCookiesByCategoryId(categoryId: Long, pageable: Pageable): List<Cookie> =
-        cookieRepository.findByStatusIsNotAndCategoryId(
+    fun getActiveCookiesByCategoryId(categoryId: Long, pageable: Pageable): List<Cookie> =
+        cookieRepository.findByStatusIsAndCategoryId(
             categoryId = categoryId,
             pageable = pageable
         )
 
-    fun countCookiesByCategoryId(categoryId: Long): Long =
-        cookieRepository.countByStatusIsNotAndCategoryId(categoryId = categoryId)
+    fun countActiveCookiesByCategoryId(categoryId: Long): Long =
+        cookieRepository.countByStatusIsAndCategoryId(categoryId = categoryId)
 
     fun getAllOwnedCookies(ownedUserId: Long, pageable: Pageable): List<Cookie> =
         cookieRepository.findByStatusIsNotAndOwnedUserId(ownedUserId = ownedUserId, pageable = pageable)
