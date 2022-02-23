@@ -258,7 +258,7 @@ fun CookieHistory.toCookieHistoryView(): CookieHistoryView =
         )
         Action.BUY -> CookieHistoryView(
             action = this.action,
-            content = "${this.creatorName}님이 '${this.title.abbreviate()}'를 망치 ${this.hammerPrice}톤으로 깠습니다.",
+            content = "${this.creatorName}님이 '${this.title.abbreviate()}'를 망치 ${this.hammerPrice}톤으로 열었어요.",
             createdAt = this.createdAt
         )
     }
