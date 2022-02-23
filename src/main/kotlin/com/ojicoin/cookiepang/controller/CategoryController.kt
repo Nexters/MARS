@@ -1,6 +1,5 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.dto.CreateUserCategory
 import com.ojicoin.cookiepang.dto.ProblemResponse
 import com.ojicoin.cookiepang.service.CategoryService
