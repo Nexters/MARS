@@ -65,6 +65,7 @@ class ViewAssemblerTest(
 
         then(actual.question).isEqualTo(cookie.title)
         then(actual.answer).isEqualTo(cookie.open(ownedUserId))
+        then(actual.cookieStatus).isEqualTo(cookie.status)
         then(actual.collectorName).isEqualTo(collector.nickname)
         then(actual.creatorName).isEqualTo(creator.nickname)
         then(actual.contractAddress).isEqualTo(contractAddress)

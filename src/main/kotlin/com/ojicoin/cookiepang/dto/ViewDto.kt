@@ -9,6 +9,7 @@ data class CookieDetailView(
     val cookieId: Long,
     val question: String,
     val answer: String?,
+    val cookieStatus: CookieStatus,
     val collectorId: Long,
     val collectorName: String,
     val collectorProfileUrl: String?,
