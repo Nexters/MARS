@@ -140,6 +140,7 @@ class ViewAssembler(
                 cookieId = it.id!!,
                 nftTokenId = it.nftTokenId,
                 cookieImageUrl = it.imageUrl,
+                ownedUserId = it.ownedUserId,
                 category = category.toCategoryView(),
                 cookieStatus = it.status
             )
@@ -173,6 +174,7 @@ class ViewAssembler(
                 cookieId = it.id!!,
                 nftTokenId = it.nftTokenId,
                 cookieImageUrl = it.imageUrl,
+                ownedUserId = it.ownedUserId,
                 category = category.toCategoryView(),
                 cookieStatus = it.status
             )
