@@ -48,6 +48,7 @@ class ViewAssembler(
         val category = categoryService.getById(cookie.categoryId)
 
         return CookieDetailView(
+            cookieId = cookieId,
             question = cookie.title,
             answer = answer,
             collectorId = owner.id!!,
@@ -138,7 +139,8 @@ class ViewAssembler(
                 cookieId = it.id!!,
                 nftTokenId = it.nftTokenId,
                 cookieImageUrl = it.imageUrl,
-                category = category.toCategoryView()
+                category = category.toCategoryView(),
+                cookieStatus = it.status
             )
         }
 
@@ -170,7 +172,8 @@ class ViewAssembler(
                 cookieId = it.id!!,
                 nftTokenId = it.nftTokenId,
                 cookieImageUrl = it.imageUrl,
-                category = category.toCategoryView()
+                category = category.toCategoryView(),
+                cookieStatus = it.status
             )
         }
 
