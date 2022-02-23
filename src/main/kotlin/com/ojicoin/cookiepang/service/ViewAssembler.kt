@@ -51,6 +51,7 @@ class ViewAssembler(
             cookieId = cookieId,
             question = cookie.title,
             answer = answer,
+            cookieStatus = cookie.status,
             collectorId = owner.id!!,
             collectorName = owner.nickname,
             collectorProfileUrl = owner.profileUrl,
