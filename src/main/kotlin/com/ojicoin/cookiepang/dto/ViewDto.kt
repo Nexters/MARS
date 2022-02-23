@@ -1,6 +1,7 @@
 package com.ojicoin.cookiepang.dto
 
 import com.ojicoin.cookiepang.domain.Action
+import com.ojicoin.cookiepang.domain.CookieStatus
 import java.math.BigInteger
 import java.time.Instant
 
@@ -80,6 +81,7 @@ data class LoginResponse(val userId: Long)
 
 data class UserCookieView(
     val cookieId: Long,
+    val cookieStatus: CookieStatus,
     val nftTokenId: BigInteger,
     val cookieImageUrl: String?,
     val category: CategoryView,
