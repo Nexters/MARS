@@ -7,6 +7,7 @@ import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
+import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.Notification
 import com.ojicoin.cookiepang.domain.User
@@ -18,23 +19,23 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
-    fun findByStatusIsNotAndCategoryId(
-        status: CookieStatus = DELETED,
+    fun findByStatusIsAndCategoryId(
+        status: CookieStatus = ACTIVE,
         categoryId: Long,
         pageable: Pageable,
     ): List<Cookie>
 
-    fun countByStatusIsNotAndCategoryId(
-        status: CookieStatus = DELETED,
+    fun countByStatusIsAndCategoryId(
+        status: CookieStatus = ACTIVE,
         categoryId: Long,
     ): Long
 
     @Query("""SELECT * FROM "cookies" c WHERE c."status" != 'DELETED' AND c."cookie_id" = :cookieId""")
     fun findActiveCookieById(cookieId: Long): Cookie?
 
-    fun findByStatusIsNot(status: CookieStatus = DELETED, pageable: Pageable): List<Cookie>
+    fun findByStatusIs(status: CookieStatus = ACTIVE, pageable: Pageable): List<Cookie>
 
-    fun countByStatusIsNot(status: CookieStatus = DELETED): Long
+    fun countByStatusIs(status: CookieStatus = ACTIVE): Long
 
     fun findByStatusIsNotAndOwnedUserId(
         status: CookieStatus = DELETED,
