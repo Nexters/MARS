@@ -7,7 +7,7 @@ class NotificationMessageUtils {
     fun getAskMessage(cookieTitle: String): String {
         // TODO consider supporting other language
 
-        return "익명의 누군가가 ${cookieTitle}라는 질문을 요청했습니다. 쿠키로 만들러 가볼까요?"
+        return "익명의 누군가가 ${cookieTitle}라는 질문을 요청했습니다."
     }
 
     fun getTransactionMessage(nickname: String, cookieTitle: String, hammerCount: Double): String {
