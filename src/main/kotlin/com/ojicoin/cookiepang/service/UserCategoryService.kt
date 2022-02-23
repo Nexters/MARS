@@ -4,12 +4,14 @@ import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.dto.CreateUserCategory
 import com.ojicoin.cookiepang.repository.UserCategoryRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserCategoryService(
     private val userCategoryRepository: UserCategoryRepository,
 ) {
 
+    @Transactional
     fun create(userId: Long, createUserCategory: CreateUserCategory) {
         val userCategoryList = userCategoryRepository.findAllByUserId(userId)
         if (userCategoryList.isNotEmpty()) {
