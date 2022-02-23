@@ -72,5 +72,7 @@ class CookieController(private val cookieService: CookieService) {
             )
         ]
     )
-    fun deleteCookie(@PathVariable("cookieId") cookieId: Long) = cookieService.delete(cookieId)
+    fun deleteCookie(@PathVariable("cookieId") cookieId: Long) {
+        cookieService.delete(cookieId)
+    }
 }
