@@ -1,6 +1,5 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.domain.UserCategory
 import com.ojicoin.cookiepang.dto.CreateUserCategory
 import com.ojicoin.cookiepang.dto.ProblemResponse
 import com.ojicoin.cookiepang.service.CategoryService
@@ -23,9 +22,7 @@ class CategoryController(
     private val categoryService: CategoryService,
 ) {
     @GetMapping("/users/{userId}/categories")
-    fun getUserCategories(@PathVariable userId: String): List<UserCategory> {
-        return userCategoryService.getAllByUserId(userId = userId.toLong())
-    }
+    fun getUserCategories(@PathVariable userId: String) = userCategoryService.getAllByUserId(userId = userId.toLong())
 
     @PostMapping("/users/{userId}/categories")
     @ResponseStatus(HttpStatus.CREATED)
