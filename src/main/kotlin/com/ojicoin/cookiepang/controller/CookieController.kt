@@ -44,7 +44,7 @@ class CookieController(private val cookieService: CookieService) {
             )
         ]
     )
-    fun createCookie(@RequestBody createCookie: CreateCookie): Cookie = cookieService.create(createCookie)
+    fun createCookie(@RequestBody createCookie: CreateCookie): Long = cookieService.create(createCookie).id!!
 
     @PutMapping("/cookies/{cookieId}")
     @ApiResponses(
@@ -57,7 +57,7 @@ class CookieController(private val cookieService: CookieService) {
             )
         ]
     )
-    fun updateCookie(@PathVariable cookieId: Long, updateCookie: UpdateCookie) =
+    fun updateCookie(@PathVariable cookieId: Long, updateCookie: UpdateCookie): Cookie =
         cookieService.modify(cookieId = cookieId, updateCookie = updateCookie)
 
     @DeleteMapping("/cookies/{cookieId}")
@@ -72,5 +72,7 @@ class CookieController(private val cookieService: CookieService) {
             )
         ]
     )
-    fun deleteCookie(@PathVariable("cookieId") cookieId: Long) = cookieService.delete(cookieId)
+    fun deleteCookie(@PathVariable("cookieId") cookieId: Long) {
+        cookieService.delete(cookieId)
+    }
 }
