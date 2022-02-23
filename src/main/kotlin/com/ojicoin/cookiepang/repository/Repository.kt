@@ -30,7 +30,7 @@ interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     ): Long
 
     @Query("""SELECT * FROM "cookies" c WHERE c."status" != 'DELETED' AND c."cookie_id" = :cookieId""")
-    fun findActiveCookieById(cookieId: Long): Cookie?
+    fun findCookieById(cookieId: Long): Cookie?
 
     fun findByStatusIsNot(status: CookieStatus = DELETED, pageable: Pageable): List<Cookie>
 

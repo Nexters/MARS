@@ -31,6 +31,11 @@ class ViewController(private val viewAssembler: ViewAssembler) {
                 description = "디비에 존재하지 않음",
                 responseCode = "400",
                 content = [Content(schema = Schema(implementation = ProblemResponse::class))]
+            ),
+            ApiResponse(
+                description = "권한이 없는 유저가 숨겨진 쿠키를 조회",
+                responseCode = "403",
+                content = [Content(schema = Schema(implementation = ProblemResponse::class))]
             )
         ]
     )

@@ -10,12 +10,14 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.User
+import com.ojicoin.cookiepang.exception.ForbiddenRequestException
 import com.ojicoin.cookiepang.repository.AskRepository
 import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
+import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
@@ -110,6 +112,41 @@ class ViewAssemblerTest(
 
         then(actual.answer).isNull()
         then(actual.viewCount).isEqualTo(1L)
+    }
+
+    @Test
+    fun cookieViewHiddenNotOwnerThrows() {
+        val category = fixture.giveMeBuilder<Category>()
+            .setNull("id")
+            .sample()
+        val categoryId = categoryRepository.save(category).id!!
+        val creator = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .set("wallet_address", "a")
+            .sample()
+        val collector = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .set("wallet_address", "b")
+            .sample()
+        val viewer = fixture.giveMeBuilder<User>()
+            .setNull("id")
+            .sample()
+        val authorUserId = userRepository.save(creator).id!!
+        val ownedUserId = userRepository.save(collector).id!!
+        val viewerId = userRepository.save(viewer).id!!
+        val cookie = fixture.giveMeBuilder<Cookie>()
+            .setNull("id")
+            .set("authorUserId", authorUserId)
+            .set("ownedUserId", ownedUserId)
+            .set("status", CookieStatus.HIDDEN)
+            .set("categoryId", categoryId)
+            .set("nftTokenId", BigInteger.valueOf(-1))
+            .sample()
+        val cookieId = cookieRepository.save(cookie).id!!
+
+        // when
+        thenThrownBy { sut.cookieView(viewerId = viewerId, cookieId = cookieId) }
+            .isExactlyInstanceOf(ForbiddenRequestException::class.java)
     }
 
     @Test
