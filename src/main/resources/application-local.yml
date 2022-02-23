@@ -4,7 +4,8 @@ storage:
 cloud:
   aws:
     s3:
-      bucket: test
+      cdnUrl: "dev.cdn.cookiepang.site"
+      bucket: cookiepang-dev
       directory: pictures
 
 contract:
