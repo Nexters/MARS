@@ -89,7 +89,7 @@ class ViewAssembler(
         val totalPageSize = getTotalPageSize(allCookieSize, size)
         val cookieViews = cookies.map { cookie ->
             val creator = userService.getById(cookie.authorUserId)
-            val myCookie = viewer.id == creator.id
+            val myCookie = viewer.id == cookie.ownedUserId
             val answer = cookie.open(viewerId)
             val viewCount = viewCountService.getAllViewCountsByCookieId(cookie.id!!)
             val category = categoryService.getById(cookie.categoryId)
