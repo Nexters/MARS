@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.contract.controller
 
 import com.ojicoin.cookiepang.contract.dto.Amount
 import com.ojicoin.cookiepang.contract.dto.Answer
+import com.ojicoin.cookiepang.contract.dto.Balance
 import com.ojicoin.cookiepang.contract.dto.ContractAddress
 import com.ojicoin.cookiepang.contract.dto.Price
 import com.ojicoin.cookiepang.contract.dto.TokenAddress
@@ -75,12 +76,12 @@ class ContractCookieController(
         )
     }
 
-    @GetMapping("/users/{userId}/count")
-    fun getUserCookieCount(@PathVariable userId: Long): Amount {
+    @GetMapping("/users/{userId}/balance")
+    fun getUserCookieCount(@PathVariable userId: Long): Balance {
         val user = userService.getById(userId)
 
-        return Amount(
-            amount = cookieContractService.balanceOf(user.walletAddress)
+        return Balance(
+            balance = cookieContractService.balanceOf(user.walletAddress)
         )
     }
 

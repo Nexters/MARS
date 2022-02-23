@@ -1,7 +1,7 @@
 package com.ojicoin.cookiepang.contract.controller
 
-import com.ojicoin.cookiepang.contract.dto.Amount
 import com.ojicoin.cookiepang.contract.dto.Answer
+import com.ojicoin.cookiepang.contract.dto.Balance
 import com.ojicoin.cookiepang.contract.dto.ContractAddress
 import com.ojicoin.cookiepang.contract.service.HammerContractService
 import com.ojicoin.cookiepang.service.UserService
@@ -31,12 +31,12 @@ class ContractHammerController(
         )
     }
 
-    @GetMapping("/users/{userId}/count")
-    fun getUserHammerCount(@PathVariable userId: Long): Amount {
+    @GetMapping("/users/{userId}/balance")
+    fun getUserHammerCount(@PathVariable userId: Long): Balance {
         val user = userService.getById(userId)
 
-        return Amount(
-            amount = hammerContractService.balanceOf(user.walletAddress)
+        return Balance(
+            balance = hammerContractService.balanceOf(user.walletAddress)
         )
     }
 }
