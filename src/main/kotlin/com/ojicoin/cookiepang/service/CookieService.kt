@@ -171,7 +171,7 @@ class CookieService(
     }
 
     @Transactional
-    fun delete(cookieId: Long): Cookie {
+    fun delete(cookieId: Long) {
         val toDeleteCookie = cookieRepository.findById(cookieId).orElseThrow()
         if (toDeleteCookie.status == DELETED) {
             throw InvalidDomainStatusException(
@@ -184,7 +184,6 @@ class CookieService(
 
         toDeleteCookie.status = DELETED
         cookieRepository.save(toDeleteCookie)
-        return toDeleteCookie
     }
 }
 
