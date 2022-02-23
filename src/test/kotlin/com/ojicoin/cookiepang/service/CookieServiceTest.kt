@@ -17,6 +17,7 @@ import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
+import com.ojicoin.cookiepang.repository.NotificationRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
@@ -33,6 +34,7 @@ class CookieServiceTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val cookieHistoryRepository: CookieHistoryRepository,
     @Autowired val userRepository: UserRepository,
+    @Autowired val notificationRepository: NotificationRepository,
     @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferEventLog>,
 ) : SpringContextFixture() {
 
@@ -56,8 +58,18 @@ class CookieServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun update() {
+        val sendUser = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+        val savedSendUser = userRepository.save(sendUser)
+        val receiveUser = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .sample()
+        val savedReceiveUser = userRepository.save(receiveUser)
+
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("ownedUserId", savedSendUser.id)
             .sample()
         val saved = cookieRepository.save(cookie)
         val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
@@ -66,6 +78,7 @@ class CookieServiceTest(
                 Arbitraries.of(CookieStatus::class.java)
                     .filter { it != CookieStatus.DELETED }.injectNull(0.1)
             )
+            .set("purchaserUserId", savedReceiveUser.id)
             .sample()
 
         val updated = sut.modify(cookieId = saved.id!!, updateCookie = updateCookie)
@@ -195,5 +208,6 @@ class CookieServiceTest(
         userRepository.deleteAll()
         cookieRepository.deleteAll()
         cookieHistoryRepository.deleteAll()
+        notificationRepository.deleteAll()
     }
 }
