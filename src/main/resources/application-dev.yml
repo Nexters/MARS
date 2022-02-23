@@ -9,7 +9,8 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: cookiepang
+      cdnUrl: "dev.cdn.cookiepang.site"
+      bucket: cookiepang-dev
       directory: pictures
 
 contract:
