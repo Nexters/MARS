@@ -34,4 +34,4 @@ class DuplicateDomainException(domainType: String, message: String) : InvalidReq
     }
 }
 
-class LoginFailedException(message: String) : ParameterizedException(message)
+class ForbiddenRequestException(message: String) : ParameterizedException(message)

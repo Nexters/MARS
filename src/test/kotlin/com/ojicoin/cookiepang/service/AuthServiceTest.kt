@@ -6,7 +6,7 @@ import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.LoginRequest
-import com.ojicoin.cookiepang.exception.LoginFailedException
+import com.ojicoin.cookiepang.exception.ForbiddenRequestException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -39,7 +39,7 @@ class AuthServiceTest(
         val loginRequest = fixture.giveMeOne<LoginRequest>()
 
         thenThrownBy { sut.login(loginRequest) }
-            .isExactlyInstanceOf(LoginFailedException::class.java)
+            .isExactlyInstanceOf(ForbiddenRequestException::class.java)
     }
 
     @AfterEach

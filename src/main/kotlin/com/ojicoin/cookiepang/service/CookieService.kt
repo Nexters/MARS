@@ -40,7 +40,7 @@ class CookieService(
     private val DEFAULT_COOKIE_CATEGORY_NAME = "자유"
     private val DEFAULT_COOKIE_PRICE = BigInteger.ZERO
 
-    fun get(cookieId: Long): Cookie = cookieRepository.findActiveCookieById(cookieId)!!
+    fun get(cookieId: Long): Cookie = cookieRepository.findCookieById(cookieId)!!
 
     fun getCookies(pageable: Pageable): List<Cookie> =
         cookieRepository.findByStatusIsNot(pageable = pageable)
@@ -134,7 +134,7 @@ class CookieService(
 
     @Transactional
     fun findCookieHistories(cookieId: Long): List<CookieHistory> {
-        val cookie = cookieRepository.findActiveCookieById(cookieId)!!
+        val cookie = cookieRepository.findCookieById(cookieId)!!
         val cookieHistories = cookieHistoryRepository.findByCookieId(cookieId)
         if (cookieHistories.isNotEmpty() && cookie.fromBlockAddress == cookieHistories.maxOf { it.blockNumber }) {
             return cookieHistories

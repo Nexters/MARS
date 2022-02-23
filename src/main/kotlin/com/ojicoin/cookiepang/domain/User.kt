@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.domain
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.event.ViewCookieEvent
+import com.ojicoin.cookiepang.exception.ForbiddenRequestException
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -21,7 +22,10 @@ class User(
 ) {
     fun view(cookie: Cookie) {
         if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {
-            throw IllegalArgumentException("cookie $cookie.id is hidden, only owner could view")
+            throw ForbiddenRequestException("Given cookie is hidden.")
+                .with("cookieId", cookie.id!!)
+                .with("cookieStatus", cookie.status)
+                .with("viewerId", id!!)
         }
 
         if (cookie.ownedUserId != this.id) {

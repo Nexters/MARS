@@ -47,8 +47,8 @@ class ExceptionHandler : ProblemHandling {
         return create(exception, problem, request)
     }
 
-    @ExceptionHandler(LoginFailedException::class)
-    fun loginFailedException(exception: LoginFailedException, request: NativeWebRequest): ResponseEntity<Problem> {
+    @ExceptionHandler(ForbiddenRequestException::class)
+    fun forbiddenRequestException(exception: ForbiddenRequestException, request: NativeWebRequest): ResponseEntity<Problem> {
         val problemBuilder: ProblemBuilder = Problem.builder()
             .withTitle(Status.FORBIDDEN.reasonPhrase)
             .withStatus(Status.FORBIDDEN)
