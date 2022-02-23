@@ -85,6 +85,7 @@ data class UserCookieView(
     val cookieId: Long,
     val nftTokenId: BigInteger,
     val cookieImageUrl: String?,
+    val ownedUserId: Long,
     val category: CategoryView,
     val cookieStatus: CookieStatus
 )
