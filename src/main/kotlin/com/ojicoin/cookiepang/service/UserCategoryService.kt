@@ -23,8 +23,4 @@ class UserCategoryService(
             categoryIdList.map { categoryId -> UserCategory(userId = userId, categoryId = categoryId) }
         userCategoryRepository.saveAll(newUserCategoryList)
     }
-
-    fun getAllByUserId(userId: Long): List<UserCategory> {
-        return userCategoryRepository.findAllByUserId(userId = userId)
-    }
 }
