@@ -3,8 +3,6 @@ package com.ojicoin.cookiepang.service
 import com.ojicoin.cookiepang.repository.StorageRepository
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.UUID
 
 @Service
@@ -23,9 +21,4 @@ class StorageService(
 
     // ref: https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/jvm/src/kotlin/io/files/Utils.kt#L88-L92
     private fun getFileExtension(fileName: String) = fileName.substringAfterLast('.', "")
-
-    // This method is temporary for getting picture in local env
-    fun getProfilePicture(userId: Long, pictureName: String): ByteArray {
-        return Files.readAllBytes(Paths.get("$userDirectory/$userId/$pictureName"))
-    }
 }
