@@ -19,10 +19,10 @@ class CategoryServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun getAllByUserId() {
+        // given
         val category = fixture.giveMeBuilder<Category>()
             .setNull("id")
             .sample()
-
         val savedCategory = categoryRepository.save(category)
 
         val userCategory = fixture.giveMeBuilder<UserCategory>()
@@ -30,11 +30,12 @@ class CategoryServiceTest(
             .setNotNull("userId")
             .set("categoryId", savedCategory.id)
             .sample()
-
         val createdUserCategory = userCategoryRepository.save(userCategory)
 
+        // when
         val userCategories = sut.getAllCategoriesByUserIdInUserCategory(createdUserCategory.userId)
 
+        // then
         then(userCategories.size).isEqualTo(1)
     }
 }

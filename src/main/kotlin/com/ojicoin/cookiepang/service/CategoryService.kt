@@ -19,8 +19,6 @@ class CategoryService(
     fun getAllCategoriesByUserIdInUserCategory(userId: Long): List<Category> {
         val findAllByUserId = userCategoryRepository.findAllByUserId(userId = userId)
 
-        return findAllByUserId.map { it ->
-            categoryRepository.findById(it.categoryId).get()
-        }.toList()
+        return findAllByUserId.map { categoryRepository.findById(it.categoryId).orElseThrow() }.toList()
     }
 }
