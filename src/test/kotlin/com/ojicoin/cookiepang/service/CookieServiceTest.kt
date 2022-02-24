@@ -110,6 +110,7 @@ class CookieServiceTest(
     fun updateCookieToDeletedThrows() {
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
             .sample()
         val saved = cookieRepository.save(cookie)
         val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
