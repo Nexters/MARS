@@ -4,6 +4,16 @@ spring:
 
 server:
   port: 8080
+  tomcat:
+    accesslog:
+      enabled: true                         # access log 저장 여부 (default: false)
+      directory: logs                       # access log를 저장할 상세 directory (base directory에 기반한) (default: logs)
+      pattern: '%h %l %u %t "%r" %s %b %D'  # access log 출력 패턴
+      prefix: access                        # access log 파일이름 prefix
+      suffix: .log                          # access log 파일이름 suffix (확장자 포함)
+      rotate: true                          # access log rotation 여부
+      rename-on-rotate: true                # rotation 시, 새로운 이름 지정 여부 (rotate 될 때의 날짜명이 로그 파일이름에 찍힘)
+    basedir: .
 
 springdoc:
   packages-to-scan: com.ojicoin.cookiepang.controller, com.ojicoin.cookiepang.contract.controller
@@ -18,3 +28,8 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+
+logging:
+  file:
+    name: logs/application.log
