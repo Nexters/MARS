@@ -6,6 +6,7 @@ import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.FinishOnboardView
 import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.dto.UpdateUserRequest
 import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -16,7 +17,8 @@ import java.util.concurrent.ThreadLocalRandom
 @Service
 class UserService(
     val userRepository: UserRepository,
-    val hammerContractService: HammerContractService
+    val hammerContractService: HammerContractService,
+    private val storageService: StorageService,
 ) {
     private val HAMMER_DEFAULT_DIGIT: BigInteger = BigInteger.valueOf(1000000000000000000)
     private val HAMMER_SEND_AMOUNT: BigInteger = BigInteger.valueOf(10)
@@ -56,11 +58,28 @@ class UserService(
 
     fun getByWalletAddress(walletAddress: String): User = userRepository.findByWalletAddress(walletAddress)!!
 
-    fun modify(userId: Long, profilePictureUrl: String?, backgroundPictureUrl: String?, dto: UpdateUser): User {
+    fun modify(userId: Long, updateUserRequest: UpdateUserRequest): User {
         val user = userRepository.findById(userId).orElseThrow()
 
-        user.apply(profileUrl = profilePictureUrl, backgroundUrl = backgroundPictureUrl, dto = dto)
+        val updateProfilePictureUrl: String? = if (updateUserRequest.profilePicture != null) {
+            storageService.saveUserPicture(userId = userId, multipartFile = updateUserRequest.profilePicture)
+        } else {
+            null
+        }
 
+        val updateBackgroundPictureUrl: String? = if (updateUserRequest.backgroundPicture != null) {
+            storageService.saveUserPicture(userId = userId, multipartFile = updateUserRequest.backgroundPicture)
+        } else {
+            null
+        }
+
+        user.apply(
+            updateUser = UpdateUser(
+                introduction = updateUserRequest.introduction,
+                profilePictureUrl = updateProfilePictureUrl,
+                backgroundPictureUrl = updateBackgroundPictureUrl
+            )
+        )
         return userRepository.save(user)
     }
 

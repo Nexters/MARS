@@ -3,6 +3,7 @@ package com.ojicoin.cookiepang.dto
 import com.ojicoin.cookiepang.domain.AskStatus
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieStatus
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Size
 
 data class CreateCookie(
@@ -54,8 +55,16 @@ data class CreateUser(
     val backgroundUrl: String?,
 )
 
+data class UpdateUserRequest(
+    val introduction: String?,
+    val profilePicture: MultipartFile?,
+    val backgroundPicture: MultipartFile?,
+)
+
 data class UpdateUser(
     val introduction: String?,
+    val profilePictureUrl: String?,
+    val backgroundPictureUrl: String?
 )
 
 data class GetCookiesResponse(

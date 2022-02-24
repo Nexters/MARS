@@ -1,11 +1,14 @@
 package com.ojicoin.cookiepang
 
+import com.navercorp.fixturemonkey.ArbitraryBuilder
 import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.customizer.ArbitraryCustomizer
 import com.navercorp.fixturemonkey.generator.FieldArbitraries
 import com.navercorp.fixturemonkey.kotlin.KFixtureMonkeyBuilder
+import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
 import com.ojicoin.cookiepang.contract.service.CookieContractService
 import com.ojicoin.cookiepang.contract.service.HammerContractService
+import com.ojicoin.cookiepang.dto.UpdateUserRequest
 import com.ojicoin.cookiepang.event.ViewCookieEvent
 import com.ojicoin.cookiepang.repository.ViewCountRepository
 import io.restassured.RestAssured
@@ -23,7 +26,16 @@ const val REPEAT_COUNT = 5
 
 val fixture: FixtureMonkey = KFixtureMonkeyBuilder()
     .addCustomizer(ViewCookieEvent::class.java, ApplicationEventCustomizer())
+    .registerGroup(FixtureBuilderGroup::class.java)
     .build()
+
+@Suppress("unused")
+class FixtureBuilderGroup {
+    fun updateUserRequest(fixture: FixtureMonkey): ArbitraryBuilder<UpdateUserRequest> =
+        fixture.giveMeBuilder<UpdateUserRequest>()
+            .setNull("profilePicture")
+            .setNull("backgroundPicture")
+}
 
 @SpringBootTest(classes = [CookiepangApplication::class], webEnvironment = RANDOM_PORT)
 abstract class SpringContextFixture {
