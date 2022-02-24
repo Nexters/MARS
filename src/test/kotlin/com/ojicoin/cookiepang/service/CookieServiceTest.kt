@@ -9,6 +9,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
+import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
@@ -69,6 +70,7 @@ class CookieServiceTest(
 
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
             .set("ownedUserId", savedSendUser.id)
             .sample()
         val saved = cookieRepository.save(cookie)
@@ -76,7 +78,7 @@ class CookieServiceTest(
             .set(
                 "status",
                 Arbitraries.of(CookieStatus::class.java)
-                    .filter { it != CookieStatus.DELETED }.injectNull(0.1)
+                    .filter { it != DELETED }.injectNull(0.1)
             )
             .set("purchaserUserId", savedReceiveUser.id)
             .sample()
@@ -89,13 +91,29 @@ class CookieServiceTest(
     }
 
     @RepeatedTest(REPEAT_COUNT)
-    fun updateDeletedThrows() {
+    fun updateDeletedCookieThrows() {
+        val cookie = fixture.giveMeBuilder(Cookie::class.java)
+            .setNull("id")
+            .set("status", DELETED)
+            .sample()
+        val saved = cookieRepository.save(cookie)
+        val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
+            .sample()
+
+        // when, then
+        thenThrownBy { sut.modify(cookieId = saved.id!!, updateCookie = updateCookie) }
+            .isExactlyInstanceOf(NoSuchElementException::class.java)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun updateCookieToDeletedThrows() {
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
             .sample()
         val saved = cookieRepository.save(cookie)
         val updateCookie = fixture.giveMeBuilder(UpdateCookie::class.java)
-            .set("status", CookieStatus.DELETED)
+            .set("status", DELETED)
             .sample()
 
         // when, then
