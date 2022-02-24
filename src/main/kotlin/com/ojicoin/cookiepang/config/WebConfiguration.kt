@@ -1,5 +1,6 @@
 package com.ojicoin.cookiepang.config
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,10 +48,25 @@ class LoggingFilter : Filter {
 
         val time = measureTimeMillis { chain.doFilter(cachedRequest, cachedResponse) }
 
+        val requestBody = cachedRequest.contentAsByteArray
+        val responseBody = cachedResponse.contentAsByteArray
+
+        val requestBodyJson = try {
+            objectMapper.readTree(requestBody).toString()
+        } catch (e: JsonParseException) {
+            requestBody.toString()
+        }
+
+        val responseBodyJson = try {
+            objectMapper.readTree(responseBody).toString()
+        } catch (e: JsonParseException) {
+            responseBody.toString()
+        }
+
         val loggingMessage = """ [REQUEST] ${request.method} ${request.requestURI} ${cachedResponse.status} - ${time}ms
                 Headers : ${getHeaders(request)}
-                RequestBody : ${objectMapper.readTree(cachedRequest.contentAsByteArray)}
-                ResponseBody : ${objectMapper.readTree(cachedResponse.contentAsByteArray)}
+                RequestBody : $requestBodyJson
+                ResponseBody : $responseBodyJson
         """.trimIndent()
 
         if (cachedResponse.status >= 400) {
