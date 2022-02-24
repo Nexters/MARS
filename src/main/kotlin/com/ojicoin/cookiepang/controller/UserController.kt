@@ -13,12 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -73,23 +72,19 @@ class UserController(
     @PutMapping("/users/{userId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateUser(
         @PathVariable userId: Long,
-        @RequestParam("introduction", required = false) introduction: String?,
-        @RequestPart("profilePicture", required = false) profilePicture: MultipartFile?,
-        @RequestPart("backgroundPicture", required = false) backgroundPicture: MultipartFile?,
+        @ModelAttribute updateUser: UpdateUser
     ): User {
-        val profilePictureUrl = uploadPictureAndGetPictureUrlIfExistPicture(profilePicture, userId)
+        val profilePictureUrl = uploadPictureAndGetPictureUrlIfExistPicture(updateUser.profilePicture, userId)
 
         // upload background picture
         val backgroundPictureUrl =
-            uploadPictureAndGetPictureUrlIfExistPicture(backgroundPicture, userId)
-
-        val dto = UpdateUser(introduction = introduction)
+            uploadPictureAndGetPictureUrlIfExistPicture(updateUser.backgroundPicture, userId)
 
         return userService.modify(
             userId = userId,
             profilePictureUrl = profilePictureUrl,
             backgroundPictureUrl = backgroundPictureUrl,
-            dto = dto
+            dto = updateUser
         )
     }
 
