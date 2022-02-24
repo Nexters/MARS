@@ -70,6 +70,7 @@ class CookieServiceTest(
 
         val cookie = fixture.giveMeBuilder(Cookie::class.java)
             .setNull("id")
+            .set("status", Arbitraries.of(CookieStatus::class.java).filter { it != DELETED })
             .set("ownedUserId", savedSendUser.id)
             .sample()
         val saved = cookieRepository.save(cookie)
