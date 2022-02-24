@@ -8,6 +8,8 @@ import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
+import com.ojicoin.cookiepang.service.UserService.Companion.DEFAULT_USER_BACKGROUND_URL
+import com.ojicoin.cookiepang.service.UserService.Companion.DEFAULT_USER_PROFILE_URL
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
@@ -21,8 +23,10 @@ class UserServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun create() {
-        val createUserDto =
-            fixture.giveMeBuilder(CreateUser::class.java).setNull("profileUrl").setNull("backgroundUrl").sample()
+        val createUserDto = fixture.giveMeBuilder(CreateUser::class.java)
+            .setNull("profileUrl")
+            .setNull("backgroundUrl")
+            .sample()
 
         val actual = sut.create(createUserDto)
 
@@ -30,7 +34,8 @@ class UserServiceTest(
         then(createUserDto.nickname).isEqualTo(actual.nickname)
         createUserDto.introduction?.also { then(it).isEqualTo(actual.introduction) }
 
-        // TODO test about default url
+        then(DEFAULT_USER_PROFILE_URL).contains(actual.profileUrl)
+        then(DEFAULT_USER_BACKGROUND_URL).contains(actual.backgroundUrl)
     }
 
     @RepeatedTest(REPEAT_COUNT)
