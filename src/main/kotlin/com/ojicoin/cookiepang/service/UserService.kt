@@ -11,6 +11,7 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
+import java.util.concurrent.ThreadLocalRandom
 
 @Service
 class UserService(
@@ -29,13 +30,14 @@ class UserService(
                     .with("nickname", dto.nickname)
             }
 
-        // TODO set default profile, background url
+        val randomNumber = ThreadLocalRandom.current().nextInt(0, 1)
+
         val user = User(
             walletAddress = dto.walletAddress.lowercase(),
             nickname = dto.nickname,
             introduction = dto.introduction,
-            profileUrl = dto.profileUrl,
-            backgroundUrl = dto.backgroundUrl,
+            profileUrl = dto.profileUrl ?: DEFAULT_USER_PROFILE_URL[randomNumber],
+            backgroundUrl = dto.backgroundUrl ?: DEFAULT_USER_BACKGROUND_URL[randomNumber],
             status = ACTIVE,
             finishOnboard = true
         )
@@ -60,5 +62,16 @@ class UserService(
         user.apply(profileUrl = profilePictureUrl, backgroundUrl = backgroundPictureUrl, dto = dto)
 
         return userRepository.save(user)
+    }
+
+    companion object {
+        val DEFAULT_USER_PROFILE_URL: List<String> = listOf(
+            "https://cdn.cookiepang.site/pictures/users/default/default-profile-1.png",
+            "https://cdn.cookiepang.site/pictures/users/default/default-profile-2.png"
+        )
+        val DEFAULT_USER_BACKGROUND_URL: List<String> = listOf(
+            "https://cdn.cookiepang.site/pictures/users/default/default-background-1.png",
+            "https://cdn.cookiepang.site/pictures/users/default/default-background-2.png"
+        )
     }
 }
