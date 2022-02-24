@@ -22,7 +22,8 @@ class CategoryController(
     private val categoryService: CategoryService,
 ) {
     @GetMapping("/users/{userId}/categories")
-    fun getUserCategories(@PathVariable userId: String) = userCategoryService.getAllByUserId(userId = userId.toLong())
+    fun getUserCategories(@PathVariable userId: String) =
+        categoryService.getAllCategoriesByUserIdInUserCategory(userId = userId.toLong())
 
     @PostMapping("/users/{userId}/categories")
     @ResponseStatus(HttpStatus.CREATED)

@@ -12,8 +12,8 @@ import org.junit.jupiter.api.RepeatedTest
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class UserCategoryServiceTest(
-    @Autowired val userCategoryRepository: UserCategoryRepository,
     @Autowired val sut: UserCategoryService,
+    @Autowired val userCategoryRepository: UserCategoryRepository,
 ) : SpringContextFixture() {
 
     @RepeatedTest(REPEAT_COUNT)
@@ -52,20 +52,6 @@ internal class UserCategoryServiceTest(
                 then(userCategory.categoryId).isNotEqualTo(foundUserCategory.categoryId)
             }
         }
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun getAllByUserId() {
-        val userCategory = fixture.giveMeBuilder<UserCategory>()
-            .setNull("id")
-            .setNotNull("userId")
-            .sample()
-
-        val createdUserCategory = userCategoryRepository.save(userCategory)
-
-        val userCategories = sut.getAllByUserId(createdUserCategory.userId)
-
-        then(userCategories.size).isEqualTo(1)
     }
 
     @AfterEach
