@@ -47,20 +47,17 @@ class LoggingFilter : Filter {
 
         val time = measureTimeMillis { chain.doFilter(cachedRequest, cachedResponse) }
 
-        log.info(
-            """ [REQUEST] {} {} {} - {}ms
-                Headers : {}
-                RequestBody : {}
-                ResponseBody : {}
-            """.trimIndent(),
-            request.method,
-            request.requestURI,
-            cachedResponse.status,
-            time,
-            getHeaders(request),
-            objectMapper.readTree(cachedRequest.contentAsByteArray),
-            objectMapper.readTree(cachedResponse.contentAsByteArray)
-        )
+        val loggingMessage = """ [REQUEST] ${request.method} ${request.requestURI} ${cachedResponse.status} - ${time}ms
+                Headers : ${getHeaders(request)}
+                RequestBody : ${objectMapper.readTree(cachedRequest.contentAsByteArray)}
+                ResponseBody : ${objectMapper.readTree(cachedResponse.contentAsByteArray)}
+        """.trimIndent()
+
+        if (cachedResponse.status >= 400) {
+            log.error(loggingMessage)
+        } else {
+            log.info(loggingMessage)
+        }
         cachedResponse.copyBodyToResponse()
     }
 
