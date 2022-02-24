@@ -27,6 +27,6 @@ class S3Repository(
         val putObjectRequest = PutObjectRequest(s3Properties.bucket, keyWithDirectory, inputStream, ObjectMetadata())
         amazonS3.putObject(putObjectRequest)
 
-        return StringBuilder(s3Properties.cdnUrl).append("/").append(keyWithDirectory).toString()
+        return StringBuilder("https://").append(s3Properties.cdnUrl).append("/").append(keyWithDirectory).toString()
     }
 }
