@@ -163,7 +163,8 @@ class CookieService(
 
     @Transactional
     fun modify(cookieId: Long, updateCookie: UpdateCookie): Cookie {
-        val cookie = cookieRepository.findById(cookieId).orElseThrow()
+        val cookie = cookieRepository.findCookieById(cookieId) ?: throw NoSuchElementException()
+
         if (updateCookie.status == DELETED) {
             throw InvalidRequestException("cannot update cookie status to DELETED, use delete instead")
                 .with("cookieId", cookie.id!!)
