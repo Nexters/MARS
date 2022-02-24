@@ -2,7 +2,7 @@ package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.repository.StorageRepository
 import org.springframework.stereotype.Service
-import java.io.InputStream
+import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.UUID
@@ -11,10 +11,11 @@ import java.util.UUID
 class StorageService(
     private val storageRepository: StorageRepository
 ) {
-
     private val userDirectory = "users"
 
-    fun saveProfilePicture(userId: Long, fileName: String, inputStream: InputStream): String {
+    fun saveUserPicture(userId: Long, multipartFile: MultipartFile): String {
+        val fileName = multipartFile.originalFilename!!
+        val inputStream = multipartFile.inputStream
         val keyWithUserDirectory = "$userDirectory/$userId/${UUID.randomUUID()}.${getFileExtension(fileName)}"
 
         return storageRepository.store(key = keyWithUserDirectory, inputStream = inputStream)

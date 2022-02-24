@@ -55,10 +55,16 @@ data class CreateUser(
     val backgroundUrl: String?,
 )
 
-data class UpdateUser(
+data class UpdateUserRequest(
     val introduction: String?,
     val profilePicture: MultipartFile?,
     val backgroundPicture: MultipartFile?,
+)
+
+data class UpdateUser(
+    val introduction: String?,
+    val profilePictureUrl: String?,
+    val backgroundPictureUrl: String?
 )
 
 data class GetCookiesResponse(

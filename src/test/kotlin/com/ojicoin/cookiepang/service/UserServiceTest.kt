@@ -5,7 +5,7 @@ import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus
 import com.ojicoin.cookiepang.dto.CreateUser
-import com.ojicoin.cookiepang.dto.UpdateUser
+import com.ojicoin.cookiepang.dto.UpdateUserRequest
 import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
 import com.ojicoin.cookiepang.service.UserService.Companion.DEFAULT_USER_BACKGROUND_URL
@@ -61,36 +61,35 @@ class UserServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun modify() {
+        // given
         val user = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
             .sample()
 
         val savedUser = userRepository.save(user)
+        val updateUserRequestDto =
+            fixture.giveMeBuilder(UpdateUserRequest::class.java).setNotNull("introduction").sample()
 
-        val profilePictureUrl = fixture.giveMeBuilder(String::class.java).setNotNull("$").sample()
-        val profileBackgroundUrl = fixture.giveMeBuilder(String::class.java).setNotNull("$").sample()
-        val updateUserDto = fixture.giveMeBuilder(UpdateUser::class.java).setNotNull("introduction").sample()
+        // when
+        val updatedUser = sut.modify(savedUser.id!!, updateUserRequestDto)
 
-        val updatedUser = sut.modify(savedUser.id!!, profilePictureUrl, profileBackgroundUrl, updateUserDto)
-
-        profilePictureUrl?.also { then(updatedUser.profileUrl).isEqualTo(it) }
-        profileBackgroundUrl?.also { then(updatedUser.backgroundUrl).isEqualTo(it) }
-        updateUserDto.introduction?.also { then(updatedUser.introduction).isEqualTo(it) }
+        // then
+        updateUserRequestDto.introduction?.also { then(updatedUser.introduction).isEqualTo(it) }
     }
 
     @RepeatedTest(REPEAT_COUNT)
     fun modifyAboutNullFields() {
+        // given
         val user = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
             .sample()
-
         val savedUser = userRepository.save(user)
+        val updateUserRequestDto = fixture.giveMeBuilder(UpdateUserRequest::class.java)
+            .setNull("introduction")
+            .sample()
 
-        val profilePictureUrl = fixture.giveMeBuilder(String::class.java).setNull("$").sample()
-        val profileBackgroundUrl = fixture.giveMeBuilder(String::class.java).setNull("$").sample()
-        val updateUserDto = fixture.giveMeBuilder(UpdateUser::class.java).setNull("introduction").sample()
-
-        val updatedUser = sut.modify(savedUser.id!!, profilePictureUrl, profileBackgroundUrl, updateUserDto)
+        // when
+        val updatedUser = sut.modify(savedUser.id!!, updateUserRequestDto)
 
         then(updatedUser.profileUrl).isEqualTo(savedUser.profileUrl)
         then(updatedUser.backgroundUrl).isEqualTo(savedUser.backgroundUrl)
@@ -101,7 +100,7 @@ class UserServiceTest(
     fun modifyThrowNotExistUser() {
         val userId = fixture.giveMeOne(Long::class.java)
 
-        thenThrownBy { sut.modify(userId, null, null, UpdateUser(null)) }
+        thenThrownBy { sut.modify(userId, UpdateUserRequest(null, null, null)) }
             .isExactlyInstanceOf(NoSuchElementException::class.java)
     }
 

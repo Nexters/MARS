@@ -33,10 +33,10 @@ class User(
         }
     }
 
-    fun apply(profileUrl: String?, backgroundUrl: String?, dto: UpdateUser) {
-        profileUrl?.also { this.profileUrl = it }
-        backgroundUrl?.also { this.backgroundUrl = it }
-        dto.introduction?.also { this.introduction = it }
+    fun apply(updateUser: UpdateUser) {
+        updateUser.profilePictureUrl?.also { this.profileUrl = it }
+        updateUser.backgroundPictureUrl?.also { this.backgroundUrl = it }
+        updateUser.introduction?.also { this.introduction = it }
     }
 }
 
