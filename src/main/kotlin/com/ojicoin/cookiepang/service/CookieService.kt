@@ -236,7 +236,7 @@ class CookieService(
     }
 
     private fun isAdminMintedCookie(address: String): Boolean {
-        return adminAddress == address
+        return adminAddress.lowercase() == address
     }
 
     private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
