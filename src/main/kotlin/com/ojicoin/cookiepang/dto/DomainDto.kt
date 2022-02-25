@@ -26,6 +26,7 @@ data class CreateDefaultCookies(
 )
 
 data class UpdateCookie(
+    val txHash: String,
     val price: Long?,
     val status: CookieStatus?,
     val purchaserUserId: Long?,

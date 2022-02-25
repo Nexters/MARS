@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(private val userRepository: UserRepository) {
     fun login(request: LoginRequest): LoginResponse =
-        userRepository.findByWalletAddress(walletAddress = request.walletAddress)?.id?.let { LoginResponse(it) }
+        userRepository.findByWalletAddress(walletAddress = request.walletAddress.lowercase())?.id?.let {
+            LoginResponse(
+                it
+            )
+        }
             ?: throw ForbiddenRequestException("Wallet Address not exists.")
                 .with("walletAddress", request.walletAddress)
 }

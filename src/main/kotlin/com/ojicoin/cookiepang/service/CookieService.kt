@@ -154,7 +154,7 @@ class CookieService(
             fromBlock = DefaultBlockParameter.valueOf(cookie.fromBlockAddress),
             nftTokenId = cookie.nftTokenId
         ).map {
-            var creator = findCreator(it, cookie)
+            val creator = findCreator(it, cookie)
             it.toCookieHistory(cookie, creator)
         }
         if (newCookieHistories.isNotEmpty()) {
@@ -197,10 +197,13 @@ class CookieService(
                 .with("cookieId", cookie.id!!)
         }
 
+        val transferInfo = transferInfoByTxHashCacheTemplate[updateCookie.txHash]
+            ?: cookieContractService.getTransferEventLogByTxHash(updateCookie.txHash)
+
         val previousOwnedUser = cookie.ownedUserId
         val newOwnedUser = updateCookie.purchaserUserId
 
-        cookie.apply(updateCookie)
+        cookie.apply(blockAddress = transferInfo.blockNumber, updateCookie = updateCookie)
         val savedCookie = cookieRepository.save(cookie)
 
         if (updateCookie.purchaserUserId != null) {
@@ -239,7 +242,7 @@ class CookieService(
         return adminAddress.lowercase() == address
     }
 
-    private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger? {
+    private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger {
         return BigInteger(cookieIdHex.substring(TRANSACTION_HEX_PREFIX_DIGIT_LENGTH), 16)
     }
 }

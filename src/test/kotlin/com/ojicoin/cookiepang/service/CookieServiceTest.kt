@@ -89,6 +89,8 @@ class CookieServiceTest(
             )
             .set("purchaserUserId", savedReceiveUser.id)
             .sample()
+        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
+        cacheTemplate[updateCookie.txHash] = transferInfo
 
         val updated = sut.modify(cookieId = saved.id!!, updateCookie = updateCookie)
 
