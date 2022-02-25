@@ -84,8 +84,8 @@ internal class AskServiceTest(
 
         val create = sut.create(
             title = ask.title,
-            senderUserId = ask.senderId,
-            receiverUserId = ask.receiverId,
+            senderId = ask.senderId,
+            receiverId = ask.receiverId,
             categoryId = ask.categoryId,
         )
 
@@ -109,12 +109,12 @@ internal class AskServiceTest(
         thenThrownBy {
             sut.create(
                 title = ask.title,
-                senderUserId = ask.senderId,
-                receiverUserId = ask.senderId,
+                senderId = ask.senderId,
+                receiverId = ask.senderId,
                 categoryId = ask.categoryId,
             )
         }.isExactlyInstanceOf(InvalidRequestException::class.java)
-            .hasMessageContaining("senderUserId is same as receiverUserId.")
+            .hasMessageContaining("senderId is same as receiverId.")
     }
 
     @RepeatedTest(REPEAT_COUNT)

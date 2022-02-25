@@ -33,11 +33,11 @@ class AskService(
         return askRepository.countByReceiverIdAndStatus(receiverId = receiverId, status = PENDING)
     }
 
-    fun create(title: String, senderUserId: Long, receiverUserId: Long, categoryId: Long): Ask {
-        if (senderUserId == receiverUserId) {
-            throw InvalidRequestException("senderUserId is same as receiverUserId.")
-                .with("senderUserId", senderUserId)
-                .with("receiverUserId", receiverUserId)
+    fun create(title: String, senderId: Long, receiverId: Long, categoryId: Long): Ask {
+        if (senderId == receiverId) {
+            throw InvalidRequestException("senderId is same as receiverId.")
+                .with("senderId", senderId)
+                .with("receiverId", receiverId)
         }
 
         val savedAsk =
@@ -45,16 +45,16 @@ class AskService(
                 Ask(
                     title = title,
                     status = PENDING,
-                    senderId = senderUserId,
-                    receiverId = receiverUserId,
+                    senderId = senderId,
+                    receiverId = receiverId,
                     categoryId = categoryId
                 )
             )
 
         eventPublisher.publishEvent(
             AskNotificationEvent(
-                senderUserId = senderUserId,
-                receiverUserId = receiverUserId,
+                senderUserId = senderId,
+                receiverUserId = receiverId,
                 cookieTitle = savedAsk.title,
                 askId = savedAsk.id!!,
             )
