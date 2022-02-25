@@ -114,7 +114,7 @@ internal class AskServiceTest(
                 categoryId = ask.categoryId,
             )
         }.isExactlyInstanceOf(InvalidRequestException::class.java)
-            .hasMessageContaining("senderUserId is same as receiverUserId.")
+            .hasMessageContaining("senderId is same as receiverId.")
     }
 
     @RepeatedTest(REPEAT_COUNT)
