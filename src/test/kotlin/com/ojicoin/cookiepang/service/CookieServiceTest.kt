@@ -261,7 +261,11 @@ class CookieServiceTest(
         val cookieList = sut.createDefaultCookies(createDefaultCookies)
 
         // then
-        println("$cookieList")
+        then(userRepository.findById(user.id!!).get().finishOnboard).isTrue()
+        then(cookieList.size).isEqualTo(1)
+
+        then(cookieList[0].title).isEqualTo(createDefaultCookie.question)
+        then(cookieList[0].open(user.id!!)).isEqualTo(createDefaultCookie.answer)
     }
 
     @RepeatedTest(REPEAT_COUNT)
