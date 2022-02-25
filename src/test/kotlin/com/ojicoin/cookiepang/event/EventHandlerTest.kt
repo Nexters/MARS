@@ -97,6 +97,7 @@ class EventHandlerTest(
 
     @AfterEach
     internal fun tearDown() {
+        userRepository.deleteAll()
         viewCountRepository.deleteAll()
         notificationRepository.deleteAll()
     }

@@ -4,7 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
-@ConfigurationProperties("contract")
+@ConfigurationProperties("contract.addr")
 data class ContractProperties(
-    val address: String
+    val cookie: String,
+    val hammer: String
 )
