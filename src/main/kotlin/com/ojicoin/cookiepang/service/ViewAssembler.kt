@@ -130,7 +130,7 @@ class ViewAssembler(
     fun ownedCookiesView(userId: Long, page: Int = 0, size: Int = 3): PageableView<UserCookieView> {
         val cookies = cookieService.getAllOwnedCookies(
             ownedUserId = userId,
-            pageable = PageRequest.of(page, size)
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending())
         )
 
         val totalCookiesCount = cookieService.countAllOwnedCookies(ownedUserId = userId)
@@ -164,7 +164,7 @@ class ViewAssembler(
     fun authorCookiesView(userId: Long, page: Int = 0, size: Int = 3): PageableView<UserCookieView> {
         val cookies = cookieService.getAllAuthorCookies(
             authorUserId = userId,
-            pageable = PageRequest.of(page, size)
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending())
         )
 
         val totalCookiesCount = cookieService.countAllAuthorCookies(authorUserId = userId)
