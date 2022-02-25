@@ -132,6 +132,7 @@ class ViewAssemblerTest(
             .sample()
         val viewer = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .set("wallet_address", "c")
             .sample()
         val authorUserId = userRepository.save(creator).id!!
         val ownedUserId = userRepository.save(collector).id!!
