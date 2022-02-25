@@ -198,9 +198,9 @@ class CookieService(
         }
 
         val blockAddress = if (updateCookie.txHash != null) {
-            val transferInfo = transferInfoByTxHashCacheTemplate[updateCookie.txHash]
+            val cookieEvent = transferInfoByTxHashCacheTemplate[updateCookie.txHash]
                 ?: cookieContractService.getCookieEventLogByTxHash(updateCookie.txHash)
-            transferInfo.blockNumber
+            cookieEvent.blockNumber
         } else {
             null
         }

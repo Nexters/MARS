@@ -19,6 +19,6 @@ contract:
     chain-id: "8217"
     node-api-url: "https://node-api.klaytnapi.com/v1/klaytn"
   addr:
-    cookie: "0xB8Bad0d120919cb43F8151Da2eeab8089F167282"
+    cookie: "0x9DA2f829E17fE891048dD2b88C8Ab99aEBce17A9"
     hammer: "0x6203f3F22951B46Dc48847338c2e26D9D2080D73"
   address: 123456
