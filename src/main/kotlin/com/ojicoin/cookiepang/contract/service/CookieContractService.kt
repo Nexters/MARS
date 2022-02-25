@@ -29,6 +29,7 @@ import java.math.BigInteger
 class CookieContractService(
     private val cookieContract: Contract,
     private val cookieEventLogParser: CookieEventLogParser,
+    private val transferLogParser: TransferEventLogParser,
     private val transferEventLogParser: TransferEventLogParser,
     private val transactionService: TransactionService,
     @Value("\${contract.admin-address}") val adminAddress: String,
@@ -190,6 +191,18 @@ class CookieContractService(
                 .map { obj: LogResult<*> -> obj as KlayLogs.Log }
                 .toList()
             cookieEventLogParser.parse(logs).filter { log: CookieEventLog -> log.nftTokenId == nftTokenId }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            throw RuntimeException()
+        }
+    }
+
+    fun getCookieTransferLogByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: BigInteger): List<TransferEventLog> {
+        return try {
+            val logs = getLogsByEventName(fromBlock, CookieContractEvent.TRANSFER.eventName)
+                .map { obj: LogResult<*> -> obj as KlayLogs.Log }
+                .toList()
+            transferLogParser.parse(logs).filter { log: TransferEventLog -> log.nftTokenId == nftTokenId }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()

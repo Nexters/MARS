@@ -21,7 +21,7 @@ class UserService(
     private val storageService: StorageService,
 ) {
     private val HAMMER_DEFAULT_DIGIT: BigInteger = BigInteger.valueOf(1000000000000000000)
-    private val HAMMER_SEND_AMOUNT: BigInteger = BigInteger.valueOf(10)
+    private val HAMMER_SEND_AMOUNT: BigInteger = BigInteger.valueOf(100)
 
     @Transactional
     fun create(dto: CreateUser): User {
