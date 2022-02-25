@@ -266,6 +266,7 @@ class CookieServiceTest(
 
         then(cookieList[0].title).isEqualTo(createDefaultCookie.question)
         then(cookieList[0].open(user.id!!)).isEqualTo(createDefaultCookie.answer)
+        then(cookieList[0].status).isEqualTo(HIDDEN)
     }
 
     @RepeatedTest(REPEAT_COUNT)
