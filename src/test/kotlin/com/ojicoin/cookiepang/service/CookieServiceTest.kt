@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.config.CacheTemplate
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
+import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
@@ -13,9 +14,12 @@ import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
+import com.ojicoin.cookiepang.dto.CreateDefaultCookie
+import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
+import com.ojicoin.cookiepang.repository.CategoryRepository
 import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.NotificationRepository
@@ -25,6 +29,8 @@ import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
@@ -36,6 +42,7 @@ class CookieServiceTest(
     @Autowired val cookieHistoryRepository: CookieHistoryRepository,
     @Autowired val userRepository: UserRepository,
     @Autowired val notificationRepository: NotificationRepository,
+    @Autowired val categoryRepository: CategoryRepository,
     @Qualifier("transferInfoByTxHashCacheTemplate") val cacheTemplate: CacheTemplate<TransferEventLog>,
 ) : SpringContextFixture() {
 
@@ -222,11 +229,67 @@ class CookieServiceTest(
         }
     }
 
+    @RepeatedTest(REPEAT_COUNT)
+    fun createDefaultCookies() {
+        // given
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .set("finishOnboard", false)
+            .sample()
+        userRepository.save(user)
+
+        val category = fixture.giveMeBuilder(Category::class.java)
+            .setNull("id")
+            .set("name", "자유")
+            .sample()
+        categoryRepository.save(category)
+
+        val createDefaultCookie = fixture.giveMeOne(CreateDefaultCookie::class.java)
+        val createDefaultCookies = fixture.giveMeBuilder(CreateDefaultCookies::class.java)
+            .set("creatorId", user.id!!)
+            .set("defaultCookies", listOf(createDefaultCookie))
+            .sample()
+
+        val transferEventLog = fixture.giveMeBuilder(TransferEventLog::class.java)
+            .setNotNull("nftTokenId")
+            .setNotNull("blockNumber")
+            .sample()
+
+        given(cookieContractService.createDefaultCookie(any())).willReturn(transferEventLog)
+
+        // when
+        val cookieList = sut.createDefaultCookies(createDefaultCookies)
+
+        // then
+        then(userRepository.findById(user.id!!).get().finishOnboard).isTrue()
+        then(cookieList.size).isEqualTo(1)
+
+        then(cookieList[0].title).isEqualTo(createDefaultCookie.question)
+        then(cookieList[0].open(user.id!!)).isEqualTo(createDefaultCookie.answer)
+    }
+
+    @RepeatedTest(REPEAT_COUNT)
+    fun createDefaultCookiesFinishedOnboardUser() {
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .set("finishOnboard", true)
+            .sample()
+
+        userRepository.save(user)
+
+        thenThrownBy { sut.createDefaultCookies(CreateDefaultCookies(user.id!!, listOf())) }
+            .isExactlyInstanceOf(InvalidRequestException::class.java)
+            .hasMessageContaining("Already onboard finished user.")
+    }
+
     @AfterEach
     internal fun tearDown() {
         userRepository.deleteAll()
         cookieRepository.deleteAll()
         cookieHistoryRepository.deleteAll()
         notificationRepository.deleteAll()
+        categoryRepository.deleteAll()
     }
+
+    fun <T> any(): T = Mockito.any()
 }

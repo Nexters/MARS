@@ -41,7 +41,7 @@ class UserService(
             profileUrl = dto.profileUrl ?: DEFAULT_USER_PROFILE_URL[randomNumber],
             backgroundUrl = dto.backgroundUrl ?: DEFAULT_USER_BACKGROUND_URL[randomNumber],
             status = ACTIVE,
-            finishOnboard = true
+            finishOnboard = false
         )
 
         val newUser = userRepository.save(user)
