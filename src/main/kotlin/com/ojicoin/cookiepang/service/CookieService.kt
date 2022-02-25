@@ -107,6 +107,10 @@ class CookieService(
 
         cookieRepository.saveAll(defaultCookies)
 
+        // Update finishedOnboard to true
+        user.finishOnboard = true
+        userRepository.save(user)
+
         return defaultCookies
     }
 
