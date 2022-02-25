@@ -9,6 +9,7 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
+import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
 import com.ojicoin.cookiepang.dto.CreateDefaultCookies
@@ -98,7 +99,7 @@ class CookieService(
                 ownedUserId = user.id!!,
                 categoryId = category.id!!,
                 imageUrl = DEFAULT_COOKIE_IMAGE,
-                status = ACTIVE,
+                status = HIDDEN,
                 nftTokenId = transferEventLog!!.nftTokenId,
                 fromBlockAddress = transferEventLog.blockNumber,
                 createdAt = Instant.now(),
