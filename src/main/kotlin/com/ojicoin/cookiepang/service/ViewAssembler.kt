@@ -14,6 +14,7 @@ import com.ojicoin.cookiepang.dto.UserCookieView
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
@@ -75,7 +76,7 @@ class ViewAssembler(
         size: Int = 3
     ): PageableView<TimelineCookieView> {
         val viewer = userService.getById(viewerId)
-        val pageable = PageRequest.of(page, size)
+        val pageable = PageRequest.of(page, size, Sort.by("createdAt").descending())
         val allCookieSize = if (viewCategoryId != null) {
             cookieService.countActiveCookiesByCategoryId(categoryId = viewCategoryId)
         } else {
