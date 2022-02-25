@@ -38,6 +38,19 @@ class CookieContractService(
 
     fun getCookieContractAddress(): String = cookieContractAddress
 
+    fun getCookieEventLogByTxHash(txHash: String): CookieEventLog {
+        val transactionInfo: TransactionInfo = transactionService.getTransactionInfoByTxHash(txHash)
+        val transferLogs: List<LogResult<*>> = getLogsByEventName(
+            DefaultBlockParameterNumber(transactionInfo.blockNumber),
+            DefaultBlockParameterNumber(transactionInfo.blockNumber),
+            CookieContractEvent.COOKIE_EVENTED.eventName
+        )
+
+        val txHashLogs: List<KlayLogs.Log> = transferLogs.map { obj: LogResult<*> -> obj as KlayLogs.Log }
+            .filter { log: KlayLogs.Log -> log.transactionHash == txHash }.toList()
+        return cookieEventLogParser.parse(txHashLogs).last()
+    }
+
     fun getTransferEventLogByTxHash(txHash: String): TransferEventLog {
         val transactionInfo: TransactionInfo = transactionService.getTransactionInfoByTxHash(txHash)
         val transferLogs: List<LogResult<*>> = getLogsByEventName(

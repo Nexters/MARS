@@ -23,6 +23,7 @@ class AuthServiceTest(
     fun login() {
         val user = fixture.giveMeBuilder<User>()
             .setNull("id")
+            .apply { it, builder -> builder.set("walletAddress", it.walletAddress.lowercase()) }
             .sample()
         val loginRequest = fixture.giveMeBuilder<LoginRequest>()
             .set("walletAddress", user.walletAddress)

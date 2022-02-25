@@ -88,7 +88,10 @@ class CookieServiceTest(
                     .filter { it != DELETED }.injectNull(0.1)
             )
             .set("purchaserUserId", savedReceiveUser.id)
+            .setNotNull("txHash")
             .sample()
+        val transferInfo = fixture.giveMeOne(TransferEventLog::class.java)
+        cacheTemplate[updateCookie.txHash!!] = transferInfo
 
         val updated = sut.modify(cookieId = saved.id!!, updateCookie = updateCookie)
 

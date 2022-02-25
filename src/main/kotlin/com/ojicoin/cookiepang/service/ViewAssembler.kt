@@ -45,7 +45,9 @@ class ViewAssembler(
         cookieService.publishEvent(cookie)
 
         val viewCount = viewCountService.getAllViewCountsByCookieId(cookieId)
-        val cookieHistories = cookieService.findCookieHistories(cookieId).map { it.toCookieHistoryView() }
+        val cookieHistories =
+            cookieService.findCookieHistories(cookieId).map { it.toCookieHistoryView() }
+                .sortedByDescending { it.createdAt }
         val category = categoryService.getById(cookie.categoryId)
 
         return CookieDetailView(
