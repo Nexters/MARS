@@ -19,7 +19,7 @@ class LoginController(private val authService: AuthService) {
         value = [
             ApiResponse(description = "인증 성공", responseCode = "200"),
             ApiResponse(
-                description = "지갑 주소가 중복된 경우",
+                description = "지갑 주소가 존재하지 않는 경우",
                 responseCode = "403",
                 content = [Content(schema = Schema(implementation = ProblemResponse::class))]
             )
