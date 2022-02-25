@@ -36,8 +36,8 @@ data class Cookie(
         null
     }
 
-    fun apply(blockAddress: BigInteger, updateCookie: UpdateCookie) {
-        fromBlockAddress = blockAddress
+    fun apply(blockAddress: BigInteger?, updateCookie: UpdateCookie) {
+        blockAddress?.also { fromBlockAddress = it }
         updateCookie.price?.also { price = it }
         updateCookie.status?.also { status = it }
         updateCookie.purchaserUserId?.also { ownedUserId = it }

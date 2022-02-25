@@ -197,13 +197,18 @@ class CookieService(
                 .with("cookieId", cookie.id!!)
         }
 
-        val transferInfo = transferInfoByTxHashCacheTemplate[updateCookie.txHash]
-            ?: cookieContractService.getTransferEventLogByTxHash(updateCookie.txHash)
+        val blockAddress = if (updateCookie.txHash != null) {
+            val transferInfo = transferInfoByTxHashCacheTemplate[updateCookie.txHash]
+                ?: cookieContractService.getTransferEventLogByTxHash(updateCookie.txHash)
+            transferInfo.blockNumber
+        } else {
+            null
+        }
 
         val previousOwnedUser = cookie.ownedUserId
         val newOwnedUser = updateCookie.purchaserUserId
 
-        cookie.apply(blockAddress = transferInfo.blockNumber, updateCookie = updateCookie)
+        cookie.apply(blockAddress = blockAddress, updateCookie = updateCookie)
         val savedCookie = cookieRepository.save(cookie)
 
         if (updateCookie.purchaserUserId != null) {
