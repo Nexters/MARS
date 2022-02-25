@@ -32,7 +32,7 @@ class ViewAssemblerTest(
     @Autowired val cookieRepository: CookieRepository,
     @Autowired val categoryRepository: CategoryRepository,
     @Autowired val userRepository: UserRepository,
-    @Value("\${contract.address}") val contractAddress: String,
+    @Value("\${contract.addr.cookie}") val contractAddress: String,
 ) : SpringContextFixture() {
     @Test
     fun cookieView() {
