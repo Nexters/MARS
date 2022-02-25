@@ -3,9 +3,6 @@ package com.ojicoin.cookiepang.event
 import org.springframework.context.ApplicationEvent
 import java.time.Instant
 
-// For prevent ktlint error
-class Event
-
 data class ViewCookieEvent(
     private val source: Any,
     val userId: Long,
