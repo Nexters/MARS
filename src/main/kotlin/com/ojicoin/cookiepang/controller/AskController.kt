@@ -33,7 +33,7 @@ class AskController(
         ]
     )
     fun createAsks(@RequestBody createAsk: CreateAsk): Ask =
-        askService.create(createAsk.title, createAsk.senderUserId, createAsk.receiverUserId, createAsk.categoryId)
+        askService.create(createAsk.title, createAsk.senderId, createAsk.receiverId, createAsk.categoryId)
 
     @PutMapping("/asks/{askId}")
     @ResponseStatus(HttpStatus.OK)

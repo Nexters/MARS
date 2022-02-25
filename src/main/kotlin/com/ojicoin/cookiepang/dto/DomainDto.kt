@@ -34,8 +34,8 @@ data class UpdateCookie(
 
 data class CreateAsk(
     val title: String,
-    val senderUserId: Long,
-    val receiverUserId: Long,
+    val senderId: Long,
+    val receiverId: Long,
     val categoryId: Long,
 )
 
