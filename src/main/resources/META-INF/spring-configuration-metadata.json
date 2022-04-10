@@ -9,6 +9,21 @@
       "name": "storage.domain",
       "type": "java.lang.String",
       "description": "Storage domain address"
+    },
+    {
+      "name": "google-fcm.url",
+      "type": "java.lang.String",
+      "description": "Google FCM url"
+    },
+    {
+      "name": "google-fcm.project-id",
+      "type": "java.lang.String",
+      "description": "Google FCM project id"
+    },
+    {
+      "name": "google-fcm.key-path",
+      "type": "java.lang.String",
+      "description": "Google FCM key path"
     }
   ]
 }
