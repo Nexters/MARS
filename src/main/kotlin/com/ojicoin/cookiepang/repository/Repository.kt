@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jdbc.repository.query.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
+import java.time.Instant
 
 interface CookieRepository : PagingAndSortingRepository<Cookie, Long> {
     fun findByStatusIsAndCategoryId(
@@ -89,6 +90,8 @@ interface UserCategoryRepository : CrudRepository<UserCategory, Long> {
 
 interface NotificationRepository : PagingAndSortingRepository<Notification, Long> {
     fun findAllByReceiverUserId(receiverUserId: Long, pageable: Pageable): List<Notification>
+
+    fun countAllByCreatedAtAfter(lastCheckedAt: Instant): Long
 }
 
 interface CookieHistoryRepository : CrudRepository<CookieHistory, Long> {

@@ -7,6 +7,7 @@ import com.ojicoin.cookiepang.exception.ForbiddenRequestException
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.time.Instant
 import javax.validation.constraints.Size
 
 @Table("users")
@@ -18,7 +19,8 @@ class User(
     @Column("profile_url") @field:Size(max = 255) var profileUrl: String?,
     @Column("background_url") @field:Size(max = 255) var backgroundUrl: String?,
     @Column("status") var status: UserStatus,
-    @Column("finish_onboard") var finishOnboard: Boolean
+    @Column("finish_onboard") var finishOnboard: Boolean,
+    @Column("last_notification_checked_at") var lastNotificationCheckedAt: Instant?,
 ) {
     fun view(cookie: Cookie) {
         if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {

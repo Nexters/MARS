@@ -12,6 +12,7 @@ import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
+import java.time.Instant
 import java.util.concurrent.ThreadLocalRandom
 
 @Service
@@ -41,7 +42,8 @@ class UserService(
             profileUrl = dto.profileUrl ?: DEFAULT_USER_PROFILE_URL[randomNumber],
             backgroundUrl = dto.backgroundUrl ?: DEFAULT_USER_BACKGROUND_URL[randomNumber],
             status = ACTIVE,
-            finishOnboard = false
+            finishOnboard = false,
+            lastNotificationCheckedAt = Instant.now()
         )
 
         val newUser = userRepository.save(user)
