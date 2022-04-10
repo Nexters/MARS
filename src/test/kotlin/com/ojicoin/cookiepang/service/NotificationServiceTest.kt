@@ -42,5 +42,4 @@ internal class NotificationServiceTest(
         then(mostRecentNotification.receiverUserId).isEqualTo(foundNotification.receiverUserId)
         then(mostRecentNotification.senderUserId).isEqualTo(foundNotification.senderUserId)
     }
-
 }
