@@ -15,16 +15,6 @@ data class CreateCookie(
     val categoryId: Long,
 )
 
-data class CreateDefaultCookie(
-    val question: String,
-    val answer: String,
-)
-
-data class CreateDefaultCookies(
-    val creatorId: Long,
-    val defaultCookies: List<CreateDefaultCookie>,
-)
-
 data class UpdateCookie(
     val txHash: String?,
     val price: Long?,

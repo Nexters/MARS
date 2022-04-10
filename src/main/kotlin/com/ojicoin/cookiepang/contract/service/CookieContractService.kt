@@ -3,12 +3,10 @@ package com.ojicoin.cookiepang.contract.service
 import com.klaytn.caver.abi.datatypes.Type
 import com.klaytn.caver.abi.datatypes.generated.Uint256
 import com.klaytn.caver.contract.Contract
-import com.klaytn.caver.contract.SendOptions
 import com.klaytn.caver.methods.request.CallObject
 import com.klaytn.caver.methods.request.KlayLogFilter
 import com.klaytn.caver.methods.response.KlayLogs
 import com.klaytn.caver.methods.response.KlayLogs.LogResult
-import com.ojicoin.cookiepang.contract.dto.CookieInfo
 import com.ojicoin.cookiepang.contract.dto.TransactionInfo
 import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.DefaultBlockParameterNumber
-import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 
 /**
@@ -190,10 +187,6 @@ class CookieContractService(
             }
         }
 
-    fun createDefaultCookie(tokenInfo: CookieInfo): TransferEventLog? {
-        return mintCookieByAdmin(tokenInfo)
-    }
-
     fun getCookieEventLogByNftTokenId(nftTokenId: BigInteger): List<CookieEventLog> {
         return getCookieEventLogByNftTokenId(DefaultBlockParameterName.EARLIEST, nftTokenId)
     }
@@ -210,33 +203,15 @@ class CookieContractService(
         }
     }
 
-    fun getCookieTransferLogByNftTokenId(fromBlock: DefaultBlockParameter, nftTokenId: BigInteger): List<TransferEventLog> {
+    fun getCookieTransferLogByNftTokenId(
+        fromBlock: DefaultBlockParameter,
+        nftTokenId: BigInteger
+    ): List<TransferEventLog> {
         return try {
             val logs = getLogsByEventName(fromBlock, CookieContractEvent.TRANSFER.eventName)
                 .map { obj: LogResult<*> -> obj as KlayLogs.Log }
                 .toList()
             transferLogParser.parse(logs).filter { log: TransferEventLog -> log.nftTokenId == nftTokenId }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            throw RuntimeException()
-        }
-    }
-
-    private fun mintCookieByAdmin(cookieInfo: CookieInfo): TransferEventLog? {
-        return try {
-            val sendOptions = SendOptions(adminAddress, DefaultGasProvider.GAS_LIMIT)
-            val functionParams: List<Any> = listOf(
-                cookieInfo.creatorAddress,
-                cookieInfo.title,
-                cookieInfo.content,
-                cookieInfo.imageUrl,
-                cookieInfo.tag,
-                cookieInfo.hammerPrice
-            )
-            val receiptData = cookieContract.getMethod(CookieContractMethod.MINT_COOKIE_BY_OWNER.methodName)
-                .send(functionParams, sendOptions)
-
-            transferEventLogParser.parse(receiptData.logs).first()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             throw RuntimeException()
@@ -273,7 +248,6 @@ enum class CookieContractMethod(val methodName: String) {
     GET_HAMMER_PRICE("cookieHammerPrices"),
     TOKEN_BY_INDEX("tokenByIndex"),
     TOTAL_SUPPLY("totalSupply"),
-    MINT_COOKIE_BY_OWNER("mintCookieByOwner");
 }
 
 enum class CookieContractEvent(val eventName: String) {

@@ -1,7 +1,6 @@
 package com.ojicoin.cookiepang.contract.service
 
 import com.ojicoin.cookiepang.SpringContextFixture
-import com.ojicoin.cookiepang.contract.dto.CookieInfo
 import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import org.junit.jupiter.api.Test
@@ -18,7 +17,8 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getTransferInfoByTxHash() {
-        val transferInfo: TransferEventLog = sut.getTransferEventLogByTxHash("0xb8b8119de7005a15606e35769290960ff8025916d034e3c8c65b7dd2b9f4094c")
+        val transferInfo: TransferEventLog =
+            sut.getTransferEventLogByTxHash("0xb8b8119de7005a15606e35769290960ff8025916d034e3c8c65b7dd2b9f4094c")
         println(transferInfo)
     }
 
@@ -72,7 +72,8 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieIdByIndex() {
-        val cookieIdByIndex: BigInteger = sut.getNtfTokenIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
+        val cookieIdByIndex: BigInteger =
+            sut.getNtfTokenIdByIndex("0xE84deA09A59C6b614c4934c46aa13ec56f6f3fEa", BigInteger.valueOf(0))
         println(cookieIdByIndex)
     }
 
@@ -83,23 +84,6 @@ internal class CookieContractServiceTest(
     }
 
     @Test
-    fun createDefaultCookie() {
-
-        val createdDefaultCookies: TransferEventLog? = sut.createDefaultCookie(
-            CookieInfo(
-                "0xe3F744017BB487F88B1CE9587FfD672E9F306769",
-                "test",
-                "test",
-                "test",
-                "test",
-                BigInteger.valueOf(10)
-            )
-        )
-
-        println(createdDefaultCookies)
-    }
-
-    @Test
     fun getCookieEventsByCookieId() {
         val result: List<CookieEventLog> = sut.getCookieEventLogByNftTokenId(BigInteger.ONE)
         println(result)
@@ -107,7 +91,8 @@ internal class CookieContractServiceTest(
 
     @Test
     fun getCookieEventsByCookieIdWithBlockNum() {
-        val result: List<CookieEventLog> = sut.getCookieEventLogByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
+        val result: List<CookieEventLog> =
+            sut.getCookieEventLogByNftTokenId(DefaultBlockParameterNumber(83541764), BigInteger.ONE)
         println(result)
     }
 }

@@ -5,7 +5,6 @@ import com.ojicoin.cookiepang.REPEAT_COUNT
 import com.ojicoin.cookiepang.SpringContextFixture
 import com.ojicoin.cookiepang.config.CacheTemplate
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
-import com.ojicoin.cookiepang.domain.Category
 import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus
@@ -14,8 +13,6 @@ import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
 import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
-import com.ojicoin.cookiepang.dto.CreateDefaultCookie
-import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
@@ -29,7 +26,6 @@ import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.RepeatedTest
-import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -230,60 +226,6 @@ class CookieServiceTest(
             then(blockNumber).isEqualTo(cookieHistory.blockNumber)
             then(createdAt).isEqualTo(cookieHistory.createdAt)
         }
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun createDefaultCookies() {
-        // given
-        val user = fixture.giveMeBuilder(User::class.java)
-            .setNull("id")
-            .set("finishOnboard", false)
-            .sample()
-        userRepository.save(user)
-
-        val category = fixture.giveMeBuilder(Category::class.java)
-            .setNull("id")
-            .set("name", "자유")
-            .sample()
-        categoryRepository.save(category)
-
-        val createDefaultCookie = fixture.giveMeOne(CreateDefaultCookie::class.java)
-        val createDefaultCookies = fixture.giveMeBuilder(CreateDefaultCookies::class.java)
-            .set("creatorId", user.id!!)
-            .set("defaultCookies", listOf(createDefaultCookie))
-            .sample()
-
-        val transferEventLog = fixture.giveMeBuilder(TransferEventLog::class.java)
-            .setNotNull("nftTokenId")
-            .setNotNull("blockNumber")
-            .sample()
-
-        given(cookieContractService.createDefaultCookie(any())).willReturn(transferEventLog)
-
-        // when
-        val cookieList = sut.createDefaultCookies(createDefaultCookies)
-
-        // then
-        then(userRepository.findById(user.id!!).get().finishOnboard).isTrue()
-        then(cookieList.size).isEqualTo(1)
-
-        then(cookieList[0].title).isEqualTo(createDefaultCookie.question)
-        then(cookieList[0].open(user.id!!)).isEqualTo(createDefaultCookie.answer)
-        then(cookieList[0].status).isEqualTo(HIDDEN)
-    }
-
-    @RepeatedTest(REPEAT_COUNT)
-    fun createDefaultCookiesFinishedOnboardUser() {
-        val user = fixture.giveMeBuilder(User::class.java)
-            .setNull("id")
-            .set("finishOnboard", true)
-            .sample()
-
-        userRepository.save(user)
-
-        thenThrownBy { sut.createDefaultCookies(CreateDefaultCookies(user.id!!, listOf())) }
-            .isExactlyInstanceOf(InvalidRequestException::class.java)
-            .hasMessageContaining("Already onboard finished user.")
     }
 
     @AfterEach
