@@ -1,7 +1,6 @@
 package com.ojicoin.cookiepang.service
 
 import com.ojicoin.cookiepang.config.CacheTemplate
-import com.ojicoin.cookiepang.contract.dto.CookieInfo
 import com.ojicoin.cookiepang.contract.event.CookieEventLog
 import com.ojicoin.cookiepang.contract.event.TransferEventLog
 import com.ojicoin.cookiepang.contract.service.CookieContractService
@@ -9,10 +8,8 @@ import com.ojicoin.cookiepang.domain.Cookie
 import com.ojicoin.cookiepang.domain.CookieHistory
 import com.ojicoin.cookiepang.domain.CookieStatus.ACTIVE
 import com.ojicoin.cookiepang.domain.CookieStatus.DELETED
-import com.ojicoin.cookiepang.domain.CookieStatus.HIDDEN
 import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateCookie
-import com.ojicoin.cookiepang.dto.CreateDefaultCookies
 import com.ojicoin.cookiepang.dto.UpdateCookie
 import com.ojicoin.cookiepang.event.TransactionNotificationEvent
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
@@ -73,49 +70,6 @@ class CookieService(
 
     fun countAllAuthorCookies(authorUserId: Long): Long =
         cookieRepository.countByStatusIsNotAndAuthorUserId(authorUserId = authorUserId)
-
-    fun createDefaultCookies(createDefaultCookies: CreateDefaultCookies): List<Cookie> {
-        val user = userRepository.findById(createDefaultCookies.creatorId).orElseThrow()
-        if (user.finishOnboard) {
-            throw InvalidRequestException("Already onboard finished user.")
-        }
-        val category = categoryService.getByName(DEFAULT_COOKIE_CATEGORY_NAME)
-
-        val defaultCookies = createDefaultCookies.defaultCookies.map { createDefaultCookie ->
-            val transferEventLog = cookieContractService.createDefaultCookie(
-                CookieInfo(
-                    user.walletAddress,
-                    createDefaultCookie.question,
-                    createDefaultCookie.answer,
-                    DEFAULT_COOKIE_IMAGE,
-                    DEFAULT_COOKIE_CATEGORY_NAME,
-                    DEFAULT_COOKIE_PRICE
-                )
-            )
-
-            Cookie(
-                title = createDefaultCookie.question,
-                content = createDefaultCookie.answer,
-                price = DEFAULT_COOKIE_PRICE.toLong(),
-                authorUserId = user.id!!,
-                ownedUserId = user.id!!,
-                categoryId = category.id!!,
-                imageUrl = DEFAULT_COOKIE_IMAGE,
-                status = HIDDEN,
-                nftTokenId = transferEventLog!!.nftTokenId,
-                fromBlockAddress = transferEventLog.blockNumber,
-                createdAt = Instant.now(),
-            )
-        }.toList()
-
-        cookieRepository.saveAll(defaultCookies)
-
-        // Update finishedOnboard to true
-        user.finishOnboard = true
-        userRepository.save(user)
-
-        return defaultCookies
-    }
 
     fun create(dto: CreateCookie): Cookie {
         val transferInfo = transferInfoByTxHashCacheTemplate[dto.txHash]
