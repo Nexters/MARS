@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 @Table("notifications")
 class Notification(
     @Id @Column("notification_id") var id: Long? = null,
-    @Column("type") @field:Size(max = 20) val type: NotificationType,
+    @Column("type") val type: NotificationType,
     @Column("title") @field:Size(max = 50) val title: String,
     @Column("content") @field:Size(max = 300) val content: String,
     @Column("receiver_user_id") val receiverUserId: Long,
