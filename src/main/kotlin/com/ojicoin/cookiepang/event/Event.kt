@@ -16,8 +16,8 @@ data class ViewCookieEvent(
 sealed class NotificationEvent
 
 data class AskNotificationEvent(
-    val receiverUserId: Long,
-    val senderUserId: Long,
+    val receiverId: Long,
+    val senderId: Long,
     val askId: Long,
     val createdAt: Instant = Instant.now(),
 
@@ -25,8 +25,8 @@ data class AskNotificationEvent(
 ) : NotificationEvent()
 
 data class TransactionNotificationEvent(
-    val receiverUserId: Long,
-    val senderUserId: Long,
+    val receiverId: Long,
+    val senderId: Long,
     val cookieId: Long,
     val createdAt: Instant = Instant.now(),
 

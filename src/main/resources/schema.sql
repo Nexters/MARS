@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS "users"
     "background_url" varchar(255),
     "wallet_address" varchar(255) unique,
     "status"         varchar(10),
+    "device_token"   varchar(255),
     "finish_onboard"  boolean default false,
     PRIMARY KEY ("user_id")
 );

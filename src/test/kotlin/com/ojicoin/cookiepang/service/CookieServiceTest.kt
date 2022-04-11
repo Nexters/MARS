@@ -66,8 +66,10 @@ class CookieServiceTest(
             .setNull("id")
             .sample()
         val savedSendUser = userRepository.save(sendUser)
+
         val receiveUser = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
+            .setNotNull("deviceToken")
             .sample()
         val savedReceiveUser = userRepository.save(receiveUser)
 

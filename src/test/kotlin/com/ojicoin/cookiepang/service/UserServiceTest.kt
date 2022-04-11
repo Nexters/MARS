@@ -52,6 +52,7 @@ class UserServiceTest(
                 backgroundUrl = "",
                 status = UserStatus.ACTIVE,
                 finishOnboard = false,
+                deviceToken = "",
             )
         )
 
@@ -100,7 +101,7 @@ class UserServiceTest(
     fun modifyThrowNotExistUser() {
         val userId = fixture.giveMeOne(Long::class.java)
 
-        thenThrownBy { sut.modify(userId, UpdateUserRequest(null, null, null)) }
+        thenThrownBy { sut.modify(userId, UpdateUserRequest(null, null, null, null)) }
             .isExactlyInstanceOf(NoSuchElementException::class.java)
     }
 

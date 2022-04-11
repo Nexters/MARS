@@ -53,8 +53,8 @@ class AskService(
 
         eventPublisher.publishEvent(
             AskNotificationEvent(
-                senderUserId = senderId,
-                receiverUserId = receiverId,
+                senderId = senderId,
+                receiverId = receiverId,
                 cookieTitle = savedAsk.title,
                 askId = savedAsk.id!!,
             )

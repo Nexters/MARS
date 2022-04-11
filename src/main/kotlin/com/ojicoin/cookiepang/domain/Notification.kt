@@ -23,7 +23,10 @@ class Notification(
     @Column("cookie_id") val cookieId: Long? = null,
 )
 
-enum class NotificationType(val title: String) {
-    Ask("요청"),
-    Transaction("판매"),
+enum class NotificationType(
+    val title: String,
+    val pushMessageTitle: String,
+) {
+    Ask("요청", "질문을 요청받았어요."),
+    Transaction("판매", "내 쿠키가 판매되었어요."),
 }

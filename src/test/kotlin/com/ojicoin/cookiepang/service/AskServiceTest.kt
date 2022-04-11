@@ -7,11 +7,13 @@ import com.ojicoin.cookiepang.domain.AskStatus.ACCEPTED
 import com.ojicoin.cookiepang.domain.AskStatus.DELETED
 import com.ojicoin.cookiepang.domain.AskStatus.IGNORED
 import com.ojicoin.cookiepang.domain.AskStatus.PENDING
+import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.UpdateAsk
 import com.ojicoin.cookiepang.exception.InvalidDomainStatusException
 import com.ojicoin.cookiepang.exception.InvalidRequestException
 import com.ojicoin.cookiepang.repository.AskRepository
 import com.ojicoin.cookiepang.repository.NotificationRepository
+import com.ojicoin.cookiepang.repository.UserRepository
 import net.jqwik.api.Arbitraries
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable
 internal class AskServiceTest(
     @Autowired val sut: AskService,
     @Autowired val askRepository: AskRepository,
+    @Autowired val userRepository: UserRepository,
     @Autowired val notificationRepository: NotificationRepository,
 ) : SpringContextFixture() {
 
@@ -77,8 +80,15 @@ internal class AskServiceTest(
     @RepeatedTest(REPEAT_COUNT)
     fun create() {
         // given
+        val receiverUser = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .setNotNull("deviceToken")
+            .sample()
+        val savedReceiverUser = userRepository.save(receiverUser)
+
         val ask = fixture.giveMeBuilder(Ask::class.java)
             .setNull("id")
+            .set("receiverId", savedReceiverUser.id)
             .set("status", PENDING)
             .sample()
 

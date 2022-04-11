@@ -19,6 +19,7 @@ class User(
     @Column("background_url") @field:Size(max = 255) var backgroundUrl: String?,
     @Column("status") var status: UserStatus,
     @Column("finish_onboard") var finishOnboard: Boolean,
+    @Column("device_token") var deviceToken: String?,
 ) {
     fun view(cookie: Cookie) {
         if (cookie.status == HIDDEN && this.id != cookie.ownedUserId) {
@@ -37,6 +38,7 @@ class User(
         updateUser.profilePictureUrl?.also { this.profileUrl = it }
         updateUser.backgroundPictureUrl?.also { this.backgroundUrl = it }
         updateUser.introduction?.also { this.introduction = it }
+        updateUser.deviceToken?.also { this.deviceToken = it }
     }
 }
 

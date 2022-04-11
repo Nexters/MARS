@@ -36,7 +36,14 @@ class EventHandlerTest(
     @RepeatedTest(REPEAT_COUNT)
     fun handleNotificationEventForAsk() {
         // given
+        val user = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .setNotNull("deviceToken")
+            .sample()
+        val savedReceiverUser = userRepository.save(user)
+
         val notificationEvent = fixture.giveMeBuilder(AskNotificationEvent::class.java)
+            .set("receiverId", savedReceiverUser.id)
             .sample()
 
         // when
@@ -46,11 +53,11 @@ class EventHandlerTest(
 
         // then
         then(notifications).hasSize(1)
-        notifications.forEach { it ->
+        notifications.forEach {
             then(it.type).isEqualTo(NotificationType.Ask)
             then(it.title).isEqualTo("요청")
-            then(it.receiverUserId).isEqualTo(notificationEvent.receiverUserId)
-            then(it.senderUserId).isEqualTo(notificationEvent.senderUserId)
+            then(it.receiverUserId).isEqualTo(notificationEvent.receiverId)
+            then(it.senderUserId).isEqualTo(notificationEvent.senderId)
             then(it.createdAt).isEqualTo(notificationEvent.createdAt)
             then(it.askId).isEqualTo(notificationEvent.askId)
             then(it.content).isEqualTo(NotificationMessageUtils.getAskMessage(notificationEvent.cookieTitle))
@@ -60,14 +67,20 @@ class EventHandlerTest(
     @RepeatedTest(REPEAT_COUNT)
     fun handleNotificationEventForTransaction() {
         // given
-        val user = fixture.giveMeBuilder(User::class.java)
+        val senderUser = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
             .sample()
+        val savedSenderUser = userRepository.save(senderUser)
 
-        val savedSenderUser = userRepository.save(user)
+        val receiverUser = fixture.giveMeBuilder(User::class.java)
+            .setNull("id")
+            .setNotNull("deviceToken")
+            .sample()
+        val savedReceiverUser = userRepository.save(receiverUser)
 
         val notificationEvent = fixture.giveMeBuilder(TransactionNotificationEvent::class.java)
-            .set("senderUserId", savedSenderUser.id)
+            .set("senderId", savedSenderUser.id)
+            .set("receiverId", savedReceiverUser.id)
             .sample()
 
         // when
@@ -80,8 +93,8 @@ class EventHandlerTest(
         notifications.forEach { it ->
             then(it.type).isEqualTo(NotificationType.Transaction)
             then(it.title).isEqualTo("판매")
-            then(it.receiverUserId).isEqualTo(notificationEvent.receiverUserId)
-            then(it.senderUserId).isEqualTo(notificationEvent.senderUserId)
+            then(it.receiverUserId).isEqualTo(notificationEvent.receiverId)
+            then(it.senderUserId).isEqualTo(notificationEvent.senderId)
             then(it.createdAt).isEqualTo(notificationEvent.createdAt)
             then(it.cookieId).isEqualTo(notificationEvent.cookieId)
             then(it.content).isEqualTo(
