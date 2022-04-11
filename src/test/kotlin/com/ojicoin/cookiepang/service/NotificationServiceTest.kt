@@ -22,6 +22,7 @@ internal class NotificationServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun get() {
+        // given
         val user = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
             .sample()
@@ -44,7 +45,10 @@ internal class NotificationServiceTest(
         notificationRepository.save(oldNotification)
         notificationRepository.save(mostRecentNotification)
 
+        // when
         val notificationList = sut.get(receiverId, 0, 1)
+
+        // then
         val foundNotification = notificationList[0]
 
         then(mostRecentNotification.title).isEqualTo(foundNotification.title)
@@ -55,6 +59,7 @@ internal class NotificationServiceTest(
 
     @RepeatedTest(REPEAT_COUNT)
     fun getNewCount() {
+        // given
         val user = fixture.giveMeBuilder(User::class.java)
             .setNull("id")
             .set("lastNotificationCheckedAt", Instant.ofEpochMilli(2_000_000))
@@ -78,7 +83,10 @@ internal class NotificationServiceTest(
         notificationRepository.save(oldNotification)
         notificationRepository.save(mostRecentNotification)
 
+        // when
         val newNotificationCount = sut.getNewCount(receiverId)
+
+        // then
         then(newNotificationCount).isEqualTo(NotificationNewCount(1))
     }
 
