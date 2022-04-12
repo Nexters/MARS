@@ -15,6 +15,7 @@ class Notification(
     @Column("receiver_user_id") val receiverUserId: Long,
     @Column("sender_user_id") val senderUserId: Long? = null,
     @Column("created_at") val createdAt: Instant,
+    @Column("checked") var checked: Boolean = false,
 
     // for ask type
     @Column("ask_id") val askId: Long? = null,
