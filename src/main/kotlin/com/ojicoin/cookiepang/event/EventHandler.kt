@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component
 class EventHandler(
     private val viewCountRepository: ViewCountRepository,
     private val notificationRepository: NotificationRepository,
-    private val notificationMessageUtils: NotificationMessageUtils,
     private val userRepository: UserRepository,
 ) {
     @EventListener
@@ -40,7 +39,7 @@ class EventHandler(
                 createdAt = notificationEvent.createdAt,
                 askId = notificationEvent.askId,
 
-                content = notificationMessageUtils.getAskMessage(notificationEvent.cookieTitle),
+                content = NotificationMessageUtils.getAskMessage(notificationEvent.cookieTitle),
             )
 
             is TransactionNotificationEvent -> {
@@ -54,7 +53,7 @@ class EventHandler(
                     cookieId = notificationEvent.cookieId,
                     createdAt = notificationEvent.createdAt,
 
-                    content = notificationMessageUtils.getTransactionMessage(
+                    content = NotificationMessageUtils.getTransactionMessage(
                         senderNickname,
                         notificationEvent.cookieTitle,
                         notificationEvent.hammerCount

@@ -18,7 +18,6 @@ class EventHandlerTest(
     @Autowired val eventPublisher: ApplicationEventPublisher,
     @Autowired val viewCountRepository: ViewCountRepository,
     @Autowired val notificationRepository: NotificationRepository,
-    @Autowired val notificationMessageUtils: NotificationMessageUtils,
     @Autowired val userRepository: UserRepository,
 ) : SpringContextFixture() {
 
@@ -54,7 +53,7 @@ class EventHandlerTest(
             then(it.senderUserId).isEqualTo(notificationEvent.senderUserId)
             then(it.createdAt).isEqualTo(notificationEvent.createdAt)
             then(it.askId).isEqualTo(notificationEvent.askId)
-            then(it.content).isEqualTo(notificationMessageUtils.getAskMessage(notificationEvent.cookieTitle))
+            then(it.content).isEqualTo(NotificationMessageUtils.getAskMessage(notificationEvent.cookieTitle))
         }
     }
 
@@ -86,7 +85,7 @@ class EventHandlerTest(
             then(it.createdAt).isEqualTo(notificationEvent.createdAt)
             then(it.cookieId).isEqualTo(notificationEvent.cookieId)
             then(it.content).isEqualTo(
-                notificationMessageUtils.getTransactionMessage(
+                NotificationMessageUtils.getTransactionMessage(
                     savedSenderUser.nickname,
                     notificationEvent.cookieTitle,
                     notificationEvent.hammerCount
