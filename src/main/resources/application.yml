@@ -6,6 +6,12 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+
+google-fcm:
+  project-id: cookie-pang
+  url: https://fcm.googleapis.com/v1/projects/${google-fcm.project-id}
+  key-path: /firebase/firebase.json
+
 server:
   port: 8080
   tomcat:

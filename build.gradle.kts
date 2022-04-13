@@ -32,6 +32,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
@@ -46,6 +47,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.3.1")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.2")
     implementation("org.zalando:problem-spring-web-starter:0.25.0")
+    implementation("com.google.firebase:firebase-admin:6.8.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
