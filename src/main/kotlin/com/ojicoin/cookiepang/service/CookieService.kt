@@ -18,7 +18,6 @@ import com.ojicoin.cookiepang.repository.CookieHistoryRepository
 import com.ojicoin.cookiepang.repository.CookieRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -30,18 +29,13 @@ import java.time.Instant
 @Service
 class CookieService(
     private val cookieRepository: CookieRepository,
-    private val categoryService: CategoryService,
     private val cookieContractService: CookieContractService,
     private val cookieHistoryRepository: CookieHistoryRepository,
     private val userRepository: UserRepository, // TODO: 구조 리팩토링
     private val eventPublisher: ApplicationEventPublisher,
-    @Value("\${contract.admin-address}") val adminAddress: String,
     @Qualifier("transferInfoByTxHashCacheTemplate") private val transferInfoByTxHashCacheTemplate: CacheTemplate<TransferEventLog>,
 ) {
     private val TRANSACTION_HEX_PREFIX_DIGIT_LENGTH = 2
-    private val DEFAULT_COOKIE_IMAGE = "https://cdn.cookiepang.site/metadata/cookie_meta03.json"
-    private val DEFAULT_COOKIE_CATEGORY_NAME = "자유"
-    private val DEFAULT_COOKIE_PRICE = BigInteger.ZERO
 
     fun get(cookieId: Long): Cookie = cookieRepository.findCookieById(cookieId)!!
 
@@ -108,7 +102,9 @@ class CookieService(
             fromBlock = DefaultBlockParameter.valueOf(cookie.fromBlockAddress),
             nftTokenId = cookie.nftTokenId
         ).map {
-            val creator = findCreator(it, cookie)
+            val creator = userRepository.findByWalletAddress(it.fromAddress)
+                ?: throw InvalidRequestException("User with given wallet address is not registered.")
+                    .with("walletAddress", it.fromAddress)
             it.toCookieHistory(cookie, creator)
         }
         if (newCookieHistories.isNotEmpty()) {
@@ -118,18 +114,6 @@ class CookieService(
         }
 
         return cookieHistories + newCookieHistories
-    }
-
-    private fun findCreator(it: CookieEventLog, cookie: Cookie): User {
-        if (isAdminMintedCookie(it.fromAddress)) {
-            val userAddress = getUserAddress(cookie)
-            return userRepository.findByWalletAddress(userAddress)
-                ?: throw InvalidRequestException("User with given wallet address is not registered.")
-                    .with("walletAddress", userAddress)
-        }
-        return userRepository.findByWalletAddress(it.fromAddress)
-            ?: throw InvalidRequestException("User with given wallet address is not registered.")
-                .with("walletAddress", it.fromAddress)
     }
 
     fun getUserAddress(cookie: Cookie): String {
@@ -195,10 +179,6 @@ class CookieService(
         toDeleteCookie.status = DELETED
         cookieRepository.save(toDeleteCookie)
         return toDeleteCookie
-    }
-
-    private fun isAdminMintedCookie(address: String): Boolean {
-        return adminAddress.lowercase() == address
     }
 
     private fun getBigIntegerFromHexStr(cookieIdHex: String): BigInteger {
