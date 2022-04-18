@@ -42,6 +42,7 @@ class UserService(
             backgroundUrl = dto.backgroundUrl ?: DEFAULT_USER_BACKGROUND_URL[randomNumber],
             status = ACTIVE,
             finishOnboard = false,
+            deviceToken = dto.deviceToken ?: "",
         )
 
         val newUser = userRepository.save(user)
@@ -76,6 +77,7 @@ class UserService(
         user.apply(
             updateUser = UpdateUser(
                 introduction = updateUserRequest.introduction,
+                deviceToken = updateUserRequest.deviceToken,
                 profilePictureUrl = updateProfilePictureUrl,
                 backgroundPictureUrl = updateBackgroundPictureUrl
             )

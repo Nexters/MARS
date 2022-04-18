@@ -7,6 +7,8 @@ import com.ojicoin.cookiepang.domain.ViewCount
 import com.ojicoin.cookiepang.repository.NotificationRepository
 import com.ojicoin.cookiepang.repository.UserRepository
 import com.ojicoin.cookiepang.repository.ViewCountRepository
+import com.ojicoin.cookiepang.service.PushMessageContent
+import com.ojicoin.cookiepang.service.PushMessageOperations
 import com.ojicoin.cookiepang.util.NotificationMessageUtils
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -16,6 +18,7 @@ class EventHandler(
     private val viewCountRepository: ViewCountRepository,
     private val notificationRepository: NotificationRepository,
     private val userRepository: UserRepository,
+    private val pushMessageOperations: PushMessageOperations,
 ) {
     @EventListener
     fun handleViewCookieEvent(viewCookieEvent: ViewCookieEvent) {
@@ -34,8 +37,8 @@ class EventHandler(
             is AskNotificationEvent -> Notification(
                 type = Ask,
                 title = Ask.title,
-                receiverUserId = notificationEvent.receiverUserId,
-                senderUserId = notificationEvent.senderUserId,
+                receiverUserId = notificationEvent.receiverId,
+                senderUserId = notificationEvent.senderId,
                 createdAt = notificationEvent.createdAt,
                 askId = notificationEvent.askId,
 
@@ -43,13 +46,13 @@ class EventHandler(
             )
 
             is TransactionNotificationEvent -> {
-                val senderNickname = userRepository.findById(notificationEvent.senderUserId).get().nickname
+                val senderNickname = userRepository.findById(notificationEvent.senderId).get().nickname
 
                 Notification(
                     type = Transaction,
                     title = Transaction.title,
-                    receiverUserId = notificationEvent.receiverUserId,
-                    senderUserId = notificationEvent.senderUserId,
+                    receiverUserId = notificationEvent.receiverId,
+                    senderUserId = notificationEvent.senderId,
                     cookieId = notificationEvent.cookieId,
                     createdAt = notificationEvent.createdAt,
 
@@ -63,5 +66,13 @@ class EventHandler(
         }
 
         notificationRepository.save(notification)
+        val userOptional = userRepository.findById(notification.receiverUserId)
+
+        if (userOptional.isPresent) {
+            val deviceToken = userOptional.get().deviceToken
+            if (!deviceToken.isNullOrBlank()) {
+                pushMessageOperations.send(destination = deviceToken, PushMessageContent(title = notification.type.pushMessageTitle, body = notification.content, image = null))
+            }
+        }
     }
 }

@@ -152,8 +152,8 @@ class CookieService(
         if (updateCookie.purchaserUserId != null) {
             eventPublisher.publishEvent(
                 TransactionNotificationEvent(
-                    receiverUserId = previousOwnedUser,
-                    senderUserId = newOwnedUser!!,
+                    receiverId = previousOwnedUser,
+                    senderId = newOwnedUser!!,
                     cookieId = cookie.id!!,
                     cookieTitle = cookie.title,
                     hammerCount = cookie.price
