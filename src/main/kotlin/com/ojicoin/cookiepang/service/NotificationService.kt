@@ -12,9 +12,9 @@ class NotificationService(
     private val notificationRepository: NotificationRepository,
 ) {
 
-    fun get(receiverUserId: Long, page: Int, size: Int): List<Notification> {
+    fun get(receiverId: Long, page: Int, size: Int): List<Notification> {
         val pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending())
-        val notifications = notificationRepository.findAllByReceiverUserId(receiverUserId, pageRequest)
+        val notifications = notificationRepository.findAllByReceiverUserId(receiverId, pageRequest)
 
         val notificationsWithCheckedTrue = notifications.filter { notification -> !notification.checked }
             .map { notification ->
@@ -28,9 +28,9 @@ class NotificationService(
         return notifications
     }
 
-    fun getNewCount(receiverUserId: Long): NotificationNewCount {
+    fun getNewCount(receiverId: Long): NotificationNewCount {
         val newCount =
-            notificationRepository.countAllByReceiverUserIdAndChecked(receiverUserId, false)
+            notificationRepository.countAllByReceiverUserIdAndChecked(receiverId, false)
 
         return NotificationNewCount(newCount)
     }

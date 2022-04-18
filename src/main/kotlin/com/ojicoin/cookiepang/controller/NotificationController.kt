@@ -13,10 +13,10 @@ class NotificationController(private val notificationService: NotificationServic
         @PathVariable userId: Long,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "3") size: Int,
-    ) = notificationService.get(receiverUserId = userId, page = page, size = size)
+    ) = notificationService.get(receiverId = userId, page = page, size = size)
 
     @GetMapping("/users/{userId}/notifications/newCount")
     fun getNewNotificationCount(
         @PathVariable userId: Long
-    ) = notificationService.getNewCount(receiverUserId = userId)
+    ) = notificationService.getNewCount(receiverId = userId)
 }
