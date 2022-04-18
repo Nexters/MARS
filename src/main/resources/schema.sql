@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS "users"
     "wallet_address" varchar(255) unique,
     "status"         varchar(10),
     "finish_onboard"  boolean default false,
-    "last_notification_checked_at" timestamp,
     PRIMARY KEY ("user_id")
 );
 
