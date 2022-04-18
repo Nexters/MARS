@@ -89,3 +89,7 @@ data class UserCookieView(
     val category: CategoryView,
     val cookieStatus: CookieStatus
 )
+
+data class NotificationNewCount(
+    val newCount: Long
+)

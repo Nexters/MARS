@@ -74,11 +74,11 @@ CREATE TABLE IF NOT EXISTS "notifications"
     "receiver_user_id" bigint,
     "sender_user_id"   bigint,
     "created_at"       timestamp,
+    "checked"          boolean default false,
     "ask_id"           bigint,
     "cookie_id"        bigint,
     PRIMARY KEY ("notification_id")
 );
-
 
 CREATE TABLE IF NOT EXISTS "cookie_histories"
 (

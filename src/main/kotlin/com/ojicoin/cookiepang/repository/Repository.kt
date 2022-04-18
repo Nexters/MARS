@@ -89,6 +89,8 @@ interface UserCategoryRepository : CrudRepository<UserCategory, Long> {
 
 interface NotificationRepository : PagingAndSortingRepository<Notification, Long> {
     fun findAllByReceiverUserId(receiverUserId: Long, pageable: Pageable): List<Notification>
+
+    fun countAllByReceiverUserIdAndChecked(receiverUserId: Long, checked: Boolean): Long
 }
 
 interface CookieHistoryRepository : CrudRepository<CookieHistory, Long> {
