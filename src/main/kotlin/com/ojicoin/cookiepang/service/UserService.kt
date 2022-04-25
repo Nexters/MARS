@@ -7,6 +7,7 @@ import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.FinishOnboardView
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.dto.UpdateUserRequest
+import com.ojicoin.cookiepang.dto.UserView
 import com.ojicoin.cookiepang.exception.DuplicateDomainException
 import com.ojicoin.cookiepang.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -24,7 +25,7 @@ class UserService(
     private val HAMMER_SEND_AMOUNT: BigInteger = BigInteger.valueOf(100)
 
     @Transactional
-    fun create(dto: CreateUser): User {
+    fun create(dto: CreateUser): UserView {
         // Prevent duplicate user nickname
         userRepository.findByNickname(dto.nickname)
             ?.let {
@@ -50,16 +51,25 @@ class UserService(
         // TODO: 초반에 이벤트성으로 지급하는 해머 (회원가입 완료시 100 해머를 준다 => 해당 해머는 adminAddress로부터 빠져나가고, 트랜잭션 비용 발생함. 즉, 어드민에 충분한 양의 클레이튼 필요함)
         val hammerAmount: BigInteger = HAMMER_SEND_AMOUNT.multiply(HAMMER_DEFAULT_DIGIT)
         hammerContractService.sendHammer(newUser.walletAddress, hammerAmount)
-        return newUser
+
+        return convertToDto(newUser)
     }
 
-    fun getById(id: Long): User = userRepository.findById(id).orElseThrow()
+    fun getById(id: Long): User {
+        return userRepository.findById(id).orElseThrow()
+    }
+
+    fun getUserViewById(id: Long): UserView {
+        val user = userRepository.findById(id).orElseThrow()
+
+        return convertToDto(user)
+    }
 
     fun isFinishOnboard(id: Long): FinishOnboardView = FinishOnboardView(getById(id).finishOnboard)
 
     fun getByWalletAddress(walletAddress: String): User = userRepository.findByWalletAddress(walletAddress)!!
 
-    fun modify(userId: Long, updateUserRequest: UpdateUserRequest): User {
+    fun modify(userId: Long, updateUserRequest: UpdateUserRequest): UserView {
         val user = userRepository.findById(userId).orElseThrow()
 
         val updateProfilePictureUrl: String? = if (updateUserRequest.profilePicture != null) {
@@ -82,7 +92,22 @@ class UserService(
                 backgroundPictureUrl = updateBackgroundPictureUrl
             )
         )
-        return userRepository.save(user)
+
+        val updatedUser = userRepository.save(user)
+        return convertToDto(updatedUser)
+    }
+
+    private fun convertToDto(entity: User): UserView {
+        return UserView(
+            id = entity.id!!,
+            walletAddress = entity.walletAddress,
+            nickname = entity.nickname,
+            introduction = entity.introduction ?: "",
+            profileUrl = entity.profileUrl ?: "",
+            backgroundUrl = entity.backgroundUrl ?: "",
+            status = entity.status,
+            finishOnboard = entity.finishOnboard,
+        )
     }
 
     companion object {

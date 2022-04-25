@@ -1,9 +1,9 @@
 package com.ojicoin.cookiepang.controller
 
-import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.ProblemResponse
 import com.ojicoin.cookiepang.dto.UpdateUserRequest
+import com.ojicoin.cookiepang.dto.UserView
 import com.ojicoin.cookiepang.service.UserService
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -34,7 +34,7 @@ class UserController(private val userService: UserService) {
             )
         ]
     )
-    fun createUser(@RequestBody createUser: CreateUser): User = userService.create(createUser)
+    fun createUser(@RequestBody createUser: CreateUser): UserView = userService.create(createUser)
 
     @GetMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
@@ -48,7 +48,7 @@ class UserController(private val userService: UserService) {
             )
         ]
     )
-    fun getUser(@PathVariable("userId") userId: Long) = userService.getById(id = userId)
+    fun getUser(@PathVariable("userId") userId: Long) = userService.getUserViewById(id = userId)
 
     @GetMapping("/users/{userId}/onbaord")
     @ResponseStatus(HttpStatus.OK)
@@ -68,7 +68,7 @@ class UserController(private val userService: UserService) {
     fun updateUser(
         @PathVariable userId: Long,
         @ModelAttribute updateUserRequest: UpdateUserRequest
-    ): User = userService.modify(
+    ): UserView = userService.modify(
         userId = userId,
         updateUserRequest = updateUserRequest
     )
