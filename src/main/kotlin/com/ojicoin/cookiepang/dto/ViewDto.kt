@@ -95,9 +95,9 @@ data class UserView(
     val id: Long,
     val walletAddress: String,
     val nickname: String,
-    val introduction: String,
-    val profileUrl: String,
-    val backgroundUrl: String,
+    val introduction: String?,
+    val profileUrl: String?,
+    val backgroundUrl: String?,
     val status: UserStatus,
     val finishOnboard: Boolean,
 )

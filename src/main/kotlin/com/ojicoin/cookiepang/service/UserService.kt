@@ -102,9 +102,9 @@ class UserService(
             id = entity.id!!,
             walletAddress = entity.walletAddress,
             nickname = entity.nickname,
-            introduction = entity.introduction ?: "",
-            profileUrl = entity.profileUrl ?: "",
-            backgroundUrl = entity.backgroundUrl ?: "",
+            introduction = entity.introduction,
+            profileUrl = entity.profileUrl,
+            backgroundUrl = entity.backgroundUrl,
             status = entity.status,
             finishOnboard = entity.finishOnboard,
         )
