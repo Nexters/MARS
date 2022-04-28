@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.controller
 
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.ProblemResponse
+import com.ojicoin.cookiepang.dto.UpdateDeviceTokenRequest
 import com.ojicoin.cookiepang.dto.UpdateUserRequest
 import com.ojicoin.cookiepang.dto.UserView
 import com.ojicoin.cookiepang.service.UserService
@@ -71,5 +72,14 @@ class UserController(private val userService: UserService) {
     ): UserView = userService.modify(
         userId = userId,
         updateUserRequest = updateUserRequest
+    )
+
+    @PutMapping("/users/{userId}/deviceToken")
+    fun updateDeviceToken(
+        @PathVariable userId: Long,
+        @RequestBody updateDeviceTokenRequest: UpdateDeviceTokenRequest
+    ): UserView = userService.modifyDeviceToken(
+        userId = userId,
+        deviceTokenRequest = updateDeviceTokenRequest
     )
 }

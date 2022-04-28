@@ -5,6 +5,7 @@ import com.ojicoin.cookiepang.domain.User
 import com.ojicoin.cookiepang.domain.UserStatus.ACTIVE
 import com.ojicoin.cookiepang.dto.CreateUser
 import com.ojicoin.cookiepang.dto.FinishOnboardView
+import com.ojicoin.cookiepang.dto.UpdateDeviceTokenRequest
 import com.ojicoin.cookiepang.dto.UpdateUser
 import com.ojicoin.cookiepang.dto.UpdateUserRequest
 import com.ojicoin.cookiepang.dto.UserView
@@ -87,11 +88,19 @@ class UserService(
         user.apply(
             updateUser = UpdateUser(
                 introduction = updateUserRequest.introduction,
-                deviceToken = updateUserRequest.deviceToken,
                 profilePictureUrl = updateProfilePictureUrl,
                 backgroundPictureUrl = updateBackgroundPictureUrl
             )
         )
+
+        val updatedUser = userRepository.save(user)
+        return convertToDto(updatedUser)
+    }
+
+    fun modifyDeviceToken(userId: Long, deviceTokenRequest: UpdateDeviceTokenRequest): UserView{
+        val user = userRepository.findById(userId).orElseThrow()
+
+        user.deviceToken = deviceTokenRequest.deviceToken
 
         val updatedUser = userRepository.save(user)
         return convertToDto(updatedUser)

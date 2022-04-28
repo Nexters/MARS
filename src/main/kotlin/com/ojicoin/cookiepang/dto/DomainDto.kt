@@ -48,14 +48,16 @@ data class CreateUser(
 
 data class UpdateUserRequest(
     val introduction: String?,
-    val deviceToken: String?,
     val profilePicture: MultipartFile?,
     val backgroundPicture: MultipartFile?,
 )
 
+data class UpdateDeviceTokenRequest(
+    val deviceToken: String?,
+)
+
 data class UpdateUser(
     val introduction: String?,
-    val deviceToken: String?,
     val profilePictureUrl: String?,
     val backgroundPictureUrl: String?
 )
