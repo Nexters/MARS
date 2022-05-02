@@ -12,4 +12,4 @@ class PushMessageResponse(response: String) {
     }
 }
 
-data class PushMessageContent(val title: String, val body: String, val image: String?)
+data class PushMessageContent(val title: String, val body: String, val type: String, val image: String?)

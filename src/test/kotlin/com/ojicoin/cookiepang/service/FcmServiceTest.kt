@@ -13,6 +13,7 @@ class FcmServiceTest(@Autowired private val sut: PushMessageOperations) : Spring
             PushMessageContent(
                 title = "안녕하세요",
                 body = "테스트 성공?? 쿠키팡팡 안드로이드 세팅 추가함 ",
+                type = "hhh",
                 image = null
             )
         ).messageId

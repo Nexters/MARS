@@ -61,6 +61,6 @@ data class FcmMessageAndroidSetting(val ttl: String = "604800s", val priority: S
 
 data class FcmMessage(
     @JsonProperty("token") val receiverToken: String,
-    @JsonProperty("notification") val pushMessageContent: PushMessageContent,
+    @JsonProperty("data") val pushMessageContent: PushMessageContent,
     val android: FcmMessageAndroidSetting = FcmMessageAndroidSetting()
 )
