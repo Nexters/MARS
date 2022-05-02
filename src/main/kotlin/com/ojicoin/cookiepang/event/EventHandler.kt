@@ -71,7 +71,7 @@ class EventHandler(
         if (userOptional.isPresent) {
             val deviceToken = userOptional.get().deviceToken
             if (!deviceToken.isNullOrBlank()) {
-                pushMessageOperations.send(destination = deviceToken, PushMessageContent(title = notification.type.pushMessageTitle, body = notification.content, image = null))
+                pushMessageOperations.send(destination = deviceToken, PushMessageContent(title = notification.type.pushMessageTitle, body = notification.content, type = notification.type.kind, image = null))
             }
         }
     }

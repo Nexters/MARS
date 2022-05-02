@@ -24,9 +24,10 @@ class Notification(
 )
 
 enum class NotificationType(
+    val kind: String,
     val title: String,
     val pushMessageTitle: String,
 ) {
-    Ask("요청", "질문을 요청받았어요."),
-    Transaction("판매", "내 쿠키가 판매되었어요."),
+    Ask("ask", "요청", "질문을 요청받았어요."),
+    Transaction("transaction", "판매", "내 쿠키가 판매되었어요."),
 }
