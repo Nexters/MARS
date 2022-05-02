@@ -97,7 +97,7 @@ class UserService(
         return convertToDto(updatedUser)
     }
 
-    fun modifyDeviceToken(userId: Long, deviceTokenRequest: UpdateDeviceTokenRequest): UserView{
+    fun modifyDeviceToken(userId: Long, deviceTokenRequest: UpdateDeviceTokenRequest): UserView {
         val user = userRepository.findById(userId).orElseThrow()
 
         user.deviceToken = deviceTokenRequest.deviceToken
