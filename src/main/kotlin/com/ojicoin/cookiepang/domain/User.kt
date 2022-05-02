@@ -38,7 +38,6 @@ class User(
         updateUser.profilePictureUrl?.also { this.profileUrl = it }
         updateUser.backgroundPictureUrl?.also { this.backgroundUrl = it }
         updateUser.introduction?.also { this.introduction = it }
-        updateUser.deviceToken?.also { this.deviceToken = it }
     }
 }
 

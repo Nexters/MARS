@@ -2,6 +2,7 @@ package com.ojicoin.cookiepang.dto
 
 import com.ojicoin.cookiepang.domain.Action
 import com.ojicoin.cookiepang.domain.CookieStatus
+import com.ojicoin.cookiepang.domain.UserStatus
 import java.math.BigInteger
 import java.time.Instant
 
@@ -88,6 +89,17 @@ data class UserCookieView(
     val ownedUserId: Long,
     val category: CategoryView,
     val cookieStatus: CookieStatus
+)
+
+data class UserView(
+    val id: Long,
+    val walletAddress: String,
+    val nickname: String,
+    val introduction: String?,
+    val profileUrl: String?,
+    val backgroundUrl: String?,
+    val status: UserStatus,
+    val finishOnboard: Boolean,
 )
 
 data class NotificationNewCount(
